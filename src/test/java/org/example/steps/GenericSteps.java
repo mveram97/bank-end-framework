@@ -31,6 +31,15 @@ public class GenericSteps {
               .header("Content-Type", "application/json")
               .body("{ \"name\": \"morpheus\", \"job\": \"zion resident\" }")  // Datos de actualización
               .put(url);
+    } else if (method.equalsIgnoreCase("GET")) {
+      response = RestAssured.given()
+              .header("Content-Type", "application/json")
+              .get(url);
+
+    } else if (method.equalsIgnoreCase("DELETE")) {
+      response = RestAssured.given()
+              .header("Content-Type", "application/json")
+              .delete(url);
     }
     else if (method.equalsIgnoreCase("GET")){
       response = RestAssured.get(url);
