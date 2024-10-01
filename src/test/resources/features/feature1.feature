@@ -4,5 +4,6 @@ Feature: Test API
     Then Result should be 201
 
   Scenario: Update a user
+    Given A user with ID 2 exists
     When I send a "PUT" to "https://reqres.in/api/users/2"
     Then Result should be 200
