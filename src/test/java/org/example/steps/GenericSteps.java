@@ -14,8 +14,12 @@ public class GenericSteps {
     if (method.equalsIgnoreCase("POST")) {
       response = RestAssured.given()
               .header("Content-Type", "application/json")
-              .body("{ \"name\": \"morpheus\", \"job\": \"leader\" }")
+              .body("{ \"name\": \"morpheus\", \"job\": \"leader\" }")  // Cuerpo de la solicitud para POST
               .post(url);
+    } else if (method.equalsIgnoreCase("GET")) {
+      response = RestAssured.given()
+              .header("Content-Type", "application/json")
+              .get(url);  // No se incluye body para GET
     }
   }
 
