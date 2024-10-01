@@ -7,3 +7,7 @@ Feature: Test API
     Given A user with ID 2 exists
     When I send a "PUT" to "https://reqres.in/api/users/2"
     Then Result should be 200
+
+  Scenario: Get list of users
+    When I send a "GET" to "https://reqres.in/api/users?page=2"
+    Then Result should be 200
