@@ -29,4 +29,5 @@ public class Account {
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL) // si se elimina una cuenta se eliminan sus tarjetas
     private List<Account> cards;    // 1 account - N cards
 
+    //
 }
