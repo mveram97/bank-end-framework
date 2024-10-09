@@ -10,7 +10,8 @@ import java.util.Date;
 @Component
 public class Token {
 
-    private final String jwtSecret = "yourSecretKey"; // Cambia esto por una clave secreta segura
+    private final String jwtSecret = "yourverylongseaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacretkeythatisatleast64byteslong";
+    // Cambia esto por una clave secreta segura
     private final long jwtExpirationInMs = 3600000; // Tiempo de expiración de 1 hora
 
     // Genera el token JWT
