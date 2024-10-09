@@ -2,8 +2,6 @@ package org.example.api.data.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Generated;
-
 import java.util.Date;
 import java.util.List;
 
@@ -23,11 +21,9 @@ public class Account {
     private Date expirationDate;
 
     @ManyToOne
-    @JoinColumn(name = "customerId", nullable = false)  // no puede existir una cuenta sin  un cliente asociado
+    @JoinColumn(name = "customerId", nullable = false)
     private Customer customer;  // N accounts - 1 customer
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL) // si se elimina una cuenta se eliminan sus tarjetas
-    private List<Account> cards;    // 1 account - N cards
-
-    //
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private List<Card> cards;    // 1 account - N cards
 }
