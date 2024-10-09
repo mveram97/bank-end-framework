@@ -17,6 +17,6 @@ public class Customer {
     private String email;
     private String password;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)    // si se elimina un cliente se eliminan sus cuentas
     private List<Account> accounts;
 }
