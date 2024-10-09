@@ -18,8 +18,9 @@ public class Card {
     private int cvc;
     private Date expirationDate;
 
-    @ManyToMany(mappedBy = "card", cascade = CascadeType.ALL)
-    private List<Card> cards;
+    @ManyToOne
+    @JoinColumn(name = "accountId", nullable = false)  // no puede existir una tarjeta sin  una cuenta asociada
+    private Account account;  // N accounts - 1 customer
 
-// Comentario mismamente
+
 }
