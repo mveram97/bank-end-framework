@@ -10,8 +10,7 @@ import java.util.Date;
 @Component
 public class Token {
 
-    private final String jwtSecret = "yourverylongseaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacretkeythatisatleast64byteslong";
-    // Cambia esto por una clave secreta segura
+    private static final String jwtSecret = "yourverylongseaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacretkeythatisatleast64byteslong";
     private final long jwtExpirationInMs = 3600000; // Tiempo de expiración de 1 hora
 
     // Genera el token JWT
@@ -21,14 +20,14 @@ public class Token {
 
         return Jwts.builder()
                 .setSubject(customerEmail)
-                .setIssuedAt(new Date())
+                .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
 
     // Obtiene el email del cliente desde el token
-    public String getCustomerEmailFromJWT(String token) {
+    public static String getCustomerEmailFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
