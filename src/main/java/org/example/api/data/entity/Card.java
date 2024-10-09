@@ -18,7 +18,7 @@ public class Card {
     private int cvc;
     private Date expirationDate;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<Card> cards;
 
 
