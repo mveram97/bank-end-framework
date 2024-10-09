@@ -18,5 +18,5 @@ public class Card {
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
-    private Account account;   // Each card belongs to one account
+    private Account account;
 }

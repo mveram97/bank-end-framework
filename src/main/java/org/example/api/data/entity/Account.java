@@ -22,7 +22,7 @@ public class Account {
 
     @ManyToOne
     @JoinColumn(name = "customerId", nullable = false)
-    private Customer customer;  // N accounts - 1 customer
+    private Customer customer;  // N accounts - 1 customer .
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<Card> cards;    // 1 account - N cards
