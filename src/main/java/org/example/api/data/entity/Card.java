@@ -21,5 +21,5 @@ public class Card {
     @ManyToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<Card> cards;
 
-
+// Comentario mismamente
 }
