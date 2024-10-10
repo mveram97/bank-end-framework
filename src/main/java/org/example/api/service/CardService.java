@@ -11,24 +11,21 @@ import java.util.Optional;
 @Service
 public class CardService {
 
-    @Autowired
-    private CardRepository cardRepository;
+  @Autowired private CardRepository cardRepository;
 
-    public List<Card> findAll() {
-        return cardRepository.findAll();
-    }
+  public List<Card> findAll() {
+    return cardRepository.findAll();
+  }
 
-    public Optional<Card> findById(Integer cardId) {
-        return cardRepository.findByCardId(cardId);
-    }
+  public Optional<Card> findById(Integer cardId) {
+    return cardRepository.findByCardId(cardId);
+  }
 
-    public Card save(Card card) {
-        return cardRepository.save(card);
-    }
+  public Card save(Card card) {
+    return cardRepository.save(card);
+  }
 
-    public void deleteById(Integer cardId) {
-        cardRepository.deleteById(cardId);
-    }
-
-
+  public void deleteById(Integer cardId) {
+    cardRepository.deleteById(cardId);
+  }
 }

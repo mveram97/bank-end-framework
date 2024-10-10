@@ -11,26 +11,24 @@ import java.util.Optional;
 
 @RestController
 public class CustomerController {
-    private CustomerService customer;
+  private CustomerService customer;
 
-    public CustomerController(CustomerService customer) {
-        this.customer = customer;
-    }
+  public CustomerController(CustomerService customer) {
+    this.customer = customer;
+  }
 
-    @GetMapping("/customer/{id}")
-    public Optional<Customer> customer(@PathVariable Integer id){
-        return customer.findById(id);
+  @GetMapping("/customer/{id}")
+  public Optional<Customer> customer(@PathVariable Integer id) {
+    return customer.findById(id);
+  }
 
-    }
+  /*@GetMapping("/customer/{id}")
+  public Customer getCustomer(@PathVariable Integer id){
+      return customer.stream().filter(employee -> employee.getId().equals(id)).findFirst().orElse(null);
+  }*/
 
-    /*@GetMapping("/customer/{id}")
-    public Customer getCustomer(@PathVariable Integer id){
-        return customer.stream().filter(employee -> employee.getId().equals(id)).findFirst().orElse(null);
-    }*/
-
-    @GetMapping("/customer")
-    public List<Customer> customer(){
-        return customer.findAll();
-    }
+  @GetMapping("/customer")
+  public List<Customer> customer() {
+    return customer.findAll();
+  }
 }
-

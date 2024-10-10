@@ -1,9 +1,9 @@
 package org.example.api.data.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import java.util.Date;
 import java.util.List;
+import lombok.Data;
 
 @Data
 @Entity

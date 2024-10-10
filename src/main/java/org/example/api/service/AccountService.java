@@ -11,24 +11,21 @@ import java.util.Optional;
 @Service
 public class AccountService {
 
-    @Autowired
-    private AccountRepository accountRepository;
+  @Autowired private AccountRepository accountRepository;
 
-    public List<Account> findAll() {
-        return accountRepository.findAll();
-    }
+  public List<Account> findAll() {
+    return accountRepository.findAll();
+  }
 
-    public Optional<Account> findById(Integer accountId) {
-        return accountRepository.findById(accountId);
-    }
+  public Optional<Account> findById(Integer accountId) {
+    return accountRepository.findById(accountId);
+  }
 
-    public Account save(Account account) {
-        return accountRepository.save(account);
-    }
+  public Account save(Account account) {
+    return accountRepository.save(account);
+  }
 
-    public void deleteById(Integer accountId) {
-        accountRepository.deleteById(accountId);
-    }
-
-
+  public void deleteById(Integer accountId) {
+    accountRepository.deleteById(accountId);
+  }
 }

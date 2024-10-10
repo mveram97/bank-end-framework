@@ -1,8 +1,9 @@
 package org.example.api.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
 import java.util.Date;
+import lombok.Data;
 
 @Data
 @Entity
@@ -16,6 +17,7 @@ public class Card {
     private int cvc;
     private Date expirationDate;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
