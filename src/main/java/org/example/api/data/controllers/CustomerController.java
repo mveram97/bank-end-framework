@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class CustomerController {
@@ -17,8 +18,8 @@ public class CustomerController {
     }
 
     @GetMapping("/customer/{id}")
-    public Customer customer(Integer id){
-        return customer.findById(id).get();
+    public Optional<Customer> customer(@PathVariable Integer id){
+        return customer.findById(id);
 
     }
 
