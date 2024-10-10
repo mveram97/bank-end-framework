@@ -20,9 +20,12 @@ public class AccountController {
     }
 
     @GetMapping("/account/{id}")
-    public Optional<Account> account (@PathVariable Integer id){
+    public Optional<Account> accountById(@PathVariable Integer id){
         return account.findById(id);
     }
 
-
+    @GetMapping("/accounts/{customerId}")
+    public List<Account> accountsByCustomer(@PathVariable Integer customerId){
+        return account.findByCustomer(customerId);
+    }
 }

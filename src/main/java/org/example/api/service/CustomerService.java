@@ -1,5 +1,6 @@
 package org.example.api.service;
 
+import org.example.api.data.entity.Account;
 import org.example.api.data.entity.Customer;
 import org.example.api.data.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;

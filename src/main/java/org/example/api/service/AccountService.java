@@ -2,6 +2,7 @@ package org.example.api.service;
 
 import org.example.api.data.entity.Account;
 import org.example.api.data.repository.AccountRepository;
+import org.example.api.data.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,5 +31,5 @@ public class AccountService {
         accountRepository.deleteById(accountId);
     }
 
-
+    public List<Account> findByCustomer(Integer customerId) { return accountRepository.findByCustomer_CustomerId(customerId); }
 }
