@@ -1,5 +1,6 @@
 package org.example.api.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
@@ -17,6 +18,7 @@ public class Customer {
     private String email;
     private String password;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)    // si se elimina un cliente se eliminan sus cuentas
     private List<Account> accounts;
 
