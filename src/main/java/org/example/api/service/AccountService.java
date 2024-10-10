@@ -28,4 +28,6 @@ public class AccountService {
   public void deleteById(Integer accountId) {
     accountRepository.deleteById(accountId);
   }
+
+  public List<Account> findByCustomer(Integer customerId) {return accountRepository.findByCustomer_CustomerId(customerId);}
 }
