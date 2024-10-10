@@ -11,7 +11,7 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long accountId;
+    private Integer accountId;
 
     private String accountType;
     private Boolean isBlocked;
