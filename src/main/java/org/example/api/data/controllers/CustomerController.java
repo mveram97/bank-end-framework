@@ -23,11 +23,6 @@ public class CustomerController {
 
     }
 
-    /*@GetMapping("/customer/{id}")
-    public Customer getCustomer(@PathVariable Integer id){
-        return customer.stream().filter(employee -> employee.getId().equals(id)).findFirst().orElse(null);
-    }*/
-
     @GetMapping("/customer")
     public List<Customer> customer(){
         return customer.findAll();
