@@ -9,39 +9,33 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @RestController
 public class AuthenticationController {
 
     private CustomerService customerService;
-    private AuthService login;
-
-   public AuthenticationController(AuthService login) {
-        this.login = login;
-    }
 
     public AuthenticationController(CustomerService customerService) {
         this.customerService = customerService;
     }
-   public AuthenticationController(){
-
-    }
 
     @PostMapping("/register")
     public String addCustomer(@RequestBody Customer nuevoCust){
-
-          customerService.save(nuevoCust);
-          return "The customer has registered succesfully";
-
+       try {
+           customerService.save(nuevoCust);
+           return "The customer has registered succesfully";
+       } catch (Exception e){
+           return "Failed to register customer: Invalid email";
+       }
     }
 
     @PostMapping("/logIn")
     public String logIn(@RequestBody Customer logInCust ){
 
-        login.login(logInCust.getEmail(), logInCust.getPassword());
-        return "The customer has loged in succesfully";
-
+        return customerService.login(logInCust.getEmail(), logInCust.getPassword());
+        //return "The customer has loged in succesfully";
     }
 
     /*@PostMapping("/logOut")

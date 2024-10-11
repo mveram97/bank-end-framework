@@ -5,6 +5,8 @@ import org.example.api.token.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class AuthService {
 
@@ -12,10 +14,9 @@ public class AuthService {
     private Token tokenService; // Inyectamos el servicio de token
 
     // Simulación de un método de autenticación
-    public String login(String email, String password) {
+    public String login(Optional<Customer> custE, Optional<Customer> custP) {
         // Lógica para autenticar al cliente (ej. verificar credenciales)
-        Customer customer = authenticate(email, password);
-
+        Customer customer = authenticate(custE, custP);
         if (customer != null) {
             // Generar un nuevo token si la autenticación es exitosa
             return tokenService.generateToken(customer.getEmail());
@@ -25,19 +26,18 @@ public class AuthService {
     }
 
     // Método simulado para la autenticación
-    private Customer authenticate(String email, String password) {
+    private Customer authenticate(Optional<Customer> custE, Optional<Customer> custP) {
 
         // Aquí deberías implementar la lógica para verificar las credenciales del cliente.
         // Por ejemplo, buscar en la base de datos si el email y la contraseña son correctos.
 
         // Simulación de búsqueda en base de datos
         // En un caso real, deberías recuperar el cliente de una base de datos
-
-        if ("customer@example.com".equals(email) && "password123".equals(password)) {
+        if (custP.isPresent() && custE.isPresent() && custE.equals(custP)){
             Customer customer = new Customer();
-            customer.setEmail(email);
-            customer.setName("Jane");
-            customer.setSurname("Doe");
+            customer.setEmail(custE.get().getEmail());
+            customer.setName(custE.get().getName());
+            customer.setSurname(custE.get().getSurname());
             return customer;
         }
         return null; // Retornar null si las credenciales son inválidas
