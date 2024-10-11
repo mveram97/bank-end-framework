@@ -26,11 +26,13 @@ public class AuthService {
 
     // Método simulado para la autenticación
     private Customer authenticate(String email, String password) {
+
         // Aquí deberías implementar la lógica para verificar las credenciales del cliente.
         // Por ejemplo, buscar en la base de datos si el email y la contraseña son correctos.
 
         // Simulación de búsqueda en base de datos
         // En un caso real, deberías recuperar el cliente de una base de datos
+
         if ("customer@example.com".equals(email) && "password123".equals(password)) {
             Customer customer = new Customer();
             customer.setEmail(email);
@@ -40,5 +42,6 @@ public class AuthService {
         }
         return null; // Retornar null si las credenciales son inválidas
     }
+
 }
 
