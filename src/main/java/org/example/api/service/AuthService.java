@@ -1,44 +1,55 @@
 package org.example.api.service;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.example.api.data.entity.Customer;
+import org.example.api.data.repository.CustomerRepository;
+import org.example.api.data.request.LoginRequest;
 import org.example.api.token.Token;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.WebUtils;
+
+import java.util.Optional;
 
 @Service
 public class AuthService {
 
+    private String jwtCookie = "cookieToken";
+
+    @Autowired
+    CustomerRepository customerRepository;
+
     @Autowired
     private Token tokenService; // Inyectamos el servicio de token
 
-    // Simulación de un método de autenticación
-    public String login(String email, String password) {
-        // Lógica para autenticar al cliente (ej. verificar credenciales)
-        Customer customer = authenticate(email, password);
 
-        if (customer != null) {
-            // Generar un nuevo token si la autenticación es exitosa
-            return tokenService.generateToken(customer.getEmail());
+    public boolean authenticate(String email, String password) {
+        Optional<Customer> customerOpt = customerRepository.findByEmail(email);
+
+        if (customerOpt.isPresent()){
+            Customer customer = customerOpt.get();
+            return password.equals(customer.getPassword()) ;
+
         } else {
-            throw new RuntimeException("Invalid credentials"); // O lanza una excepción adecuada
+            return false;
         }
     }
 
-    // Método simulado para la autenticación
-    private Customer authenticate(String email, String password) {
-        // Aquí deberías implementar la lógica para verificar las credenciales del cliente.
-        // Por ejemplo, buscar en la base de datos si el email y la contraseña son correctos.
+    public ResponseCookie generateJwtCookie(LoginRequest loginRequest) {
+        String jwt = tokenService.generateToken(loginRequest.getEmail());
+        ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).path("/public").maxAge(24 * 60 * 60).httpOnly(true).build();
+        return cookie;
+    }
 
-        // Simulación de búsqueda en base de datos
-        // En un caso real, deberías recuperar el cliente de una base de datos
-        if ("customer@example.com".equals(email) && "password123".equals(password)) {
-            Customer customer = new Customer();
-            customer.setEmail(email);
-            customer.setName("Jane");
-            customer.setSurname("Doe");
-            return customer;
+    public String getJwtFromCookies(HttpServletRequest request) {
+        Cookie cookie = WebUtils.getCookie(request, jwtCookie);
+        if (cookie != null) {
+            return cookie.getValue();
+        } else {
+            return null;
         }
-        return null; // Retornar null si las credenciales son inválidas
     }
 }
 
