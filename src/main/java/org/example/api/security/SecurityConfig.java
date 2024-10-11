@@ -1,4 +1,7 @@
 package org.example.api.security;
+
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,31 +15,29 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
+@EnableMethodSecurity
 @EnableWebSecurity
 public class SecurityConfig {
 
     @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    private JwtAuthenticationFilter jwtAuthenticationFilter; // Asumo que este filtro se encarga de validar el token JWT.
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        auth ->
-                                auth.requestMatchers("/public/**")
-                                        .permitAll()
-                                        .requestMatchers("/h2-ui/**")
-                                        .permitAll()
-                                        .anyRequest()
-                                        .authenticated())
-                .sessionManagement(
-                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                // Configuración para permitir ciertas rutas sin verificación
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/public/**", "/h2-ui/**")
+                        .permitAll()
+                        .anyRequest()
+                        .permitAll() // Permitir todas las solicitudes sin verificación de autenticación.
+                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Sin estado para evitar manejo de sesión
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Agregar el filtro de autenticación basado en JWT
 
-        // fix H2 database console: Refused to display ' in a frame because it set 'X-Frame-Options' to
-        // 'deny'
+        // Configuración para permitir la visualización del H2 en un frame
         http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
+
         return http.build();
     }
 }
-

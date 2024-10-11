@@ -7,14 +7,20 @@ import org.example.api.data.repository.CustomerRepository;
 import org.example.api.data.request.LoginRequest;
 import org.example.api.token.Token;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.WebUtils;
-
+import org.example.api.token.Token;
 import java.util.Optional;
 
 @Service
 public class AuthService {
+
+
+    @Autowired
+    private Token token;
 
     private String jwtCookie = "cookieToken";
 
@@ -39,7 +45,7 @@ public class AuthService {
 
     public ResponseCookie generateJwtCookie(LoginRequest loginRequest) {
         String jwt = tokenService.generateToken(loginRequest.getEmail());
-        ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).path("/public").maxAge(24 * 60 * 60).httpOnly(true).build();
+        ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).path("/api").maxAge(24 * 60 * 60).httpOnly(true).build();
         return cookie;
     }
 
@@ -50,6 +56,15 @@ public class AuthService {
         } else {
             return null;
         }
+    }
+
+    public Boolean AreYouLogged(HttpServletRequest request) {
+        String jwt = getJwtFromCookies(request);
+
+        if (jwt == null || !token.validateToken(jwt)) {
+            return true;
+        }
+        return false;
     }
 }
 

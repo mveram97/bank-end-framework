@@ -32,18 +32,13 @@ public class CustomerController {
     this.customerService = customerService;
   }
 
-  @GetMapping("/customer/{id}")
+  @GetMapping("/api/customer/{id}")
   public Optional<Customer> customer(@PathVariable Integer id) {
     return customerService.findById(id);
   }
 
   @GetMapping("/public/customer")
   public List<Customer> customer(HttpServletRequest request) {
-    String jwt = authService.getJwtFromCookies(request);
-
-    if (jwt == null || !token.validateToken(jwt)) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Cookie no válida");
-    }
 
     return customerService.findAll();
   }

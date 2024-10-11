@@ -31,11 +31,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (jwt != null && token.validateToken(jwt)) {
             // Si el token es válido, permite la ejecución de la petición
             filterChain.doFilter(request, response);
-        } else if (request.getRequestURI().startsWith("/public/")) {
+
+
+        } else if (request.getRequestURI().startsWith("/public/")  || request.getRequestURI().startsWith("/h2-ui")) {
             // Permitir las rutas públicas sin JWT
             filterChain.doFilter(request, response);
         } else {
             // Si el token no es válido o no está presente, responde con UNAUTHORIZED
+
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write("Cookie no válida o no presente");
         }
