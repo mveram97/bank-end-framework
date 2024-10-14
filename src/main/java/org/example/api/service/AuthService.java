@@ -34,7 +34,7 @@ public class AuthService {
     public ResponseCookie generateJwtCookie(LoginRequest loginRequest) {
         String jwt = tokenService.generateToken(loginRequest.getEmail());
         ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt)
-                .path("/public").maxAge(24 * 60 * 60).httpOnly(true).build();
+                .path("/api").maxAge(24 * 60 * 60).httpOnly(true).build();
         return cookie;
     }
 

@@ -1,5 +1,6 @@
 package org.example.api.data.controllers;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.api.data.entity.Customer;
 import org.example.api.service.AuthService;
@@ -41,6 +42,8 @@ public class CustomerController {
     if (jwt == null || !token.validateToken(jwt)){
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Cookie no válida");
     }
+
     return customer.findAll();
+
   }
 }

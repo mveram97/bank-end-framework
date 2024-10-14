@@ -48,7 +48,7 @@ public class AuthenticationController {
 
     }
 
-    @PostMapping("/logIn")
+    @PostMapping("/login")
     public ResponseEntity<String> logIn(@RequestBody LoginRequest logInRequest){
         if (authService.authenticate(logInRequest.getEmail(), logInRequest.getPassword())){
             ResponseCookie jwtCookie = authService.generateJwtCookie(logInRequest);
@@ -60,18 +60,18 @@ public class AuthenticationController {
     }
 
 
-    @PostMapping("/logout")
+    @PostMapping("/api/logout")
     public ResponseEntity<String> logout(HttpServletRequest request) {
 
         String jwt = authService.getJwtFromCookies(request);
-
+        System.out.println(jwt);
 
         if (jwt == null || !token.validateToken(jwt)){
              return ResponseEntity.badRequest().body("You have to Log In first");
 
         }
         ResponseCookie cookie = ResponseCookie.from(jwtCookie, "")
-                .path("/public").maxAge(0).httpOnly(true).build();
+                .path("/api").maxAge(0).httpOnly(true).build();
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body("Logged out successfully. Cookies cleared.");
