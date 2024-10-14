@@ -68,4 +68,39 @@ public class AccountController {
 
         return ResponseEntity.ok(accounts); // 200 OK con las cuentas del usuario
     }
+
+    @GetMapping ("/api/accounts/amount")
+    public ResponseEntity<Double> getUserAmount(HttpServletRequest request){
+        // Obtener el token JWT desde las cookies
+        String jwt = authService.getJwtFromCookies(request);
+        System.out.println(jwt);
+
+        // Validar el token
+        if (jwt == null || !tokenService.validateToken(jwt)) {
+            return ResponseEntity.status(401).build(); // 401 Unauthorized si el token es inválido
+        }
+
+        // Obtener el email del usuario a partir del token
+        String email = tokenService.getCustomerEmailFromJWT(jwt);
+
+        // Obtener el usuario por email
+        Optional<Customer> customerOpt = authService.findCustomerByEmail(email);
+        if (!customerOpt.isPresent()) {
+            return ResponseEntity.status(404).build(); // 404 Not Found si no se encuentra el usuario
+        }
+
+        // Obtener las cuentas del usuario autenticado
+        Customer customer = customerOpt.get();
+        List<Account> accounts = account.findByCustomer(customer.getCustomerId());
+
+        //Calcular el total de dinero en todas las cuentas
+        double totalAmount = 0.0;
+        for (Account acc : accounts){
+            totalAmount += acc.getAmount();
+        }
+
+        return ResponseEntity.ok(totalAmount);
+
+
+    }
 }
