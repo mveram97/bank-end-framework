@@ -21,17 +21,17 @@ public class CardController {
         this.card = card;
     }
 
-    @GetMapping("/card")
+    @GetMapping("api/BDcards")     // get all cards from DB
     public List<Card> card() {
         return card.findAll();
     }
 
-    @GetMapping("/card/{id}")
+    @GetMapping("api/card/{cardId}")       // get 1 card by cardId
     public Optional<Card> card(@PathVariable Integer id) {
         return card.findById(id);
     }
 
-    @GetMapping("/cards/{accountId}")
+    @GetMapping("api/cards/{accountId}")    // get all cards by accountId
     public List<Card> cardsByAccountId(@PathVariable Integer accountId) {
         return card.findByAccountId(accountId);
     }
