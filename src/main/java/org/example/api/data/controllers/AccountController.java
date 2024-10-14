@@ -3,14 +3,15 @@ package org.example.api.data.controllers;
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.api.data.entity.Account;
 import org.example.api.data.entity.Customer;
+import org.example.api.data.entity.Transfer;
+import org.example.api.data.repository.AccountRepository;
+import org.example.api.data.repository.CustomerRepository;
 import org.example.api.service.AccountService;
 import org.example.api.service.AuthService;
 import org.example.api.token.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,11 @@ public class AccountController {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
     @Autowired
     private Token tokenService;
 
@@ -68,4 +74,49 @@ public class AccountController {
 
         return ResponseEntity.ok(accounts); // 200 OK con las cuentas del usuario
     }
+
+    @PatchMapping("/transfer")
+    public ResponseEntity<String> localTransfer(@RequestBody Transfer transfer, HttpServletRequest request){
+
+        //Obtiene el customerId y lo pasa al JSON
+        String jwt = authService.getJwtFromCookies(request);
+        String email = Token.getCustomerEmailFromJWT(jwt);
+        Customer customer = customerRepository.findByEmail(email).get();
+
+        //Recibe la info del receiver
+        Integer receiverId = transfer.getReceiverId();
+        Optional<Account> receiverOpt = accountRepository.findById(receiverId);
+        if (!receiverOpt.isPresent()){
+            return ResponseEntity.badRequest().body("No existe la cuenta receptora ");
+        }
+        Account receiver = receiverOpt.get();
+
+
+        //Comprueba si la cuenta pertenece al usuario que hace la transferencia
+        for(Account cuenta : customer.getAccounts()){
+
+            //Si la cuenta esta asociada al usuario que esta haciendo la peticion, entonces sigue con el codigo
+            if(cuenta.getAccountId().equals(transfer.getCustomerAccountId())){
+                Account cuentaEmisora = cuenta;
+
+                //Comprueba si las cuenta receptora esta bloqueada, si la emisora tiene deudas o si se quiere
+                // pasar mas dinero del que hay en la cuenta
+                if (receiver.getIsBlocked() || cuentaEmisora.getIsInDebt()
+                        || cuentaEmisora.getAmount() < transfer.getAmount()){
+                    return ResponseEntity.badRequest().body("No se puede realizar la transferencia");
+                }
+
+                //Realiza la operacion de transferencia del amount
+                cuentaEmisora.setAmount(cuentaEmisora.getAmount() - transfer.getAmount());
+                receiver.setAmount(receiver.getAmount() + transfer.getAmount());
+
+                accountRepository.save(cuentaEmisora);
+                accountRepository.save(receiver);
+                return ResponseEntity.ok().body("La transferencia fue realizada con exito ");
+            }
+        }
+
+        return ResponseEntity.badRequest().body("La cuenta no esta asociada a este usuario");
+    }
+
 }
