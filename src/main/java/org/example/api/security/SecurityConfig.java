@@ -1,5 +1,6 @@
 package org.example.api.security;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -27,10 +28,9 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 // Configuración para permitir ciertas rutas sin verificación
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/public/**", "/h2-ui/**")
-                        .permitAll()
-                        .anyRequest()
-                        .permitAll() // Permitir todas las solicitudes sin verificación de autenticación.
+                        .requestMatchers("/public/**","/api/logout").permitAll()
+                        .requestMatchers(PathRequest.toH2Console()).permitAll()
+                        .anyRequest().authenticated() // Permitir todas las solicitudes sin verificación de autenticación.
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Sin estado para evitar manejo de sesión
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Agregar el filtro de autenticación basado en JWT
