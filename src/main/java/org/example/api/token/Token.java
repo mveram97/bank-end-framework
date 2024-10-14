@@ -3,7 +3,10 @@ package org.example.api.token;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.WebUtils;
 
 import java.util.Date;
 
@@ -45,4 +48,6 @@ public class Token {
             return false;
         }
     }
+
+
 }
