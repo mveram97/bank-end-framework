@@ -45,7 +45,7 @@ public class AuthService {
 
     public ResponseCookie generateJwtCookie(LoginRequest loginRequest) {
         String jwt = tokenService.generateToken(loginRequest.getEmail());
-        ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).path("/api").maxAge(24 * 60 * 60).httpOnly(true).build();
+        ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).path("/").maxAge(24 * 60 * 60).httpOnly(true).build();
         return cookie;
     }
 
@@ -58,6 +58,10 @@ public class AuthService {
         }
     }
 
+    // Método para buscar el cliente por email
+    public Optional<Customer> findCustomerByEmail(String email) {
+        return customerRepository.findByEmail(email);
+    }
     public Boolean AreYouLogged(HttpServletRequest request) {
         String jwt = getJwtFromCookies(request);
 

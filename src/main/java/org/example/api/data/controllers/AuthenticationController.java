@@ -36,7 +36,7 @@ public class AuthenticationController {
         this.customerService = customerService;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/public/register")
     public String addCustomer(@RequestBody Customer nuevoCust){
        try {
            customerService.register(nuevoCust);
@@ -48,7 +48,7 @@ public class AuthenticationController {
 
     }
 
-    @PostMapping("/login")
+    @PostMapping("/public/login")
     public ResponseEntity<String> logIn(@RequestBody LoginRequest logInRequest){
         if (authService.authenticate(logInRequest.getEmail(), logInRequest.getPassword())){
             ResponseCookie jwtCookie = authService.generateJwtCookie(logInRequest);
@@ -60,7 +60,7 @@ public class AuthenticationController {
     }
 
 
-    @PostMapping("/api/logout")
+    @PostMapping("/public/logout")
     public ResponseEntity<String> logout(HttpServletRequest request) {
 
         String jwt = authService.getJwtFromCookies(request);
@@ -71,7 +71,7 @@ public class AuthenticationController {
 
         }
         ResponseCookie cookie = ResponseCookie.from(jwtCookie, "")
-                .path("/api").maxAge(0).httpOnly(true).build();
+                .path("/").maxAge(0).httpOnly(true).build();
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body("Logged out successfully. Cookies cleared.");
