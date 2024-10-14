@@ -22,7 +22,7 @@ public class CustomerService {
     return customerRepository.findById(customerId);
   }
 
-  public Customer save(Customer customer) {
+  public Customer register(Customer customer) {
     return customerRepository.save(customer);
   }
 
@@ -32,5 +32,9 @@ public class CustomerService {
 
   public Optional<Customer> findByEmail(String email) {
     return customerRepository.findByEmail(email);
+  }
+
+  public Optional<Customer> findByPassword(String password){
+    return customerRepository.findByPassword(password);
   }
 }
