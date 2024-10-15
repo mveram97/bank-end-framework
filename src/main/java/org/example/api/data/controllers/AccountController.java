@@ -175,7 +175,7 @@ public class AccountController {
 
     }
 
-    @PostMapping("/api/accounts/news")
+    @PostMapping("/api/account/new")
     public ResponseEntity<String> createAccount(@RequestBody Account newAccount, HttpServletRequest request) {
         // Obtener el token JWT de las cookies
         String jwt = authService.getJwtFromCookies(request);
