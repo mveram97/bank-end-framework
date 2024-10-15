@@ -37,7 +37,7 @@ public class CustomerController {
     return customerService.findById(id);
   }
 
-  @GetMapping("/public/customer")
+  @GetMapping("/customer")
   public List<Customer> customer(HttpServletRequest request) {
 
     return customerService.findAll();
