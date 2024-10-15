@@ -117,6 +117,11 @@ public class AccountController {
             //Realiza la operacion de transferencia del amount
             senderAccount.setAmount(senderAccount.getAmount() - transferAmount);
             receiver.setAmount(receiver.getAmount() + transferAmount);
+
+            //Comprobar si alguna de las cuentas debe dinero
+            senderAccount.setIsInDebt(checkAccountInDebt(senderAccount));
+            receiver.setIsInDebt(checkAccountInDebt(receiver));
+
             accountRepository.save(senderAccount);
             accountRepository.save(receiver);
 
@@ -125,4 +130,10 @@ public class AccountController {
         }
         return ResponseEntity.badRequest().body("La cuenta no esta asociada a este usuario");
     }
+
+    private boolean checkAccountInDebt(Account account){
+        return account.getAmount() < 0;
+    }
 }
+
+
