@@ -1,5 +1,23 @@
-Feature: Autenticación de Usuario y Recuperación de Cuentas
+Feature: User authentication
+  As a user, I want to be able to register, login, and logout in the application.
 
-  Scenario: Inicio de sesión exitoso y obtención de cuentas del usuario
-    When El usuario inicia sesión con email "john.doe@example.com" y contraseña "password123"
-    Then Devuelve un codigo 200
+  Background:
+    Given the system is ready for user authentication
+
+  Scenario: Register a new customer
+    When I register with name "John", surname "Doe", email "testuser@example.com" and password "password123"
+    Then I should receive a message "The customer has registered successfully"
+
+  Scenario: Login with valid credentials
+    Given I have registered with name "John", surname "Doe", email "testuser@example.com" and password "password123"
+    When I login with email "testuser@example.com" and password "password123"
+    Then I should receive a message "Correct authentication"
+
+  Scenario: Login with invalid credentials
+    When I login with email "invalid@example.com" and password "wrongpassword"
+    Then I should receive a message "Invalid credentials"
+
+  Scenario: Logout after logging in
+    Given I have logged in with email "testuser@example.com" and password "password123"
+    When I log out
+    Then I should receive a message "Logged out successfully. Cookies cleared."

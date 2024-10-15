@@ -12,7 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 //@CucumberContextConfiguration
 //@SpringBootTest(classes = Application.class)
 @RunWith(Cucumber.class)
-//@ActiveProfiles("test")
+@ActiveProfiles("test")
 @CucumberOptions(
     features = "src/test/resources/features", // Path to the feature files
     glue = "org.example.steps", // Path to step definitions
