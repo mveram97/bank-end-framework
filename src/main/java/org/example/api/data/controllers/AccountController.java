@@ -1,3 +1,4 @@
+
 package org.example.api.data.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -110,8 +111,6 @@ public class AccountController {
 
 
     }
-}
-
     @PatchMapping("/transfer")
     public ResponseEntity<String> localTransfer(@RequestBody Transfer transfer, HttpServletRequest request) {
 
@@ -138,7 +137,7 @@ public class AccountController {
 
         //Comprueba la cuenta emisora esta asociada al usuario que esta haciendo la peticion
         if (senderAccount.getCustomer().equals(customer)) {
-        Double transferAmount = transfer.getAmount();
+            Double transferAmount = transfer.getAmount();
             //Comprueba si las cuenta receptora esta bloqueada, si la emisora tiene deudas o si se quiere
             // pasar mas dinero del que hay en la cuenta
             if (receiver.getIsBlocked() || senderAccount.getIsInDebt()
@@ -171,5 +170,3 @@ public class AccountController {
         return account.getAmount() < 0;
     }
 }
-
-
