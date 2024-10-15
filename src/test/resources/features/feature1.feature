@@ -1,18 +1,5 @@
-Feature: Test API
+Feature: Autenticación de Usuario y Recuperación de Cuentas
 
-  Scenario: Create a user
-    When I send a "POST" to "https://reqres.in/api/users"
-    Then Result should be 201
-
-  Scenario: Update a user
-    Given A user with ID 2 exists
-    When I send a "PUT" to "https://reqres.in/api/users/2"
-    Then Result should be 200
-
-  Scenario: Delete a user
-    When I send a "DELETE" to "https://reqres.in/api/users/2"
-    Then Result should be 204
-
-  Scenario: Get list of users
-    When I send a "GET" to "https://reqres.in/api/users?page=2"
-    Then Result should be 200
+  Scenario: Inicio de sesión exitoso y obtención de cuentas del usuario
+    When El usuario inicia sesión con email "john.doe@example.com" y contraseña "password123"
+    Then Devuelve un codigo 200
