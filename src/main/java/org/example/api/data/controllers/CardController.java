@@ -4,6 +4,7 @@ import org.example.api.data.entity.Account;
 import org.example.api.data.entity.Card;
 import org.example.api.data.request.CardRequest;
 import org.example.api.service.AccountService;
+import org.example.api.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,9 @@ import java.util.Random;
 public class CardController {
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private CustomerService customerService;
 
     private final CardService card;
 
@@ -49,9 +53,20 @@ public class CardController {
 
     @PostMapping("/api/card/new")
     public ResponseEntity<String> newCard(@RequestBody CardRequest cardRequest) {
+        // Verify user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Assuming username is contained in the customerId
+        Integer customerId = Integer.valueOf(authentication.getName());
+
+        // If we could not find the customer -> you are not logged
+        if(!customerService.findById(customerId).isPresent()){
+            return ResponseEntity.badRequest().body("Error creating card: You must be logged");
+        }
+
         // Verifying correct data from user
         if (!cardRequest.getType().equals("Debit") && !cardRequest.getType().equals("Credit")) {
-            return ResponseEntity.badRequest().body("Fallo al crear tarjeta: Tipo de tarjeta no valido");
+            return ResponseEntity.badRequest().body("Error creating card: card type not valid");
         }
 
         // Generate randomly CVC and CardNumber
@@ -73,19 +88,19 @@ public class CardController {
 
         // Verifying correct account data
         if (!account.isPresent()) {
-            return ResponseEntity.badRequest().body("Fallo al crear tarjeta: La cuenta no existe");
+            return ResponseEntity.badRequest().body("Error creating card: account not found");
         }
 
         newCard.setAccount(account.get());
         card.save(newCard);
 
-        return ResponseEntity.ok("Tarjeta creada con exito");
+        return ResponseEntity.ok("Card created successfully");
     }
     @GetMapping("/api/cards")   // get all cards from a customer
     public List<Card> getCards(@AuthenticationPrincipal Customer userDetails) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // Suponiendo que el customerId se almacena en el username
+        // Assuming username contains customerId
         Integer customerId = Integer.valueOf(authentication.getName());
 
         return card.getCardsByCustomerId(customerId);

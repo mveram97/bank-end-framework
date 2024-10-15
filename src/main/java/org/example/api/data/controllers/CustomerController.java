@@ -27,7 +27,6 @@ public class CustomerController {
   @Autowired
   private Token token;
 
-  // Constructor para CustomerService
   public CustomerController(CustomerService customerService) {
     this.customerService = customerService;
   }
@@ -39,7 +38,6 @@ public class CustomerController {
 
   @GetMapping("/api/customers")      // get all customers from DB
   public List<Customer> customer(HttpServletRequest request) {
-
     return customerService.findAll();
   }
 }

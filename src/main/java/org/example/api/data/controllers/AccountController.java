@@ -40,8 +40,6 @@ public class AccountController {
 
     @GetMapping("/api/account/{id}")    // get 1 account by accountId
     public Optional<Account> accountById(@PathVariable Integer id) {
-
-
         return account.findById(id);
     }
 
@@ -52,74 +50,72 @@ public class AccountController {
 
     @GetMapping("/api/accounts")    // get all accounts from the logged-in user
     public ResponseEntity<List<Account>> getUserAccounts(HttpServletRequest request) {
-        // Obtener el token JWT desde las cookies
+        // Get JWT token from cookies
         String jwt = authService.getJwtFromCookies(request);
         System.out.println(jwt);
 
-        // Validar el token
+        // Validate token
         if (jwt == null || !tokenService.validateToken(jwt)) {
-            return ResponseEntity.status(401).build(); // 401 Unauthorized si el token es inválido
+            return ResponseEntity.status(401).build(); // 401 Unauthorized if token is not valid
         }
 
-        // Obtener el email del usuario a partir del token
+        // Get user mail from token
         String email = tokenService.getCustomerEmailFromJWT(jwt);
 
-        // Obtener el usuario por email
+        // Get user from email
         Optional<Customer> customerOpt = authService.findCustomerByEmail(email);
         if (!customerOpt.isPresent()) {
-            return ResponseEntity.status(404).build(); // 404 Not Found si no se encuentra el usuario
+            return ResponseEntity.status(404).build(); // 404 Not Found if error finding user
         }
 
-        // Obtener las cuentas del usuario autenticado
+        // Get logged user´s accounts
         Customer customer = customerOpt.get();
         List<Account> accounts = account.findByCustomer(customer.getCustomerId());
 
-        return ResponseEntity.ok(accounts); // 200 OK con las cuentas del usuario
+        return ResponseEntity.ok(accounts); // 200 OK with users accounts
     }
 
     @GetMapping ("/api/accounts/amount")    // get total amount from all accounts (logged-in user)
     public ResponseEntity<Double> getUserAmount(HttpServletRequest request){
-        // Obtener el token JWT desde las cookies
+        // Get JWT token from cookies
         String jwt = authService.getJwtFromCookies(request);
         System.out.println(jwt);
 
-        // Validar el token
+        // Validate token
         if (jwt == null || !tokenService.validateToken(jwt)) {
-            return ResponseEntity.status(401).build(); // 401 Unauthorized si el token es inválido
+            return ResponseEntity.status(401).build(); // 401 Unauthorized if token is not valid
         }
 
-        // Obtener el email del usuario a partir del token
+        // Get user email from token
         String email = tokenService.getCustomerEmailFromJWT(jwt);
 
-        // Obtener el usuario por email
+        // Get user from email
         Optional<Customer> customerOpt = authService.findCustomerByEmail(email);
         if (!customerOpt.isPresent()) {
-            return ResponseEntity.status(404).build(); // 404 Not Found si no se encuentra el usuario
+            return ResponseEntity.status(404).build(); // 404 Not Found if user is not found
         }
 
-        // Obtener las cuentas del usuario autenticado
+        // Get logged user´s accounts
         Customer customer = customerOpt.get();
         List<Account> accounts = account.findByCustomer(customer.getCustomerId());
 
-        //Calcular el total de dinero en todas las cuentas
+        // Calculate total money from all accounts
         double totalAmount = 0.0;
         for (Account acc : accounts){
             totalAmount += acc.getAmount();
         }
 
-        return ResponseEntity.ok(totalAmount);
-
-
+        return ResponseEntity.ok(totalAmount); // 200 OK with total money
     }
+
     @PatchMapping("/transfer")
     public ResponseEntity<String> localTransfer(@RequestBody Transfer transfer, HttpServletRequest request) {
-
-        //Obtiene el cliente que esta realizando la peticion
+        // Get request client
         String jwt = authService.getJwtFromCookies(request);
         String email = Token.getCustomerEmailFromJWT(jwt);
         Customer customer = customerRepository.findByEmail(email).get();
 
-        //Recibe la informacion de la cuenta emisora
+        // Get receiving client info
         Integer senderAccountId = transfer.getCustomerAccountId();
         Optional<Account> senderAccountOpt = accountRepository.findByAccountId(senderAccountId);
         if (!senderAccountOpt.isPresent()) {
@@ -127,7 +123,7 @@ public class AccountController {
         }
         Account senderAccount = senderAccountOpt.get();
 
-        //Recibe la informacion de la cuenta receiver
+        // Get receiving account info
         Integer receiverId = transfer.getReceiverId();
         Optional<Account> receiverOpt = accountRepository.findByAccountId(receiverId);
         if (!receiverOpt.isPresent()) {
@@ -135,35 +131,36 @@ public class AccountController {
         }
         Account receiver = receiverOpt.get();
 
-        //Comprueba la cuenta emisora esta asociada al usuario que esta haciendo la peticion
+        // Check requesting account belongs to requesting user
         if (senderAccount.getCustomer().equals(customer)) {
             Double transferAmount = transfer.getAmount();
-            //Comprueba si las cuenta receptora esta bloqueada, si la emisora tiene deudas o si se quiere
-            // pasar mas dinero del que hay en la cuenta
+            // Check - if receiving account is blocked
+            //       - if requesting account is in debt
+            //       - if there is not enough money in requesting account
             if (receiver.getIsBlocked() || senderAccount.getIsInDebt()
                     || senderAccount.getAmount() < transferAmount) {
                 return ResponseEntity.badRequest()
-                        .body("No se puede realizar la transferencia. Saldo insuficiente o receptor bloqueado.");
+                        .body("Transfer can not be done. Not enough money or blocked receiver.");
             } else if(transferAmount <= 0){
                 return ResponseEntity.badRequest()
-                        .body("El traspaso debe ser mayor que cero");
+                        .body("Money to transfer must be greater than 0");
             }
 
-            //Realiza la operacion de transferencia del amount
+            // Transfer the money
             senderAccount.setAmount(senderAccount.getAmount() - transferAmount);
             receiver.setAmount(receiver.getAmount() + transferAmount);
 
-            //Comprobar si alguna de las cuentas debe dinero
+            //Check none of the accounts is in debt
             senderAccount.setIsInDebt(checkAccountInDebt(senderAccount));
             receiver.setIsInDebt(checkAccountInDebt(receiver));
 
             accountRepository.save(senderAccount);
             accountRepository.save(receiver);
 
-            //Devuelve que se ha llevado a cabo la operacion sin problema
-            return ResponseEntity.ok().body("La transferencia fue realizada con exito ");
+            // Check operation has been done successfully
+            return ResponseEntity.ok().body("Transfer made successfully");
         }
-        return ResponseEntity.badRequest().body("La cuenta no esta asociada a este usuario");
+        return ResponseEntity.badRequest().body("Account does not belong to the user");
     }
 
     private boolean checkAccountInDebt(Account account){
