@@ -174,4 +174,36 @@ public class AccountController {
 
 
     }
+
+    @PostMapping("/api/accounts/news")
+    public ResponseEntity<String> createAccount(@RequestBody Account newAccount, HttpServletRequest request) {
+        // Obtener el token JWT de las cookies
+        String jwt = authService.getJwtFromCookies(request);
+
+        // Validar el token
+        if (jwt == null || !tokenService.validateToken(jwt)) {
+            return ResponseEntity.status(401).body("Unauthorized: Token is not valid."); // 401 Unauthorized
+        }
+
+        // Obtener el email del usuario a partir del token
+        String email = tokenService.getCustomerEmailFromJWT(jwt);
+
+        // Obtener el cliente usando el email
+        Optional<Customer> customerOpt = authService.findCustomerByEmail(email);
+        if (!customerOpt.isPresent()) {
+            return ResponseEntity.status(404).body("Error: User not found."); // 404 Not Found
+        }
+
+        // Asignar el cliente a la nueva cuenta
+        Customer customer = customerOpt.get();
+        newAccount.setCustomer(customer);
+
+        try {
+            // Guardar la nueva cuenta en el repositorio
+            Account createdAccount = account.save(newAccount);
+            return ResponseEntity.status(201).body("Account created successfully: " + createdAccount.getAccountId()); // 201 Created
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error: Could not create account. " + e.getMessage()); // 500 Internal Server Error
+        }
+    }
 }
