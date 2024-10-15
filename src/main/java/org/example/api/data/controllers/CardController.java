@@ -36,12 +36,12 @@ public class CardController {
         return card.findByAccountId(accountId);
     }
 
-    @GetMapping("/api/cards")
+    @GetMapping("/api/cards")   // get all cards from a customer
     public List<Card> getCards(@AuthenticationPrincipal Customer userDetails) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // Suponiendo que el customerId se almacena en el username
-        Integer customerId = Integer.valueOf(authentication.getName()); // Ajusta esto según tu implementación
+        Integer customerId = Integer.valueOf(authentication.getName());
 
         return card.getCardsByCustomerId(customerId);
     }
