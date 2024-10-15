@@ -40,7 +40,7 @@ public class AuthenticationController {
     public String addCustomer(@RequestBody Customer nuevoCust){
        try {
            customerService.register(nuevoCust);
-           return "The customer has registered succesfully";
+           return "The customer has registered successfully";
        } catch (Exception e){
            return "Failed to register customer: Invalid email";
        }
