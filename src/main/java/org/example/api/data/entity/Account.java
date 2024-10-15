@@ -29,4 +29,12 @@ public class Account {
     @JsonIgnore
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<Card> cards;    // 1 account - N cards
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "originAccount")
+    private List<Transfer> originatingTransfers;    // 1 account - N originating transfers
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "receivingAccount")
+    private List<Transfer> receivingTransfers;      // 1 account - N receiving transfers
 }

@@ -40,7 +40,7 @@ public class AuthenticationController {
     public String addCustomer(@RequestBody Customer nuevoCust){
        try {
            customerService.register(nuevoCust);
-           return "The customer has registered succesfully";
+           return "The customer has registered successfully";
        } catch (Exception e){
            return "Failed to register customer: Invalid email";
        }
@@ -49,7 +49,15 @@ public class AuthenticationController {
     }
 
     @PostMapping("/public/login")
-    public ResponseEntity<String> logIn(@RequestBody LoginRequest logInRequest){
+    public ResponseEntity<String> login(@RequestBody LoginRequest logInRequest, HttpServletRequest request){
+
+        String jwt = authService.getJwtFromCookies(request);
+        System.out.println(jwt);
+
+        if (jwt != null ){
+            return ResponseEntity.badRequest().body("You have to log out first");
+        }
+
         if (authService.authenticate(logInRequest.getEmail(), logInRequest.getPassword())){
             ResponseCookie jwtCookie = authService.generateJwtCookie(logInRequest);
             return ResponseEntity.ok()
@@ -67,7 +75,7 @@ public class AuthenticationController {
         System.out.println(jwt);
 
         if (jwt == null || !token.validateToken(jwt)){
-             return ResponseEntity.badRequest().body("You have to Log In first");
+             return ResponseEntity.badRequest().body("You have to log in first");
 
         }
         ResponseCookie cookie = ResponseCookie.from(jwtCookie, "")
@@ -76,4 +84,6 @@ public class AuthenticationController {
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body("Logged out successfully. Cookies cleared.");
     }
+
+
 }
