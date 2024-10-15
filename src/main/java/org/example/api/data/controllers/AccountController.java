@@ -32,16 +32,17 @@ public class AccountController {
     private Token tokenService;
 
     @GetMapping("/account/{id}")
-    public Optional<Account> accountById(@PathVariable Integer id){
+    public Optional<Account> accountById(@PathVariable Integer id) {
 
 
         return account.findById(id);
     }
 
     @GetMapping("/accounts/{customerId}")
-    public List<Account> accountsByCustomer(@PathVariable Integer customerId){
+    public List<Account> accountsByCustomer(@PathVariable Integer customerId) {
         return account.findByCustomer(customerId);
     }
+
     @GetMapping("/api/accounts")
     public ResponseEntity<List<Account>> getUserAccounts(HttpServletRequest request) {
         // Obtener el token JWT desde las cookies
@@ -68,4 +69,15 @@ public class AccountController {
 
         return ResponseEntity.ok(accounts); // 200 OK con las cuentas del usuario
     }
+
+
+    @GetMapping("/amount/{accountId}")
+    public Double amountOfAccount(@PathVariable Integer accountId) {
+        return account.findById(accountId).get().getAmount();
+
+
+    }
+
+
+
 }
