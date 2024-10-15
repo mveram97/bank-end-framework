@@ -31,12 +31,12 @@ public class Transfer {
 
     @JsonIgnore
     @ManyToOne      // originAccount -> FK a Account
-    @JoinColumn(name = "origin_account_id", nullable = false)
+    @JoinColumn(name = "originAccountId", nullable = false)
     private Account originAccount;  // 1 originAccount - N transfers
 
     @JsonIgnore
     @ManyToOne      // receivingAccount -> FK a Account
-    @JoinColumn(name = "receiving_account_id", nullable = false)
+    @JoinColumn(name = "receivingAccountId", nullable = false)
     private Account receivingAccount;  // 1 receivingAccount - N transfers
 
     // Definición del enumerado CurrencyType
