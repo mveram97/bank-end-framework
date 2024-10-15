@@ -39,15 +39,16 @@ public class TransferController {
     private Token tokenService;
 
 
-    @PostMapping("/transfer")
+    @PostMapping("/api/transfer/new")
     public ResponseEntity<String> localTransfer(@RequestBody TransferRequest transferRequest, HttpServletRequest request, Transfer transfer) {
 
         // Set transfer default fields
 
         // Date
+        /*
         LocalDate localDate = LocalDate.now();
         Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        transfer.setTransferDate(date);
+        transfer.setTransferDate(date); */
 
         // Currency
         transfer.setCurrencyType(Transfer.CurrencyType.EUR);
@@ -68,7 +69,7 @@ public class TransferController {
         if (!senderAccountOpt.isPresent()) {
 
             // In this scenario, the failed transfer is not stored in the database.
-            return ResponseEntity.badRequest().body("No existe la cuenta emisora ");
+            return ResponseEntity.badRequest().body("Sender account does not exist");
 
         }
         Account senderAccount = senderAccountOpt.get();
@@ -80,7 +81,7 @@ public class TransferController {
         if (!receiverOpt.isPresent()) {
 
             // In this scenario, the failed transfer is not stored in the database.
-            return ResponseEntity.badRequest().body("No existe la cuenta receptora ");
+            return ResponseEntity.badRequest().body("Receiver account does not exist");
         }
         Account receiver = receiverOpt.get();
         transfer.setReceivingAccount(receiver);
