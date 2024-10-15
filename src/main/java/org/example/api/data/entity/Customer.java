@@ -30,4 +30,8 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)    // si se elimina un cliente se eliminan sus cuentas
     private List<Account> accounts;
 
+    public Integer getCustomerId() {
+        return customerId;
+    }
+
 }

@@ -33,4 +33,8 @@ public class CardService {
     public List<Card> findByAccountId(Integer accountId) {
         return cardRepository.findByAccount_AccountId(accountId);
     }
+
+    public List<Card> getCardsByCustomerId(Integer customerId) {
+        return cardRepository.findByAccount_Customer_CustomerId(customerId);
+    }
 }
