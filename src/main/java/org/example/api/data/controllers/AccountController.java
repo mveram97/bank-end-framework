@@ -38,19 +38,19 @@ public class AccountController {
     @Autowired
     private Token tokenService;
 
-    @GetMapping("/account/{id}")
+    @GetMapping("/api/account/{id}")    // get 1 account by accountId
     public Optional<Account> accountById(@PathVariable Integer id) {
 
 
         return account.findById(id);
     }
 
-    @GetMapping("/accounts/{customerId}")
+    @GetMapping("/api/accounts/{customerId}")   // get all accounts by customerId
     public List<Account> accountsByCustomer(@PathVariable Integer customerId) {
         return account.findByCustomer(customerId);
     }
 
-    @GetMapping("/api/accounts")
+    @GetMapping("/api/accounts")    // get all accounts from the logged-in user
     public ResponseEntity<List<Account>> getUserAccounts(HttpServletRequest request) {
         // Obtener el token JWT desde las cookies
         String jwt = authService.getJwtFromCookies(request);
@@ -77,7 +77,7 @@ public class AccountController {
         return ResponseEntity.ok(accounts); // 200 OK con las cuentas del usuario
     }
 
-    @GetMapping ("/api/accounts/amount")
+    @GetMapping ("/api/accounts/amount")    // get total amount from all accounts (logged-in user)
     public ResponseEntity<Double> getUserAmount(HttpServletRequest request){
         // Obtener el token JWT desde las cookies
         String jwt = authService.getJwtFromCookies(request);
@@ -171,7 +171,7 @@ public class AccountController {
     }
 
 
-    @GetMapping("/amount/{accountId}")
+    @GetMapping("/api/amount/{accountId}")  // get amount by accountId
     public Double amountOfAccount(@PathVariable Integer accountId) {
         return account.findById(accountId).get().getAmount();
 
