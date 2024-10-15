@@ -169,4 +169,12 @@ public class AccountController {
     private boolean checkAccountInDebt(Account account){
         return account.getAmount() < 0;
     }
+
+
+    @GetMapping("/amount/{accountId}")
+    public Double amountOfAccount(@PathVariable Integer accountId) {
+        return account.findById(accountId).get().getAmount();
+
+
+    }
 }
