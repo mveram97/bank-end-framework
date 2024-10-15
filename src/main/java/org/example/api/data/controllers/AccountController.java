@@ -107,7 +107,7 @@ public class AccountController {
 
         return ResponseEntity.ok(totalAmount); // 200 OK with total money
     }
-
+/*
     @PatchMapping("/transfer")
     public ResponseEntity<String> localTransfer(@RequestBody Transfer transfer, HttpServletRequest request) {
         // Get request client
@@ -162,7 +162,7 @@ public class AccountController {
         }
         return ResponseEntity.badRequest().body("Account does not belong to the user");
     }
-
+*/
     private boolean checkAccountInDebt(Account account){
         return account.getAmount() < 0;
     }

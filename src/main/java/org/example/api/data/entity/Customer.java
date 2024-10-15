@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
@@ -24,6 +25,8 @@ public class Customer {
     @Column (unique = true, nullable = false)
     @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", message = "Email debe ser válido")
     private String email;
+    @NotBlank(message = "La contraseña es obligatoria")
+    @Column(nullable = false)
     private String password;
 
     @JsonIgnore
