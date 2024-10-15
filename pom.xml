@@ -152,6 +152,34 @@
             <version>2.18.0</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.12.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>4.0.5</version>
+        </dependency>
+
+            <!-- Dependencia de JAXB API -->
+        <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>2.3.1</version> <!-- O la última versión disponible -->
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -163,7 +191,7 @@
                 <configuration>
                     <compilerArgs>
                         <arg>-parameters</arg>
-                    </compilerArgs>
+                    </compilerArgs><source>11</source><target>11</target>
                 </configuration>
             </plugin>
         </plugins>
