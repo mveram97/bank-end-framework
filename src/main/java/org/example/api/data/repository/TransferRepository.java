@@ -11,9 +11,9 @@ public interface TransferRepository extends JpaRepository<Transfer, Integer> {
 
     Optional<Transfer> findByTransferId(Integer transferId); // find by transferId
 
-    List<Transfer> findByOriginAccount_AccountId(Integer originAccountId); // find transfers by originAccountId
+    List<Transfer> findByOriginAccountId(Integer originAccountId); // find transfers by originAccountId
 
-    List<Transfer> findByReceivingAccount_AccountId(Integer receivingAccountId); // find transfers by receivingAccountId
+    List<Transfer> findByReceivingAccountId(Integer receivingAccountId); // find transfers by receivingAccountId
 
     List<Transfer> findByTransferStatus(Transfer.TransferStatus transferStatus); // find transfers by status
 }
