@@ -50,7 +50,7 @@ public class CardController {
     @PostMapping("/api/card/new")
     public ResponseEntity<String> newCard(@RequestBody CardRequest cardRequest) {
         // Verifying correct data from user
-        if (!cardRequest.getType().equals("Debit") && !cardRequest.getType().equals("Credit")){
+        if (!cardRequest.getType().equals("Debit") && !cardRequest.getType().equals("Credit")) {
             return ResponseEntity.badRequest().body("Fallo al crear tarjeta: Tipo de tarjeta no valido");
         }
 
@@ -72,7 +72,7 @@ public class CardController {
         Optional<Account> account = accountService.findById(cardRequest.getAccountId());
 
         // Verifying correct account data
-        if (!account.isPresent()){
+        if (!account.isPresent()) {
             return ResponseEntity.badRequest().body("Fallo al crear tarjeta: La cuenta no existe");
         }
 
@@ -80,7 +80,7 @@ public class CardController {
         card.save(newCard);
 
         return ResponseEntity.ok("Tarjeta creada con exito");
-
+    }
     @GetMapping("/api/cards")   // get all cards from a customer
     public List<Card> getCards(@AuthenticationPrincipal Customer userDetails) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
