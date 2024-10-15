@@ -32,12 +32,12 @@ public class CustomerController {
     this.customerService = customerService;
   }
 
-  @GetMapping("/api/customer/{id}")
+  @GetMapping("/api/customer/{id}")   // get 1 customer by customerId
   public Optional<Customer> customer(@PathVariable Integer id) {
     return customerService.findById(id);
   }
 
-  @GetMapping("/customer")
+  @GetMapping("/api/customers")      // get all customers from DB
   public List<Customer> customer(HttpServletRequest request) {
 
     return customerService.findAll();
