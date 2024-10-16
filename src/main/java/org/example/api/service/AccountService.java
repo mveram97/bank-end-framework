@@ -31,4 +31,8 @@ public class AccountService {
   }
 
   public List<Account> findByCustomer(Integer customerId) {return accountRepository.findByCustomer_CustomerId(customerId);}
+
+  public boolean checkAccountInDebt(Account account){
+    return account.getAmount() < 0;
+  }
 }
