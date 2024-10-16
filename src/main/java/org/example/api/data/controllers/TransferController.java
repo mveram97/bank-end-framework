@@ -88,4 +88,15 @@ public class TransferController {
         System.out.println(senderAccount.getCustomer().equals(customer));
         return ResponseEntity.badRequest().body("Account does not belong to the user");
     }
+
+    @GetMapping("/api/transfsent/{accountId}")
+    public ResponseEntity<List<Transfer>> getSentTransfer(@PathVariable Integer accountId){
+        List<Transfer> sentTransfer = transferService.getTransferByAccountId(accountId);
+        if (sentTransfer.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(sentTransfer);
+        }
+    }
+
 }
