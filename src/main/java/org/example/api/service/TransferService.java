@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -67,5 +68,5 @@ public class TransferService {
         return ResponseEntity.ok().body("Transfer made successfully");
     }
 
-
+    public List<Transfer> findByReceivingAccount(Integer accountId) {return transferRepository.findByReceivingAccount_AccountId(accountId) ;}
 }
