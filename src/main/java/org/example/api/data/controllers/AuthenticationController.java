@@ -44,8 +44,6 @@ public class AuthenticationController {
        } catch (Exception e){
            return "Failed to register customer: Invalid email";
        }
-
-
     }
 
     @PostMapping("/public/login")
