@@ -68,9 +68,10 @@ public class TransferService {
         return ResponseEntity.ok().body("Transfer made successfully");
     }
 
+    public List<Transfer> findByReceivingAccount(Integer accountId) {return transferRepository.findByReceivingAccount_AccountId(accountId) ;}
+
     public List<Transfer> getTransferByAccountId(Integer originAccountId){
         return transferRepository.findByOriginAccount_AccountId(originAccountId);
     }
-
 
 }
