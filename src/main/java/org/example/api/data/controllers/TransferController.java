@@ -12,6 +12,7 @@ import org.example.api.service.AuthService;
 import org.example.api.service.TransferService;
 import org.example.api.token.Token;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -175,5 +176,47 @@ public class TransferController {
         } else {
             return ResponseEntity.ok(sentTransfer);
         }
+    }
+
+    @GetMapping("/api/transfer/{transferId}")  // Obtener transferencia por transferId del cliente logueado
+    public ResponseEntity<String> getTransferById(@PathVariable Integer transferId, HttpServletRequest request) {
+        // Obtener JWT del cliente logueado
+        String jwt = authService.getJwtFromCookies(request);
+        String email = tokenService.getCustomerEmailFromJWT(jwt);
+
+        // Verificar si el cliente está autenticado
+        Optional<Customer> customerOpt = customerRepository.findByEmail(email);
+        if (!customerOpt.isPresent()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You must be logged in.");
+        }
+        Customer customer = customerOpt.get();
+
+        // Obtener la transferencia
+        Optional<Transfer> transferOpt = transferRepository.findById(transferId);
+        if (!transferOpt.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Transfer not found.");
+        }
+        Transfer transfer = transferOpt.get();
+
+        // Verificar que el cliente sea el propietario de la cuenta de origen o destino de la transferencia
+        if (!transfer.getOriginAccount().getCustomer().equals(customer) && !transfer.getReceivingAccount().getCustomer().equals(customer)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to view this transfer.");
+        }
+
+        // Si todo está correcto, devolver la información de la transferencia
+        StringBuilder responseBody = new StringBuilder();
+        responseBody.append("{\n\tid: ")
+                .append(transfer.getTransferId())
+                .append("\n\tdate: ")
+                .append(transfer.getTransferDate())
+                .append("\n\tcurrencyType: ")
+                .append(transfer.getCurrencyType())
+                .append("\n\tamount: ")
+                .append(transfer.getTransferAmount())
+                .append("\n\tstatus: ")
+                .append(transfer.getTransferStatus())
+                .append("\n}\n");
+
+        return ResponseEntity.ok(responseBody.toString());
     }
 }

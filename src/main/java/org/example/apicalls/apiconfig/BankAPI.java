@@ -134,5 +134,10 @@ public interface BankAPI {
     @Produces(MediaType.TEXT_PLAIN)
     Response localTransfer(TransferRequest transferRequest, @Context HttpServletRequest request);
 
+    @GET
+    @Path("/api/transfer/{transferId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response getTransferById(@PathParam("transferId") Integer transferId, @Context HttpServletRequest request);
 }
+
 
