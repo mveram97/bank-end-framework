@@ -166,4 +166,14 @@ public class TransferController {
         }
         return ResponseEntity.ok(responseBody.toString());
     }
+  
+    @GetMapping("/api/transfsent/{accountId}")
+    public ResponseEntity<List<Transfer>> getSentTransfer(@PathVariable Integer accountId){
+        List<Transfer> sentTransfer = transferService.getTransferByAccountId(accountId);
+        if (sentTransfer.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(sentTransfer);
+        }
+    }
 }

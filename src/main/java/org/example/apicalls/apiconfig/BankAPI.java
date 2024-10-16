@@ -1,8 +1,24 @@
 package org.example.apicalls.apiconfig;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.SecurityContext;
+import org.example.api.data.entity.Account;
+import org.example.api.data.entity.Card;
+import org.example.api.data.entity.Customer;
+import org.example.api.data.request.CardRequest;
+import org.example.api.data.request.LoginRequest;
+import org.example.api.data.request.TransferRequest;
+import org.example.api.service.AccountService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface BankAPI {
-
 
     // AÑADIR TODOS LOS ENDPOINTS DE NUESTRA API
 
@@ -20,5 +36,103 @@ public interface BankAPI {
             @HeaderParam("Authorization") String authorization,
             @PathParam("automation_api") String automation_api);
      */
+
+    @GET
+    @Path("/api/account/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response accountById(
+            @PathParam("id") Integer id);
+
+    @GET
+    @Path("/api/accounts/{customerId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response accountsByCustomer(
+            @PathParam("customerId") Integer customerId);
+
+    @GET
+    @Path("/api/accounts")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response getUserAccounts(@Context HttpServletRequest request);
+
+    @GET
+    @Path("/api/accounts/amount")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response getUserAmount(@Context HttpServletRequest request);
+
+    @GET
+    @Path("/api/amount/{accountId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response amountOfAccount(@PathParam("accountId") Integer accountId);
+
+    @POST
+    @Path("/api/account/new")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    Response createAccount(Account newAccount, @Context HttpServletRequest request);
+
+    @POST
+    @Path("/public/register")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    Response addCustomer(Customer nuevoCust);
+
+    @POST
+    @Path("/public/login")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    Response login(LoginRequest logInRequest, @Context HttpServletRequest request);
+
+    @POST
+    @Path("/public/logout")
+    @Produces(MediaType.TEXT_PLAIN)
+    Response logout(@Context HttpServletRequest request);
+
+    @GET
+    @Path("/api/BDcards")
+    @Produces(MediaType.APPLICATION_JSON)
+    List<Card> getAllCards();
+
+    @GET
+    @Path("/api/card/{cardId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response getCardById(@PathParam("cardId") Integer cardId);
+
+    @GET
+    @Path("/api/cards/{accountId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response getCardsByAccountId(@PathParam("accountId") Integer accountId);
+
+    @POST
+    @Path("/api/card/new")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    Response newCard(CardRequest cardRequest);
+
+    @GET
+    @Path("/api/cards")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response getCards(@Context SecurityContext securityContext);
+
+    @GET
+    @Path("/api/customer/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response getCustomerById(@PathParam("id") Integer id);
+
+    @GET
+    @Path("/api/customers")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response getAllCustomers();
+
+    @DELETE
+    @Path("/public/customer/{email}")
+    @Produces(MediaType.TEXT_PLAIN)
+    Response deleteCustomer(@PathParam("email") String email);
+
+    @POST
+    @Path("/api/transfer/new")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    Response localTransfer(TransferRequest transferRequest, @Context HttpServletRequest request);
+
 }
 
