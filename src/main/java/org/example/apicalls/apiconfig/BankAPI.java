@@ -80,7 +80,7 @@ public interface BankAPI {
     @Path("/public/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    Response login(String logInRequest, @Context HttpServletRequest request);
+    Response login(LoginRequest logInRequest, @Context HttpServletRequest request);
 
     @POST
     @Path("/public/logout")

@@ -46,12 +46,12 @@ public class RestEasyClientTest {
         proxy = bankClient.getAPI();
 
 
-        jsonLoginRequest = "{ \"email\": \"john.doe@example.com\", \"password\": \"password123\" }";;
-        /*
-        loginRequest.setEmail("john.doe@example.com");
-        loginRequest.setPassword("password123");*/
+        //jsonLoginRequest = "{ \"email\": \"john.doe@example.com\", \"password\": \"password123\" }";;
 
-        loginResponse = proxy.login(jsonLoginRequest, null);
+        loginRequest.setEmail("john.doe@example.com");
+        loginRequest.setPassword("password123");
+
+        loginResponse = proxy.login(loginRequest, null);
         System.out.println("HTTP Status: "+ loginResponse.getStatus());
 
         Map<String, NewCookie> cookies = loginResponse.getCookies();
@@ -65,7 +65,7 @@ public class RestEasyClientTest {
         System.out.println("HTTP Status: "+ accountResponse.getStatus());
         System.out.println(accountResponse.readEntity(Account.class));
 
-        Response loginResponse2 = proxy.login(jsonLoginRequest, null);
+        Response loginResponse2 = proxy.login(loginRequest, null);
         System.out.println("HTTP Status: "+ loginResponse2.getStatus());
         System.out.println("Mensaje recibido:" + loginResponse2.readEntity(String.class));
     }
