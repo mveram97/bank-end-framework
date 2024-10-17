@@ -2,11 +2,13 @@ package org.example.api.data.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.example.api.data.entity.Customer;
 import org.example.api.data.request.LoginRequest;
 import org.example.api.service.AuthService;
 import org.example.api.service.CustomerService;
 import org.example.api.token.Token;
+import org.example.apicalls.dto.CustomerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -37,12 +39,17 @@ public class AuthenticationController {
     }
 
     @PostMapping("/public/register")
-    public String addCustomer(@RequestBody Customer nuevoCust){
+    public ResponseEntity<String> addCustomer(@Valid @RequestBody CustomerDTO nuevoCust){
        try {
            customerService.register(nuevoCust);
-           return "The customer has registered successfully";
-       } catch (Exception e){
-           return "Failed to register customer: Invalid email";
+           return ResponseEntity.status(HttpStatus.CREATED)
+                   .body("Yoy have registered successfully.");
+       } catch (IllegalArgumentException e) {
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                   .body("Email already registered.");
+       } catch (Exception e) {
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                   .body("Failed to register. Please try again.");
        }
     }
 

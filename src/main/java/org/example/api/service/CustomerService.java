@@ -3,6 +3,7 @@ package org.example.api.service;
 import org.example.api.data.entity.Account;
 import org.example.api.data.entity.Customer;
 import org.example.api.data.repository.CustomerRepository;
+import org.example.apicalls.dto.CustomerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,14 @@ public class CustomerService {
     return customerRepository.findById(customerId);
   }
 
-  public Customer register(Customer customer) {
+  //public Customer register(Customer customer) { return customerRepository.save(customer);}
+
+  public Customer register(CustomerDTO customerDto){
+    // verify if email exists
+    if(customerRepository.existsByEmail(customerDto.getEmail())){
+      throw new IllegalArgumentException("Email already registered.");
+    }
+    Customer customer = convertDtoToEntity(customerDto);
     return customerRepository.save(customer);
   }
 
@@ -34,6 +42,7 @@ public class CustomerService {
   public Optional<Customer> findByEmail(String email) {
     return customerRepository.findByEmail(email);
   }
+
 
   @Transactional
   public boolean deleteByEmail(String email) {
@@ -46,7 +55,19 @@ public class CustomerService {
       return false;
     }
   }
+
+
   public Optional<Customer> findByPassword(String password){
     return customerRepository.findByPassword(password);
+  }
+
+  // Map Customer DTO to Customer Entity
+  public Customer convertDtoToEntity(CustomerDTO dto) {
+    Customer customer = new Customer();
+    customer.setName(dto.getName());
+    customer.setSurname(dto.getSurname());
+    customer.setEmail(dto.getEmail());
+    customer.setPassword(dto.getPassword()); // Considerar encriptar la contraseña
+    return customer;
   }
 }
