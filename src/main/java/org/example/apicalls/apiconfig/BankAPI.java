@@ -14,7 +14,7 @@ import org.example.api.data.request.TransferRequest;
 import org.example.api.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-
+import jakarta.ws.rs.core.Response;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,7 +80,7 @@ public interface BankAPI {
     @Path("/public/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    Response login(LoginRequest logInRequest, @Context HttpServletRequest request);
+    Response login(String logInRequest, @Context HttpServletRequest request);
 
     @POST
     @Path("/public/logout")
