@@ -1,8 +1,8 @@
 package org.example.api.service;
 
 import org.example.api.data.entity.Account;
-import org.example.api.data.entity.Card;
 import org.example.api.data.repository.AccountRepository;
+import org.example.apicalls.dto.AccountDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,5 +34,18 @@ public class AccountService {
 
   public boolean checkAccountInDebt(Account account){
     return account.getAmount() < 0;
+  }
+
+  // Método para convertir AccountDTO a Account
+  public Account converAccountDtoToEntity(AccountDTO dto) {
+    Account account = new Account();
+    account.setAccountType(dto.getAccountType());
+    account.setIsBlocked(dto.getIsBlocked());
+    account.setIsInDebt(dto.getIsInDebt());
+    account.setAmount(dto.getAmount());
+    account.setCreationDate(dto.getCreationDate());
+    account.setExpirationDate(dto.getExpirationDate());
+    // Puedes agregar más conversiones si el DTO tiene más campos
+    return account;
   }
 }
