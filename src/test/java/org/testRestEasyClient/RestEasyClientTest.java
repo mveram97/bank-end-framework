@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.Response;
 import org.example.apicalls.client.BankClient;
 import org.junit.Before;
 import org.junit.internal.Classes;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,10 @@ import org.example.api.Application;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.io.IOException;
 import java.util.Map;
+
+import static org.example.apicalls.utils.Generator.openHtml;
 
 public class RestEasyClientTest {
 
@@ -69,6 +73,11 @@ public class RestEasyClientTest {
         Response loginResponse2 = proxy.login(loginRequest, null);
         System.out.println("HTTP Status: "+ loginResponse2.getStatus());
         System.out.println("Mensaje recibido:" + loginResponse2.readEntity(String.class));
+    }
+
+    @AfterAll
+    public static void showAllReports() {
+        openHtml(); // Not working :/
     }
 }
 
