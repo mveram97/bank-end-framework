@@ -47,6 +47,7 @@ public class RestEasyClientTest {
 
         /*
         jsonLoginRequest = "{ \"email\": \"john.doe@example.com\", \"password\": \"password123\" }";;*/
+
         loginRequest.setEmail("john.doe@example.com");
         loginRequest.setPassword("password123");
 
