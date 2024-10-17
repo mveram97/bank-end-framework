@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Data
 public class CardDTO {
-    @JsonProperty("card_id")
+    @JsonProperty("cardId")
     private Integer cardId;
 
     @JsonProperty("type")
@@ -16,9 +16,9 @@ public class CardDTO {
     @JsonProperty("number")
     private Long number;
 
-    @JsonProperty("expiration_date")
+    @JsonProperty("expirationDate")
     private Date expirationDate;
 
-    @JsonProperty("account_id")
+    @JsonProperty("accountId")
     private Integer accountId;
 }

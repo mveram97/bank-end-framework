@@ -7,24 +7,24 @@ import java.util.Date;
 
 @Data
 public class TransferDTO {
-    @JsonProperty("transfer_id")
+    @JsonProperty("transferId")
     private Integer transferId;
 
-    @JsonProperty("transfer_amount")
+    @JsonProperty("transferAmount")
     private Double transferAmount;
 
-    @JsonProperty("currency_type")
+    @JsonProperty("currencyType")
     private String currencyType;
 
-    @JsonProperty("transfer_status")
+    @JsonProperty("transferStatus")
     private String transferStatus;
 
-    @JsonProperty("transfer_date")
+    @JsonProperty("transferDate")
     private Date transferDate;
 
-    @JsonProperty("origin_account_id")
+    @JsonProperty("originAccountId")
     private Integer originAccountId;
 
-    @JsonProperty("receiving_account_id")
+    @JsonProperty("receivingAccountId")
     private Integer receivingAccountId;
 }

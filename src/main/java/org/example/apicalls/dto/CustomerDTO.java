@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerDTO {
-    @JsonProperty("customer_id")
+    @JsonProperty("customerId")
     private Integer customerId;
 
     @JsonProperty("name")

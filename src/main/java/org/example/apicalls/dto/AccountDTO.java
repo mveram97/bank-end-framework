@@ -11,36 +11,36 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountDTO {
-    @JsonProperty("account_id")
+    @JsonProperty("accountId")
     private Integer accountId;
 
-    @JsonProperty("account_type")
+    @JsonProperty("accountType")
     private String accountType;
 
-    @JsonProperty("is_blocked")
+    @JsonProperty("isBlocked")
     private Boolean isBlocked;
 
-    @JsonProperty("is_in_debt")
+    @JsonProperty("isInDebt")
     private Boolean isInDebt;
 
     @JsonProperty("amount")
     private Double amount;
 
-    @JsonProperty("creation_date")
+    @JsonProperty("creationDate")
     private Date creationDate;
 
-    @JsonProperty("expiration_date")
+    @JsonProperty("expirationDate")
     private Date expirationDate;
 
-    @JsonProperty("customer_id")
+    @JsonProperty("customerId")
     private Integer customerId;
 
     @JsonProperty("cards")
     private List<CardDTO> cards;
 
-    @JsonProperty("originating_transfers")
+    @JsonProperty("originatingTransfers")
     private List<TransferDTO> originatingTransfers;
 
-    @JsonProperty("receiving_transfers")
+    @JsonProperty("receivingTransfers")
     private List<TransferDTO> receivingTransfers;
 }
