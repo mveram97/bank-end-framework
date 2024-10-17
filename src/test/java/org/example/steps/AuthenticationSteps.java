@@ -14,6 +14,8 @@ import org.junit.Assert;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.example.apicalls.dto.CustomerDTO;
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class AuthenticationSteps {
@@ -29,7 +31,7 @@ public class AuthenticationSteps {
 
     @When("I register with name {string}, surname {string}, email {string} and password {string}")
     public void registerUser(String name, String surname, String email, String password) {
-        Customer customer = new Customer();
+    CustomerDTO customer = new CustomerDTO();
         customer.setName(name);
         customer.setSurname(surname);
         customer.setEmail(email);

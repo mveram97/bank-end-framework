@@ -65,6 +65,7 @@ public class RestEasyClientTest {
         System.out.println("HTTP Status: "+ accountResponse.getStatus());
         System.out.println(accountResponse.readEntity(Account.class));
 
+        System.out.println(loginRequest);
         Response loginResponse2 = proxy.login(loginRequest, null);
         System.out.println("HTTP Status: "+ loginResponse2.getStatus());
         System.out.println("Mensaje recibido:" + loginResponse2.readEntity(String.class));

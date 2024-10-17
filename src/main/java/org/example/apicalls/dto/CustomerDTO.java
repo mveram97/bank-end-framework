@@ -24,6 +24,9 @@ public class CustomerDTO {
     @JsonProperty("email")
     private String email;
 
+    @JsonProperty("password")
+    private String password;
+
     @JsonProperty("accounts")
     private List<AccountDTO> accounts;
 }
