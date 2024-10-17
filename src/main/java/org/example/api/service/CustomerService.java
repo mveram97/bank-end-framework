@@ -2,12 +2,15 @@ package org.example.api.service;
 
 import org.example.api.data.entity.Account;
 import org.example.api.data.entity.Customer;
+import org.example.api.data.repository.AccountRepository;
 import org.example.api.data.repository.CustomerRepository;
+import org.example.apicalls.dto.AccountDTO;
 import org.example.apicalls.dto.CustomerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +18,8 @@ import java.util.Optional;
 public class CustomerService {
 
   @Autowired private CustomerRepository customerRepository;
+  @Autowired private AccountRepository accountRepository;
+  @Autowired private AccountService accountService;
 
   public List<Customer> findAll() {
     return customerRepository.findAll();
@@ -31,7 +36,7 @@ public class CustomerService {
     if(customerRepository.existsByEmail(customerDto.getEmail())){
       throw new IllegalArgumentException("Email already registered.");
     }
-    Customer customer = convertDtoToEntity(customerDto);
+    Customer customer = convertCustomerDtoToEntity(customerDto);
     return customerRepository.save(customer);
   }
 
@@ -62,12 +67,17 @@ public class CustomerService {
   }
 
   // Map Customer DTO to Customer Entity
-  public Customer convertDtoToEntity(CustomerDTO dto) {
+  public Customer convertCustomerDtoToEntity(CustomerDTO dto) {
     Customer customer = new Customer();
     customer.setName(dto.getName());
     customer.setSurname(dto.getSurname());
     customer.setEmail(dto.getEmail());
-    customer.setPassword(dto.getPassword()); // Considerar encriptar la contraseña
+    customer.setPassword(dto.getPassword());
+    List<Account> accounts = new ArrayList<>();
+    for (AccountDTO accountDto : dto.getAccounts()) {
+      accounts.add(accountService.convertAccountDtoToEntity(accountDto));
+    }
+    customer.setAccounts(accounts);
     return customer;
   }
 }
