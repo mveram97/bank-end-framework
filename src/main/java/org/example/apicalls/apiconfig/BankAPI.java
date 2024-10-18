@@ -12,6 +12,8 @@ import org.example.api.data.request.CardRequest;
 import org.example.api.data.request.LoginRequest;
 import org.example.api.data.request.TransferRequest;
 import org.example.api.service.AccountService;
+import org.example.apicalls.dto.AccountDTO;
+import org.example.apicalls.dto.CustomerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import jakarta.ws.rs.core.Response;
@@ -68,13 +70,13 @@ public interface BankAPI {
     @Path("/api/account/new")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    Response createAccount(Account newAccount, @Context HttpServletRequest request);
+    Response createAccount(AccountDTO newAccount, @Context HttpServletRequest request);
 
     @POST
     @Path("/public/register")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    Response addCustomer(Customer nuevoCust);
+    Response addCustomer(CustomerDTO nuevoCust);
 
     @POST
     @Path("/public/login")

@@ -16,6 +16,9 @@ public class CardDTO {
     @JsonProperty("number")
     private Long number;
 
+    @JsonProperty("cvc")
+    private int cvc;
+
     @JsonProperty("expirationDate")
     private Date expirationDate;
 

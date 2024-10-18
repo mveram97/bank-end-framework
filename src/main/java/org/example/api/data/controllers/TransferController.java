@@ -11,6 +11,7 @@ import org.example.api.data.request.TransferRequest;
 import org.example.api.service.AuthService;
 import org.example.api.service.TransferService;
 import org.example.api.token.Token;
+import org.example.apicalls.dto.TransferDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,8 +49,8 @@ public class TransferController {
 
 
     @PostMapping("/api/transfer/new")
-    public ResponseEntity<String> localTransfer(@RequestBody TransferRequest transferRequest, HttpServletRequest request, Transfer transfer) {
-
+    public ResponseEntity<String> localTransfer(@RequestBody TransferRequest transferRequest, HttpServletRequest request, TransferDTO dto) {
+        Transfer transfer = transferService.convertTransferDtoToEntity(dto);
         // Set transfer default fields
         Double transferAmount = transferService.setCurrencyAndReturnAmount(transferRequest, transfer);
 

@@ -1,7 +1,9 @@
 package org.example.api.service;
 
+import org.example.api.data.entity.Account;
 import org.example.api.data.entity.Card;
 import org.example.api.data.repository.CardRepository;
+import org.example.apicalls.dto.CardDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,5 +38,17 @@ public class CardService {
 
     public List<Card> getCardsByCustomerId(Integer customerId) {
         return cardRepository.findByAccount_Customer_CustomerId(customerId);
+    }
+
+    public Card convertCardDtoToEntity(CardDTO cardDto, Account account){
+        Card newCard = new Card();
+        newCard.setCardId(cardDto.getCardId());
+        newCard.setType(cardDto.getType());
+        newCard.setAccount(account);
+        newCard.setNumber(cardDto.getNumber());
+        newCard.setCvc(cardDto.getCvc());
+        newCard.setExpirationDate(cardDto.getExpirationDate());
+
+        return newCard;
     }
 }
