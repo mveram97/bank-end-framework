@@ -1,27 +1,19 @@
 package org.testRestEasyClient;
 
+import io.cucumber.cienvironment.internal.com.eclipsesource.json.Json;
 import jakarta.servlet.http.Cookie;
 import jakarta.ws.rs.core.NewCookie;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.protocol.HttpClientContext;
 import org.example.api.Application;
 import org.example.api.data.entity.Account;
 import org.example.api.data.request.LoginRequest;
 import org.example.apicalls.apiconfig.BankAPI;
 import jakarta.ws.rs.core.Response;
 import org.example.apicalls.client.BankClient;
-import org.junit.Before;
-import org.junit.internal.Classes;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.example.api.Application;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.example.apicalls.dto.AccountDTO;
 
 import java.util.Map;
 
@@ -45,11 +37,10 @@ public class RestEasyClientTest {
     public void setup(){
         proxy = bankClient.getAPI();
 
-
         //jsonLoginRequest = "{ \"email\": \"john.doe@example.com\", \"password\": \"password123\" }";;
 
         loginRequest.setEmail("john.doe@example.com");
-        loginRequest.setPassword("password123");
+        loginRequest.setPassword("password23");
 
         loginResponse = proxy.login(loginRequest, null);
         System.out.println("HTTP Status: "+ loginResponse.getStatus());
@@ -62,7 +53,8 @@ public class RestEasyClientTest {
     @Test
     public void testGetAccountById() {
         Response accountResponse = proxy.accountById(id);
-        System.out.println("HTTP Status: "+ accountResponse.getStatus());
+
+        System.out.println("HTTP Status: "+ accountResponse.getStatus() );
         System.out.println(accountResponse.readEntity(Account.class));
 
         System.out.println(loginRequest);

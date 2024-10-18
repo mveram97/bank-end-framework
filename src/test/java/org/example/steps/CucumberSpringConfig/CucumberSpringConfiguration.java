@@ -1,14 +1,8 @@
-package org.example.steps;
+package org.example.steps.CucumberSpringConfig;
 
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
 import io.cucumber.spring.CucumberContextConfiguration;
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.example.api.Application;
-
-import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
 

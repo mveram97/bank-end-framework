@@ -6,7 +6,7 @@ Feature: User authentication
 
   Scenario: Register a new customer
     When I register with name "John", surname "Doe", email "testuser@example.com" and password "password123"
-    Then I should receive a message "The customer has registered successfully"
+    Then I should receive a message "You have registered successfully."
 
   Scenario: Login with valid credentials
     Given I have registered with name "John", surname "Doe", email "testuser@example.com" and password "password123"

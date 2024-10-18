@@ -1,8 +1,6 @@
-package org.example.steps;
+package org.example.steps.specific;
 
-import io.cucumber.java.After;
 import io.cucumber.java.AfterAll;
-import io.cucumber.java.AfterStep;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -19,6 +17,7 @@ import org.example.apicalls.dto.CustomerDTO;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class AuthenticationSteps {
+
 
     private static String registeredEmail;
     private Response response;
@@ -109,5 +108,6 @@ public class AuthenticationSteps {
             System.out.println("No user to delete, registeredEmail is null");
         }
     }
+
 
 }
