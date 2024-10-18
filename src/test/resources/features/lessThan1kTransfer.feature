@@ -1,7 +1,7 @@
 Feature: Check Transfer Not Enough Money in Sender User
 
   Scenario Outline: A customer with an account with less than 1000€ does a transfer to another user of 1500€
-    Given The customer logins with my email "alice.johnson@example2.com" and my password "newpassword123"
+    Given The customer logins with my email "csan@email.com" and my password "2334"
     And The customer creates <numberOfAccounts> account with <money> euros each
     And The receiving customer has an account with id <receiverAccountId>
     When The customer make a transfer with their main account and transferAmount <transferAmount> to an account with id <receiverAccountId>

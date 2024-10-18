@@ -17,6 +17,8 @@ public class TransferSteps extends AbstractSteps {
         transferRequest.setTransferAmount(transferAmount);
         transferRequest.setCurrencyType(Transfer.CurrencyType.EUR);
         transferRequest.setReceivingAccountId(receiverAccountId);
+
+
         Response transferResponse= proxy.localTransfer(transferRequest,null);
 
         testContext().setResponse(transferResponse);

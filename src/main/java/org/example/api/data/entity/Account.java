@@ -26,6 +26,8 @@ public class Account {
     private LocalDateTime expirationDate;
 
     public enum AccountType {
+        Savings,
+        Checking,
         CHECKING_ACCOUNT,       // Checking Account
         SAVINGS_ACCOUNT,         // Savings Account
         BUSINESS_ACCOUNT,     // Business Account

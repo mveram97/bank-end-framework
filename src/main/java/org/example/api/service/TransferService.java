@@ -58,6 +58,7 @@ public class TransferService {
         senderAccount.setIsInDebt(accountService.checkAccountInDebt(senderAccount));
         receiverAccount.setIsInDebt(accountService.checkAccountInDebt(receiverAccount));
 
+        System.out.println("Hasta aquí");
         accountRepository.save(senderAccount);
         accountRepository.save(receiverAccount);
 

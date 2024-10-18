@@ -49,8 +49,7 @@ public class TransferController {
 
 
     @PostMapping("/api/transfer/new")
-    public ResponseEntity<String> localTransfer(@RequestBody TransferRequest transferRequest, HttpServletRequest request, TransferDTO dto) {
-        Transfer transfer = transferService.convertTransferDtoToEntity(dto);
+    public ResponseEntity<String> localTransfer(@RequestBody TransferRequest transferRequest, HttpServletRequest request, Transfer transfer) {
         // Set transfer default fields
         Double transferAmount = transferService.setCurrencyAndReturnAmount(transferRequest, transfer);
 

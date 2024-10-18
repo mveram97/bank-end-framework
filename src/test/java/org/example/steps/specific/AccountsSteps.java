@@ -77,10 +77,9 @@ public class AccountsSteps extends AbstractSteps {
   public void theCustomerCreatesAccountWithEurosEach(int numberOfAccount, double euros) {
 
     while(numberOfAccount>0) {
-      Account account = new Account();
+      AccountDTO account = new AccountDTO();
       account.setAmount(euros);
-      account.setIsBlocked(Boolean.FALSE);
-      account.setIsInDebt(Boolean.FALSE);
+      account.setAccountType(Account.AccountType.BUSINESS_ACCOUNT);
       Response accountResponse = (Response) proxy.createAccount(account, null);
 
       Assert.assertEquals(201,accountResponse.getStatus());
