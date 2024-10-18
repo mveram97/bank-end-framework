@@ -40,10 +40,11 @@ public class RestEasyClientTest {
         //jsonLoginRequest = "{ \"email\": \"john.doe@example.com\", \"password\": \"password123\" }";;
 
         loginRequest.setEmail("john.doe@example.com");
-        loginRequest.setPassword("password23");
+        loginRequest.setPassword("password123");
 
         loginResponse = proxy.login(loginRequest, null);
         System.out.println("HTTP Status: "+ loginResponse.getStatus());
+        System.out.println("Codigo login");
 
         Map<String, NewCookie> cookies = loginResponse.getCookies();
         NewCookie newCookie = cookies.entrySet().iterator().next().getValue();

@@ -10,8 +10,8 @@ import static org.junit.Assert.assertEquals;
 public class GenericSteps extends AbstractSteps {
     private Response response;
 
-    @Then("I get a {int} status response and message: {string}")
-    public void iGetStatusResponseAndBody(Integer expectedStatus, String expectedMessage){
+    @Then("The customer gets a {int} status response and message: {string}")
+    public void theCustomerGetsStatusResponseAndBody(Integer expectedStatus, String expectedMessage){
         //Se recibe la respuesta y se extrae el mensaje y el status de la response
         response = testContext().getResponse();
         Integer receivedStatus = response.getStatus();
