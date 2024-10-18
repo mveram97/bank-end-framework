@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.api.data.entity.Account;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +18,7 @@ public class AccountDTO {
     private Integer accountId;
 
     @JsonProperty("accountType")
-    private String accountType;
+    private Account.AccountType accountType;
 
     @JsonProperty("isBlocked")
     private Boolean isBlocked;
@@ -27,10 +30,10 @@ public class AccountDTO {
     private Double amount;
 
     @JsonProperty("creationDate")
-    private Date creationDate;
+    private LocalDateTime creationDate;
 
     @JsonProperty("expirationDate")
-    private Date expirationDate;
+    private LocalDateTime expirationDate;
 
     @JsonProperty("customerId")
     private Integer customerId;
