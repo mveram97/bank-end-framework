@@ -10,10 +10,14 @@ import org.example.api.data.repository.CustomerRepository;
 import org.example.api.service.AccountService;
 import org.example.api.service.AuthService;
 import org.example.api.token.Token;
+import org.example.apicalls.dto.AccountDTO;
+import org.example.apicalls.dto.CustomerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -163,7 +167,7 @@ public class AccountController {
         return ResponseEntity.badRequest().body("Account does not belong to the user");
     }
 */
-    private boolean checkAccountInDebt(Account account){
+    private boolean checkAccountInDebt(AccountDTO account){
         return account.getAmount() < 0;
     }
 
@@ -176,7 +180,7 @@ public class AccountController {
     }
 
     @PostMapping("/api/account/new")
-    public ResponseEntity<String> createAccount(@RequestBody Account newAccount, HttpServletRequest request) {
+    public ResponseEntity<String> createAccount(@RequestBody AccountDTO newAccountDTO, HttpServletRequest request) {
         // Obtener el token JWT de las cookies
         String jwt = authService.getJwtFromCookies(request);
 
@@ -196,7 +200,31 @@ public class AccountController {
 
         // Asignar el cliente a la nueva cuenta
         Customer customer = customerOpt.get();
+        Account newAccount = account.convertAccountDtoToEntity(newAccountDTO);
         newAccount.setCustomer(customer);
+
+        // Asignar creationDate a la hora y fecha actual
+        newAccount.setCreationDate(LocalDateTime.now());
+
+        // Asignar expirationDate, por ejemplo, un año después de la creationDate
+        newAccount.setExpirationDate(newAccount.getCreationDate().plusYears(1)); // Ajusta según tu lógica de negocio
+
+        // isBlocked debe ser FALSE para una nueva cuenta
+        newAccount.setIsBlocked(false);
+
+        // isInDebt depende del amount, si es mayor a 0 se considera que no está en deuda
+        if (newAccountDTO.getAmount() != null && newAccountDTO.getAmount() > 0) {
+            newAccount.setIsInDebt(false); // No está en deuda
+        } else {
+            newAccount.setIsInDebt(true);  // Está en deuda si el amount es 0 o negativo
+        }
+
+        // Asignar el accountType si está presente, de lo contrario, asignar un tipo por defecto
+        if (newAccountDTO.getAccountType() != null) {
+            newAccount.setAccountType(newAccountDTO.getAccountType());
+        } else {
+            newAccount.setAccountType(Account.AccountType.CHECKING_ACCOUNT); // Establecer un tipo predeterminado
+        }
 
         try {
             // Guardar la nueva cuenta en el repositorio
@@ -206,4 +234,5 @@ public class AccountController {
             return ResponseEntity.status(500).body("Error: Could not create account. " + e.getMessage()); // 500 Internal Server Error
         }
     }
+
 }
