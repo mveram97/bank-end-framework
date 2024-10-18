@@ -41,11 +41,6 @@ public class CardService {
     }
 
     public Card convertCardDtoToEntity(CardDTO cardDto, Account account){
-        // Check if card already exists AND it belongs to this account
-        Optional<Card> card = cardRepository.findByCardId(cardDto.getCardId());
-        if (card.isPresent() && card.get().getAccount() == account)
-            return card.get();
-
         Card newCard = new Card();
         newCard.setCardId(cardDto.getCardId());
         newCard.setType(cardDto.getType());

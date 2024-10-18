@@ -76,12 +76,6 @@ public class TransferService {
     }
 
     public Transfer convertTransferDtoToEntity(TransferDTO transferDTO){
-        // Check if transfer already exists
-        Optional<Transfer> transfer = transferRepository.findByTransferId(transferDTO.getTransferId());
-        if (transfer.isPresent()){
-            return transfer.get();
-        }
-
         Transfer newTransfer = new Transfer();
         newTransfer.setTransferId(transferDTO.getTransferId());
         switch (transferDTO.getTransferStatus()){
