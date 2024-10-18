@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,19 +40,24 @@ public class AuthenticationController {
     }
 
     @PostMapping("/public/register")
-    public ResponseEntity<String> addCustomer(@Valid @RequestBody CustomerDTO nuevoCust){
-       try {
-           customerService.register(nuevoCust);
-           return ResponseEntity.status(HttpStatus.CREATED)
-                   .body("Yoy have registered successfully.");
-       } catch (IllegalArgumentException e) {
-           return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                   .body("Email already registered.");
-       } catch (Exception e) {
-           return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                   .body("Failed to register. Please try again.");
-       }
+    public ResponseEntity<String> addCustomer(@Valid @RequestBody CustomerDTO nuevoCust) {
+        // Si el campo "accounts" es null, se inicializa como una lista vacía
+        if (nuevoCust.getAccounts() == null) {
+            nuevoCust.setAccounts(Collections.emptyList()); // Lo manejamos como una lista vacía
+        }
+        try {
+            customerService.register(nuevoCust);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("You have registered successfully.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Email already registered.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Failed to register. Please try again.");
+        }
     }
+
 
     @PostMapping("/public/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest logInRequest, HttpServletRequest request){
