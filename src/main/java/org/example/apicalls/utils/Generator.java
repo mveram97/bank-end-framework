@@ -61,14 +61,7 @@ public class Generator {
     return strings[random.nextInt(strings.length)];
   }
 
-  public static String generateRandomTransferStatus(){
-    String[] strings = {"SUCCESSFUL", "PENDING", "FAILED"};
-    Random random = new Random();
-    return strings[random.nextInt(strings.length)];
-  }
   // Numbers
-
-  //generate random int for id but it should not duplicate :/
 
   public static int generateRandomInt(int min, int max) {
     Random random = new Random();
