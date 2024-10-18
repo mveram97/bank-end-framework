@@ -119,8 +119,16 @@ public class Generator {
 
   // Generate Random Entities and DTOs
 
-  public static Account generateRandomAccount(int nCards){
+  public static Account generateRandomAccount(Customer customer, int nCards){
     Account account = new Account();
+    account.setAccountType(randomlyChooseFrom("Savings", "Checking"));
+    account.setIsBlocked(generateRandomBoolean());
+    account.setIsInDebt(generateRandomBoolean());
+    account.setAmount(generateRandomDouble(minAmount, maxAmount));
+    account.setCreationDate(generateLocalDate());
+    account.setExpirationDate(generateRandomFutureDate());
+    account.setCustomer(customer);
+
     List<Card> cards = new java.util.ArrayList<>(List.of());
     int n = 0;
 
@@ -129,23 +137,25 @@ public class Generator {
     }
 
     while(n != nCards){
-      cards.add(generateRandomCard());
+      cards.add(generateRandomCard(account));
       n++;
     }
 
+    account.setCards(cards);
+
+    return account;
+  }
+
+  public static AccountDTO generateRandomAccountDTO(CustomerDTO customer, int nCards){
+    AccountDTO account = new AccountDTO();
     account.setAccountType(randomlyChooseFrom("Savings", "Checking"));
     account.setIsBlocked(generateRandomBoolean());
     account.setIsInDebt(generateRandomBoolean());
     account.setAmount(generateRandomDouble(minAmount, maxAmount));
     account.setCreationDate(generateLocalDate());
     account.setExpirationDate(generateRandomFutureDate());
-    account.setCards(cards);
+    account.setCustomerId(customer.getCustomerId());
 
-    return account;
-  }
-
-  public static AccountDTO generateRandomAccountDTO(int nCards){
-    AccountDTO account = new AccountDTO();
     List<CardDTO> cards = new java.util.ArrayList<>(List.of());
     int n = 0;
 
@@ -154,43 +164,44 @@ public class Generator {
     }
 
     while(n != nCards){
-      cards.add(generateRandomCardDTO());
+      cards.add(generateRandomCardDTO(account));
       n++;
     }
-    account.setAccountType(randomlyChooseFrom("Savings", "Checking"));
-    account.setIsBlocked(generateRandomBoolean());
-    account.setIsInDebt(generateRandomBoolean());
-    account.setAmount(generateRandomDouble(minAmount, maxAmount));
-    account.setCreationDate(generateLocalDate());
-    account.setExpirationDate(generateRandomFutureDate());
-    account.setCards(cards);
 
+    account.setCards(cards);
 
     return account;
   }
 
-  public static Card generateRandomCard(){
+  public static Card generateRandomCard(Account account){
     Card card = new Card();
     card.setType(randomlyChooseFrom("Credit", "Debit"));
     card.setCvc(generateRandomInt(3, 3));
     card.setNumber(generateRandomCardNumber());
     card.setExpirationDate(generateRandomFutureDate());
+    card.setAccount(account);
 
     return card;
   }
 
-  public static CardDTO generateRandomCardDTO(){
+  public static CardDTO generateRandomCardDTO(AccountDTO account){
     CardDTO card = new CardDTO();
     card.setType(randomlyChooseFrom("Credit", "Debit"));
     card.setCvc(generateRandomInt(3, 3));
     card.setNumber(generateRandomCardNumber());
     card.setExpirationDate(generateRandomFutureDate());
+    card.setAccountId(account.getAccountId());
 
     return card;
   }
 
   public static Customer generateRandomCustomer(int nCards, int nAccounts){
     Customer customer = new Customer();
+    customer.setName(generateRandomString(nameLength));
+    customer.setSurname(generateRandomString(nameLength));
+    customer.setEmail(generateRandomGmail(nameLength));
+    customer.setPassword(generateRandomPassword(passwordLength));
+
     List<Account> accounts = new java.util.ArrayList<>(List.of());
     int n = 0;
 
@@ -199,14 +210,10 @@ public class Generator {
     }
 
     while(n != nAccounts){
-      accounts.add(generateRandomAccount(nCards));
+      accounts.add(generateRandomAccount(customer, nCards));
       n++;
     }
 
-    customer.setName(generateRandomString(nameLength));
-    customer.setSurname(generateRandomString(nameLength));
-    customer.setEmail(generateRandomGmail(nameLength));
-    customer.setPassword(generateRandomPassword(passwordLength));
     customer.setAccounts(accounts);
 
     return customer;
@@ -214,6 +221,11 @@ public class Generator {
 
   public static CustomerDTO generateRandomCustomerDTO(int nCards, int nAccounts){
     CustomerDTO customer = new CustomerDTO();
+    customer.setName(generateRandomString(nameLength));
+    customer.setSurname(generateRandomString(nameLength));
+    customer.setEmail(generateRandomGmail(nameLength));
+    customer.setPassword(generateRandomPassword(passwordLength));
+
     List<AccountDTO> accounts = new java.util.ArrayList<>(List.of());
     int n = 0;
 
@@ -222,14 +234,10 @@ public class Generator {
     }
 
     while(n != nAccounts){
-      accounts.add(generateRandomAccountDTO(nCards));
+      accounts.add(generateRandomAccountDTO(customer, nCards));
       n++;
     }
 
-    customer.setName(generateRandomString(nameLength));
-    customer.setSurname(generateRandomString(nameLength));
-    customer.setEmail(generateRandomGmail(nameLength));
-    customer.setPassword(generateRandomPassword(passwordLength));
     customer.setAccounts(accounts);
 
     return customer;
