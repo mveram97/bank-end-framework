@@ -1,8 +1,8 @@
 Feature: LoginTest with GenericSteps and AuthenticationTestSteps
 
-  Scenario Outline: I login with a user to test GenericSteps
-    When I login with my email <email> and my password <password>
-    Then I get a <status> status response and message: <message>
+  Scenario Outline: The customer logins with a user to test GenericSteps
+    When The customer logins with my email <email> and my password <password>
+    Then The customer gets a <status> status response and message: <message>
 
     Examples:
     |email                      |password             |status   |message                        |
