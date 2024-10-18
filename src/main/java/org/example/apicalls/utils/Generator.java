@@ -8,13 +8,19 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import org.example.api.data.entity.Account;
 import org.example.api.data.entity.Card;
 import org.example.api.data.entity.Customer;
 import org.example.api.data.entity.Transfer;
+import org.example.apicalls.dto.AccountDTO;
+import org.example.apicalls.dto.CardDTO;
+import org.example.apicalls.dto.CustomerDTO;
+import org.example.apicalls.dto.TransferDTO;
 
 public class Generator {
 
@@ -57,6 +63,12 @@ public class Generator {
 
   public static String randomlyChooseFrom(String opt1, String opt2){
     String[] strings = {opt1, opt2};
+    Random random = new Random();
+    return strings[random.nextInt(strings.length)];
+  }
+
+  public static String generateRandomTransferStatus(){
+    String[] strings = {"PENDING", "FAILED", "SUCCESSFUL"};
     Random random = new Random();
     return strings[random.nextInt(strings.length)];
   }
@@ -105,25 +117,60 @@ public class Generator {
     return enumValues[randomIndex];
   }
 
+  // Generate Random Entities and DTOs
 
-  // Generate Random Entities
-
-  public static Account generateRandomAccount(){
+  public static Account generateRandomAccount(int nCards){
     Account account = new Account();
-    //account.setAccountId();
+    List<Card> cards = new java.util.ArrayList<>(List.of());
+    int n = 0;
+
+    if(nCards < 0){
+      throw new IllegalArgumentException("The number of Cards must be higher than 0!");
+    }
+
+    while(n != nCards){
+      cards.add(generateRandomCard());
+      n++;
+    }
+
     account.setAccountType(randomlyChooseFrom("Savings", "Checking"));
     account.setIsBlocked(generateRandomBoolean());
     account.setIsInDebt(generateRandomBoolean());
     account.setAmount(generateRandomDouble(minAmount, maxAmount));
     account.setCreationDate(generateLocalDate());
     account.setExpirationDate(generateRandomFutureDate());
+    account.setCards(cards);
+
+    return account;
+  }
+
+  public static AccountDTO generateRandomAccountDTO(int nCards){
+    AccountDTO account = new AccountDTO();
+    List<CardDTO> cards = new java.util.ArrayList<>(List.of());
+    int n = 0;
+
+    if(nCards < 0){
+      throw new IllegalArgumentException("The number of Cards must be higher than 0!");
+    }
+
+    while(n != nCards){
+      cards.add(generateRandomCardDTO());
+      n++;
+    }
+    account.setAccountType(randomlyChooseFrom("Savings", "Checking"));
+    account.setIsBlocked(generateRandomBoolean());
+    account.setIsInDebt(generateRandomBoolean());
+    account.setAmount(generateRandomDouble(minAmount, maxAmount));
+    account.setCreationDate(generateLocalDate());
+    account.setExpirationDate(generateRandomFutureDate());
+    account.setCards(cards);
+
 
     return account;
   }
 
   public static Card generateRandomCard(){
     Card card = new Card();
-    //card.setCardId();
     card.setType(randomlyChooseFrom("Credit", "Debit"));
     card.setCvc(generateRandomInt(3, 3));
     card.setNumber(generateRandomCardNumber());
@@ -132,13 +179,58 @@ public class Generator {
     return card;
   }
 
-  public static Customer generateRandomCustomer(){
+  public static CardDTO generateRandomCardDTO(){
+    CardDTO card = new CardDTO();
+    card.setType(randomlyChooseFrom("Credit", "Debit"));
+    card.setCvc(generateRandomInt(3, 3));
+    card.setNumber(generateRandomCardNumber());
+    card.setExpirationDate(generateRandomFutureDate());
+
+    return card;
+  }
+
+  public static Customer generateRandomCustomer(int nCards, int nAccounts){
     Customer customer = new Customer();
-    //customer.setCustomerId();
+    List<Account> accounts = new java.util.ArrayList<>(List.of());
+    int n = 0;
+
+    if(nAccounts < 0){
+      throw new IllegalArgumentException("The number of Accounts must be higher than 0!");
+    }
+
+    while(n != nAccounts){
+      accounts.add(generateRandomAccount(nCards));
+      n++;
+    }
+
     customer.setName(generateRandomString(nameLength));
     customer.setSurname(generateRandomString(nameLength));
     customer.setEmail(generateRandomGmail(nameLength));
     customer.setPassword(generateRandomPassword(passwordLength));
+    customer.setAccounts(accounts);
+
+    return customer;
+  }
+
+  public static CustomerDTO generateRandomCustomerDTO(int nCards, int nAccounts){
+    CustomerDTO customer = new CustomerDTO();
+    List<AccountDTO> accounts = new java.util.ArrayList<>(List.of());
+    int n = 0;
+
+    if(nAccounts < 0){
+      throw new IllegalArgumentException("The number of Accounts must be higher than 0!");
+    }
+
+    while(n != nAccounts){
+      accounts.add(generateRandomAccountDTO(nCards));
+      n++;
+    }
+
+    customer.setName(generateRandomString(nameLength));
+    customer.setSurname(generateRandomString(nameLength));
+    customer.setEmail(generateRandomGmail(nameLength));
+    customer.setPassword(generateRandomPassword(passwordLength));
+    customer.setAccounts(accounts);
 
     return customer;
   }
@@ -147,13 +239,26 @@ public class Generator {
     Transfer transfer = new Transfer();
     Transfer.TransferStatus transferStatus = generateRandomEnum(Transfer.TransferStatus.class);
     Transfer.CurrencyType currencyType = generateRandomEnum(Transfer.CurrencyType.class);
-    //transfer.setTransferId();
+
     transfer.setTransferAmount(generateRandomDouble(minAmount, maxAmount));
     transfer.setCurrencyType(currencyType);
     transfer.setTransferStatus(transferStatus);
     transfer.setTransferDate(generateLocalDate());
     transfer.setOriginAccount(origin);
     transfer.setReceivingAccount(receiver);
+
+    return transfer;
+  }
+
+  public static TransferDTO generateRandomTransferDTO(Account origin, Account receiver){
+    TransferDTO transfer = new TransferDTO();
+
+    transfer.setTransferAmount(generateRandomDouble(minAmount, maxAmount));
+    transfer.setCurrencyType(randomlyChooseFrom("USD", "EUR"));
+    transfer.setTransferStatus(generateRandomTransferStatus());
+    transfer.setTransferDate(generateLocalDate());
+    transfer.setOriginAccountId(origin.getAccountId());
+    transfer.setReceivingAccountId(receiver.getAccountId());
 
     return transfer;
   }
