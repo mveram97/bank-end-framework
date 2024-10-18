@@ -10,6 +10,7 @@ import org.example.api.data.repository.CustomerRepository;
 import org.example.api.service.AccountService;
 import org.example.api.service.AuthService;
 import org.example.api.token.Token;
+import org.example.apicalls.dto.AccountDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +36,9 @@ public class AccountController {
 
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private AccountService accountService;
+
     @Autowired
     private Token tokenService;
 
@@ -171,12 +175,10 @@ public class AccountController {
     @GetMapping("/api/amount/{accountId}")  // get amount by accountId
     public Double amountOfAccount(@PathVariable Integer accountId) {
         return account.findById(accountId).get().getAmount();
-
-
     }
 
     @PostMapping("/api/account/new")
-    public ResponseEntity<String> createAccount(@RequestBody Account newAccount, HttpServletRequest request) {
+    public ResponseEntity<String> createAccount(@RequestBody AccountDTO newAccount, HttpServletRequest request) {
         // Obtener el token JWT de las cookies
         String jwt = authService.getJwtFromCookies(request);
 
@@ -196,11 +198,12 @@ public class AccountController {
 
         // Asignar el cliente a la nueva cuenta
         Customer customer = customerOpt.get();
-        newAccount.setCustomer(customer);
+        Account account = accountService.convertAccountDtoToEntity(newAccount);
+        account.setCustomer(customer);
 
         try {
             // Guardar la nueva cuenta en el repositorio
-            Account createdAccount = account.save(newAccount);
+            Account createdAccount = accountRepository.save(account);
             return ResponseEntity.status(201).body("Account created successfully: " + createdAccount.getAccountId()); // 201 Created
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error: Could not create account. " + e.getMessage()); // 500 Internal Server Error
