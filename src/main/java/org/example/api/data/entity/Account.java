@@ -2,6 +2,8 @@ package org.example.api.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import lombok.Data;
@@ -14,12 +16,21 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer accountId;
 
-    private String accountType;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AccountType accountType;
     private Boolean isBlocked;
     private Boolean isInDebt;
     private Double amount;
-    private Date creationDate;
-    private Date expirationDate;
+    private LocalDateTime creationDate;
+    private LocalDateTime expirationDate;
+
+    public enum AccountType {
+        CHECKING_ACCOUNT,       // Checking Account
+        SAVINGS_ACCOUNT,         // Savings Account
+        BUSINESS_ACCOUNT,     // Business Account
+        CHILDREN_ACCOUNT
+    }
 
     @JsonIgnore
     @ManyToOne
