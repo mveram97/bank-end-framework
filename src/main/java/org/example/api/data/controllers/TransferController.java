@@ -93,7 +93,7 @@ public class TransferController {
         return ResponseEntity.badRequest().body("Account does not belong to the user");
     }
 
-    @GetMapping("/api/transfers/receive/all")
+    @GetMapping("/api/transfers/received/all")
     public ResponseEntity<String> getAllReceivedTransfers() {
         // Verify user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -137,8 +137,8 @@ public class TransferController {
         return ResponseEntity.ok(responseBody.toString());
     }
 
-    @GetMapping("/api/transfer/receive/{accountId}")
-    public ResponseEntity<String> getReceiveTransfer(@PathVariable Integer accountId) {
+    @GetMapping("/api/transfers/received/{accountId}")
+    public ResponseEntity<String> getReceivedTransfers(@PathVariable Integer accountId) {
         // Verify account exists
         Optional<Account> account = accountRepository.findByAccountId(accountId);
         if (account.isEmpty())
@@ -168,8 +168,8 @@ public class TransferController {
         return ResponseEntity.ok(responseBody.toString());
     }
   
-    @GetMapping("/api/transfsent/{accountId}")
-    public ResponseEntity<List<Transfer>> getSentTransfer(@PathVariable Integer accountId){
+    @GetMapping("/api/transfers/sent/{accountId}")
+    public ResponseEntity<List<Transfer>> getSentTransfers(@PathVariable Integer accountId){
         List<Transfer> sentTransfer = transferService.getTransferByAccountId(accountId);
         if (sentTransfer.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -203,7 +203,6 @@ public class TransferController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to view this transfer.");
         }
 
-        // Si todo está correcto, devolver la información de la transferencia
         StringBuilder responseBody = new StringBuilder();
         responseBody.append("{\n\tid: ")
                 .append(transfer.getTransferId())
