@@ -4,13 +4,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.example.api.data.controllers.AccountController;
 import org.example.api.data.controllers.AuthenticationController;
 import org.example.api.data.controllers.CardController;
+import org.example.api.data.controllers.TransferController;
 import org.example.api.data.entity.Account;
 import org.example.api.data.entity.Customer;
+import org.example.api.data.entity.Transfer;
 import org.example.api.data.request.CardRequest;
 import org.example.api.data.request.LoginRequest;
+import org.example.api.data.request.TransferRequest;
 import org.example.apicalls.dto.AccountDTO;
 import org.example.apicalls.dto.CardDTO;
 import org.example.apicalls.dto.CustomerDTO;
+import org.example.apicalls.dto.TransferDTO;
 import org.example.apicalls.utils.Generator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +26,8 @@ public class BankService {
     private AccountController accountController;
     @Autowired
     private CardController cardController;
+    @Autowired
+    private TransferController transferController;
 
     public String doRegister (String name, String surname, String email, String password){
 
@@ -130,6 +136,27 @@ public class BankService {
          } else {
              return "Error "+ responseEntity.getBody();
          }
+     }
+
+     public String doNewTransfer (TransferDTO dto, HttpServletRequest request){
+         TransferRequest transferRequest = new TransferRequest();
+         transferRequest.setTransferAmount(dto.getTransferAmount());
+         if(dto.getCurrencyType().equals("USD")){
+             transferRequest.setCurrencyType(Transfer.CurrencyType.USD);
+         } else{
+             transferRequest.setCurrencyType(Transfer.CurrencyType.EUR);
+         }
+         transferRequest.setOriginAccountId(dto.getOriginAccountId());
+         transferRequest.setReceivingAccountId(dto.getReceivingAccountId());
+
+         ResponseEntity<String> responseEntity = transferController.localTransfer(transferRequest, request, dto);
+
+         if(responseEntity.getStatusCode().is2xxSuccessful()){
+             return "The transfer has been succesful";
+         } else {
+             return "Error:" + responseEntity.getBody();
+         }
+
      }
 
 
