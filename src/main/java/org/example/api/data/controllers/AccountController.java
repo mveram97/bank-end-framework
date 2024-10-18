@@ -111,62 +111,7 @@ public class AccountController {
 
         return ResponseEntity.ok(totalAmount); // 200 OK with total money
     }
-/*
-    @PatchMapping("/transfer")
-    public ResponseEntity<String> localTransfer(@RequestBody Transfer transfer, HttpServletRequest request) {
-        // Get request client
-        String jwt = authService.getJwtFromCookies(request);
-        String email = Token.getCustomerEmailFromJWT(jwt);
-        Customer customer = customerRepository.findByEmail(email).get();
 
-        // Get receiving client info
-        Integer senderAccountId = transfer.getCustomerAccountId();
-        Optional<Account> senderAccountOpt = accountRepository.findByAccountId(senderAccountId);
-        if (!senderAccountOpt.isPresent()) {
-            return ResponseEntity.badRequest().body("No existe la cuenta emisora ");
-        }
-        Account senderAccount = senderAccountOpt.get();
-
-        // Get receiving account info
-        Integer receiverId = transfer.getReceiverId();
-        Optional<Account> receiverOpt = accountRepository.findByAccountId(receiverId);
-        if (!receiverOpt.isPresent()) {
-            return ResponseEntity.badRequest().body("No existe la cuenta receptora ");
-        }
-        Account receiver = receiverOpt.get();
-
-        // Check requesting account belongs to requesting user
-        if (senderAccount.getCustomer().equals(customer)) {
-            Double transferAmount = transfer.getAmount();
-            // Check - if receiving account is blocked
-            //       - if requesting account is in debt
-            //       - if there is not enough money in requesting account
-            if (receiver.getIsBlocked() || senderAccount.getIsInDebt()
-                    || senderAccount.getAmount() < transferAmount) {
-                return ResponseEntity.badRequest()
-                        .body("Transfer can not be done. Not enough money or blocked receiver.");
-            } else if(transferAmount <= 0){
-                return ResponseEntity.badRequest()
-                        .body("Money to transfer must be greater than 0");
-            }
-
-            // Transfer the money
-            senderAccount.setAmount(senderAccount.getAmount() - transferAmount);
-            receiver.setAmount(receiver.getAmount() + transferAmount);
-
-            //Check none of the accounts is in debt
-            senderAccount.setIsInDebt(checkAccountInDebt(senderAccount));
-            receiver.setIsInDebt(checkAccountInDebt(receiver));
-
-            accountRepository.save(senderAccount);
-            accountRepository.save(receiver);
-
-            // Check operation has been done successfully
-            return ResponseEntity.ok().body("Transfer made successfully");
-        }
-        return ResponseEntity.badRequest().body("Account does not belong to the user");
-    }
-*/
     private boolean checkAccountInDebt(AccountDTO account){
         return account.getAmount() < 0;
     }
