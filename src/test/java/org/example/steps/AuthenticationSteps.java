@@ -3,24 +3,31 @@ package org.example.steps;
 import io.cucumber.java.After;
 import io.cucumber.java.AfterAll;
 import io.cucumber.java.AfterStep;
+import io.cucumber.java.BeforeAll;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
-import io.restassured.response.Response;
+import jakarta.ws.rs.core.NewCookie;
+import jakarta.ws.rs.core.Response;
 import org.example.api.data.request.LoginRequest;
 import org.example.api.data.entity.Customer;
+import org.example.apicalls.apiconfig.BankAPI;
+import org.example.apicalls.client.BankClient;
+import org.example.apicalls.service.BankService;
 import org.junit.Assert;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.example.apicalls.dto.CustomerDTO;
 
+import java.util.Map;
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class AuthenticationSteps {
-
     private static String registeredEmail;
+    BankService bankService = new BankService();
     private Response response;
     private final String baseUrl = "http://localhost:8080";
 
@@ -31,76 +38,49 @@ public class AuthenticationSteps {
 
     @When("I register with name {string}, surname {string}, email {string} and password {string}")
     public void registerUser(String name, String surname, String email, String password) {
-    CustomerDTO customer = new CustomerDTO();
-        customer.setName(name);
-        customer.setSurname(surname);
-        customer.setEmail(email);
-        customer.setPassword(password);
-        registeredEmail = email;
-        System.out.println("HEEEEEEEEEEEEEEEEEEEEEEEEEE " +registeredEmail);
-
-        response = RestAssured.given()
-                .contentType("application/json")
-                .body(customer)
-                .post("/public/register");
+        response = bankService.doRegister(name, surname, email, password);
     }
 
     @Then("I should receive a message {string}")
     public void verifyMessage(String expectedMessage) {
-        String actualMessage = response.getBody().asString();
+        String actualMessage = response.readEntity(String.class);
         Assert.assertEquals(expectedMessage, actualMessage);
     }
 
     @Given("I have registered with name {string}, surname {string}, email {string} and password {string}")
     public void registerForLogin(String name, String surname, String email, String password) {
-        Customer customer = new Customer();
+        CustomerDTO customer = new CustomerDTO();
         customer.setName(name);
         customer.setSurname(surname);
         customer.setEmail(email);
         customer.setPassword(password);
 
-        RestAssured.given()
-                .contentType("application/json")
-                .body(customer)
-                .post("/public/register");
+        response = bankService.doLogin(customer);
     }
 
     @When("I login with email {string} and password {string}")
     public void loginUser(String email, String password) {
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail(email);
-        loginRequest.setPassword(password);
-
-        response = RestAssured.given()
-                .contentType("application/json")
-                .body(loginRequest)
-                .post("/public/login");
+        response = bankService.doLogin(email, password);
     }
 
     @Given("I have logged in with email {string} and password {string}")
     public void loginUserForLogout(String email, String password) {
         loginUser(email, password);
-        Assert.assertEquals(HttpStatus.OK.value(), response.getStatusCode());
     }
 
     @When("I log out")
     public void logoutUser() {
-        System.out.println(registeredEmail + " Hewwwwwwwwwwy");
-        String jwt = response.getCookie("cookieToken");
-
-        response = RestAssured.given()
-                .header(HttpHeaders.COOKIE, "cookieToken=" + jwt)
-                .post("/public/logout");
+        response = bankService.doLogout();
     }
 
     @AfterAll
     public static void deleteRegisteredUser() {
     System.out.println(registeredEmail);
         if (registeredEmail != null) {
-            Response deleteResponse = RestAssured.given()
+            Response deleteResponse = (Response) RestAssured.given()
                     .delete("/public/customer/" + registeredEmail);
 
-            int statusCode = deleteResponse.getStatusCode();
+            int statusCode = deleteResponse.getStatus();
             System.out.println("Delete response status code: " + statusCode);
             Assert.assertEquals(HttpStatus.OK.value(), statusCode);  // Validar si realmente devolvió un 200 OK
 
