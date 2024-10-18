@@ -58,10 +58,14 @@ public class Generator {
     return generateRandomString(length).concat(String.valueOf(generateRandomInt(1, 3)));
   }
 
-  public static String randomlyChooseFrom(String opt1, String opt2) {
-    String[] strings = {opt1, opt2};
+  @SafeVarargs
+  public static <T> T randomlyChooseFrom(T... options) {
+    if (options == null || options.length == 0) {
+      throw new IllegalArgumentException("At least one option must be provided");
+    }
+
     Random random = new Random();
-    return strings[random.nextInt(strings.length)];
+    return options[random.nextInt(options.length)];
   }
 
   public static String generateRandomTransferStatus() {
@@ -119,12 +123,12 @@ public class Generator {
 
   public static Account generateRandomAccount(Customer customer, int nCards) {
     Account account = new Account();
-    account.setAccountType(randomlyChooseFrom("Savings", "Checking"));
+    account.setAccountType(randomlyChooseFrom(Account.AccountType.CHECKING_ACCOUNT,Account.AccountType.BUSINESS_ACCOUNT, Account.AccountType.CHILDREN_ACCOUNT, Account.AccountType.SAVINGS_ACCOUNT));
     account.setIsBlocked(generateRandomBoolean());
     account.setIsInDebt(generateRandomBoolean());
     account.setAmount(generateRandomDouble(minAmount, maxAmount));
-    account.setCreationDate(generateLocalDate());
-    account.setExpirationDate(generateRandomFutureDate());
+//    account.setCreationDate(generateLocalDate());
+//    account.setExpirationDate(generateRandomFutureDate());
     account.setCustomer(customer);
 
     List<Card> cards = new java.util.ArrayList<>(List.of());
@@ -146,12 +150,10 @@ public class Generator {
 
   public static AccountDTO generateRandomAccountDTO(CustomerDTO customer, int nCards) {
     AccountDTO account = new AccountDTO();
-    account.setAccountType(randomlyChooseFrom("Savings", "Checking"));
+    account.setAccountType(randomlyChooseFrom(Account.AccountType.CHECKING_ACCOUNT,Account.AccountType.BUSINESS_ACCOUNT, Account.AccountType.CHILDREN_ACCOUNT, Account.AccountType.SAVINGS_ACCOUNT));
     account.setIsBlocked(generateRandomBoolean());
     account.setIsInDebt(generateRandomBoolean());
     account.setAmount(generateRandomDouble(minAmount, maxAmount));
-    account.setCreationDate(generateLocalDate());
-    account.setExpirationDate(generateRandomFutureDate());
     account.setCustomerId(customer.getCustomerId());
 
     List<CardDTO> cards = new java.util.ArrayList<>(List.of());
