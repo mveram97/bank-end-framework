@@ -68,16 +68,21 @@ public class CustomerService {
 
   // Map Customer DTO to Customer Entity
   public Customer convertCustomerDtoToEntity(CustomerDTO dto) {
-    Customer customer = new Customer();
-    customer.setName(dto.getName());
-    customer.setSurname(dto.getSurname());
-    customer.setEmail(dto.getEmail());
-    customer.setPassword(dto.getPassword());
+    // Check if user already exists
+    Optional<Customer> customer = customerRepository.findById(dto.getCustomerId());
+    if (customer.isPresent())
+      return customer.get();
+
+    Customer newCustomer = new Customer();
+    newCustomer.setName(dto.getName());
+    newCustomer.setSurname(dto.getSurname());
+    newCustomer.setEmail(dto.getEmail());
+    newCustomer.setPassword(dto.getPassword());
     List<Account> accounts = new ArrayList<>();
     for (AccountDTO accountDto : dto.getAccounts()) {
       accounts.add(accountService.convertAccountDtoToEntity(accountDto));
     }
-    customer.setAccounts(accounts);
-    return customer;
+    newCustomer.setAccounts(accounts);
+    return newCustomer;
   }
 }
