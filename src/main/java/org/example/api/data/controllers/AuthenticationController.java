@@ -41,10 +41,6 @@ public class AuthenticationController {
 
     @PostMapping("/public/register")
     public ResponseEntity<String> addCustomer(@Valid @RequestBody CustomerDTO nuevoCust) {
-        // Si el campo "accounts" es null, se inicializa como una lista vacía
-        if (nuevoCust.getAccounts() == null) {
-            nuevoCust.setAccounts(Collections.emptyList()); // Lo manejamos como una lista vacía
-        }
         try {
             customerService.register(nuevoCust);
             return ResponseEntity.status(HttpStatus.CREATED)

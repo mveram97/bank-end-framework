@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,9 +74,15 @@ public class CustomerService {
     customer.setSurname(dto.getSurname());
     customer.setEmail(dto.getEmail());
     customer.setPassword(dto.getPassword());
-    List<Account> accounts = new ArrayList<>();
-    for (AccountDTO accountDto : dto.getAccounts()) {
-      accounts.add(accountService.convertAccountDtoToEntity(accountDto));
+    List<Account> accounts = Collections.emptyList();
+
+    if (dto.getAccounts() == null) {
+      dto.setAccounts(Collections.emptyList()); // Lo manejamos como una lista vacía
+    }
+    else {
+      for (AccountDTO accountDto : dto.getAccounts()) {
+        accounts.add(accountService.convertAccountDtoToEntity(accountDto));
+      }
     }
     customer.setAccounts(accounts);
     return customer;
