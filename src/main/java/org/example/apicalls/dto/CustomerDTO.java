@@ -27,6 +27,7 @@ public class CustomerDTO {
     @JsonProperty("password")
     private String password;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("accounts")
     private List<AccountDTO> accounts;
 }

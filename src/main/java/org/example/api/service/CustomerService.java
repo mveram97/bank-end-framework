@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,21 +69,22 @@ public class CustomerService {
 
   // Map Customer DTO to Customer Entity
   public Customer convertCustomerDtoToEntity(CustomerDTO dto) {
-    // Check if user already exists
-    Optional<Customer> customer = customerRepository.findById(dto.getCustomerId());
-    if (customer.isPresent())
-      return customer.get();
+    Customer customer = new Customer();
+    customer.setName(dto.getName());
+    customer.setSurname(dto.getSurname());
+    customer.setEmail(dto.getEmail());
+    customer.setPassword(dto.getPassword());
+    List<Account> accounts = Collections.emptyList();
 
-    Customer newCustomer = new Customer();
-    newCustomer.setName(dto.getName());
-    newCustomer.setSurname(dto.getSurname());
-    newCustomer.setEmail(dto.getEmail());
-    newCustomer.setPassword(dto.getPassword());
-    List<Account> accounts = new ArrayList<>();
-    for (AccountDTO accountDto : dto.getAccounts()) {
-      accounts.add(accountService.convertAccountDtoToEntity(accountDto));
+    if (dto.getAccounts() == null) {
+      dto.setAccounts(Collections.emptyList()); // Lo manejamos como una lista vacía
     }
-    newCustomer.setAccounts(accounts);
-    return newCustomer;
+    else {
+      for (AccountDTO accountDto : dto.getAccounts()) {
+        accounts.add(accountService.convertAccountDtoToEntity(accountDto));
+      }
+    }
+    customer.setAccounts(accounts);
+    return customer;
   }
 }
