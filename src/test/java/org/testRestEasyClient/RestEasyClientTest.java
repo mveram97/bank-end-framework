@@ -77,7 +77,7 @@ public class RestEasyClientTest {
 
     @AfterAll
     public static void showAllReports() {
-        openHtml(); // Not working :/
+        openHtml(); // Not working por algo de Headless Mode :/
     }
 }
 

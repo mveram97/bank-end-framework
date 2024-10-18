@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -24,20 +23,18 @@ import org.example.apicalls.dto.TransferDTO;
 
 public class Generator {
 
-  public static void openHtml() { // Not working :/
-    try {
-      File htmlFile = new File("target/cucumber-reports.html").getCanonicalFile();
-      if (!htmlFile.exists()) {
-        throw new RuntimeException("The file does not exist: ".concat(htmlFile.getAbsolutePath()));
-      }
+  public static void openHtml() {
+    File reportFile = new File("target/cucumber-reports.html");
 
-      if (Desktop.isDesktopSupported()) {
-        Desktop.getDesktop().browse(htmlFile.toURI());
-      } else {
-        throw new RuntimeException("Desktop is not supported in this System");
+    if (GraphicsEnvironment.isHeadless()) {
+      System.err.println(
+          "Running in headless mode. You can find the report at: " + reportFile.getAbsolutePath());
+    } else {
+      try {
+        Desktop.getDesktop().open(reportFile);
+      } catch (IOException e) {
+        throw new RuntimeException("Failed to open the HTML report. ".concat(e.getMessage()), e);
       }
-    } catch (IOException e) {
-      throw new RuntimeException(e.getMessage());
     }
   }
 
@@ -53,21 +50,21 @@ public class Generator {
     return sb.toString();
   }
 
-  public static String generateRandomGmail(int length){
+  public static String generateRandomGmail(int length) {
     return generateRandomString(length).concat(GMAIL_DOMAIN);
   }
 
-  public static String generateRandomPassword(int length){
+  public static String generateRandomPassword(int length) {
     return generateRandomString(length).concat(String.valueOf(generateRandomInt(1, 3)));
   }
 
-  public static String randomlyChooseFrom(String opt1, String opt2){
+  public static String randomlyChooseFrom(String opt1, String opt2) {
     String[] strings = {opt1, opt2};
     Random random = new Random();
     return strings[random.nextInt(strings.length)];
   }
 
-  public static String generateRandomTransferStatus(){
+  public static String generateRandomTransferStatus() {
     String[] strings = {"PENDING", "FAILED", "SUCCESSFUL"};
     Random random = new Random();
     return strings[random.nextInt(strings.length)];
@@ -80,12 +77,12 @@ public class Generator {
     return random.nextInt((max - min) + 1) + min;
   }
 
-  public static double generateRandomDouble(int min, int max){
+  public static double generateRandomDouble(int min, int max) {
     Random r = new Random();
-      return min + (max - min) * r.nextDouble();
+    return min + (max - min) * r.nextDouble();
   }
 
-  public static long generateRandomCardNumber(){
+  public static long generateRandomCardNumber() {
     return ThreadLocalRandom.current().nextLong(minLong, maxLong + 1);
   }
 
@@ -94,7 +91,8 @@ public class Generator {
   public static Date generateRandomFutureDate() {
     LocalDate startDate = LocalDate.now();
     long startMillis = startDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
-    long endMillis = startDate.plusYears(5).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    long endMillis =
+        startDate.plusYears(5).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
     long randomMillis = ThreadLocalRandom.current().nextLong(startMillis, endMillis + 1);
     return new Date(randomMillis);
   }
@@ -106,7 +104,7 @@ public class Generator {
 
   // Auxiliary
 
-  public static boolean generateRandomBoolean(){
+  public static boolean generateRandomBoolean() {
     Random random = new Random();
     return random.nextBoolean();
   }
@@ -119,7 +117,7 @@ public class Generator {
 
   // Generate Random Entities and DTOs
 
-  public static Account generateRandomAccount(Customer customer, int nCards){
+  public static Account generateRandomAccount(Customer customer, int nCards) {
     Account account = new Account();
     account.setAccountType(randomlyChooseFrom("Savings", "Checking"));
     account.setIsBlocked(generateRandomBoolean());
@@ -132,11 +130,11 @@ public class Generator {
     List<Card> cards = new java.util.ArrayList<>(List.of());
     int n = 0;
 
-    if(nCards < 0){
+    if (nCards < 0) {
       throw new IllegalArgumentException("The number of Cards must be higher than 0!");
     }
 
-    while(n != nCards){
+    while (n != nCards) {
       cards.add(generateRandomCard(account));
       n++;
     }
@@ -146,7 +144,7 @@ public class Generator {
     return account;
   }
 
-  public static AccountDTO generateRandomAccountDTO(CustomerDTO customer, int nCards){
+  public static AccountDTO generateRandomAccountDTO(CustomerDTO customer, int nCards) {
     AccountDTO account = new AccountDTO();
     account.setAccountType(randomlyChooseFrom("Savings", "Checking"));
     account.setIsBlocked(generateRandomBoolean());
@@ -159,11 +157,11 @@ public class Generator {
     List<CardDTO> cards = new java.util.ArrayList<>(List.of());
     int n = 0;
 
-    if(nCards < 0){
+    if (nCards < 0) {
       throw new IllegalArgumentException("The number of Cards must be higher than 0!");
     }
 
-    while(n != nCards){
+    while (n != nCards) {
       cards.add(generateRandomCardDTO(account));
       n++;
     }
@@ -173,7 +171,7 @@ public class Generator {
     return account;
   }
 
-  public static Card generateRandomCard(Account account){
+  public static Card generateRandomCard(Account account) {
     Card card = new Card();
     card.setType(randomlyChooseFrom("Credit", "Debit"));
     card.setCvc(generateRandomInt(3, 3));
@@ -184,7 +182,7 @@ public class Generator {
     return card;
   }
 
-  public static CardDTO generateRandomCardDTO(AccountDTO account){
+  public static CardDTO generateRandomCardDTO(AccountDTO account) {
     CardDTO card = new CardDTO();
     card.setType(randomlyChooseFrom("Credit", "Debit"));
     card.setCvc(generateRandomInt(3, 3));
@@ -195,7 +193,7 @@ public class Generator {
     return card;
   }
 
-  public static Customer generateRandomCustomer(int nCards, int nAccounts){
+  public static Customer generateRandomCustomer(int nCards, int nAccounts) {
     Customer customer = new Customer();
     customer.setName(generateRandomString(nameLength));
     customer.setSurname(generateRandomString(nameLength));
@@ -205,11 +203,11 @@ public class Generator {
     List<Account> accounts = new java.util.ArrayList<>(List.of());
     int n = 0;
 
-    if(nAccounts < 0){
+    if (nAccounts < 0) {
       throw new IllegalArgumentException("The number of Accounts must be higher than 0!");
     }
 
-    while(n != nAccounts){
+    while (n != nAccounts) {
       accounts.add(generateRandomAccount(customer, nCards));
       n++;
     }
@@ -219,7 +217,7 @@ public class Generator {
     return customer;
   }
 
-  public static CustomerDTO generateRandomCustomerDTO(int nCards, int nAccounts){
+  public static CustomerDTO generateRandomCustomerDTO(int nCards, int nAccounts) {
     CustomerDTO customer = new CustomerDTO();
     customer.setName(generateRandomString(nameLength));
     customer.setSurname(generateRandomString(nameLength));
@@ -229,11 +227,11 @@ public class Generator {
     List<AccountDTO> accounts = new java.util.ArrayList<>(List.of());
     int n = 0;
 
-    if(nAccounts < 0){
+    if (nAccounts < 0) {
       throw new IllegalArgumentException("The number of Accounts must be higher than 0!");
     }
 
-    while(n != nAccounts){
+    while (n != nAccounts) {
       accounts.add(generateRandomAccountDTO(customer, nCards));
       n++;
     }
@@ -243,7 +241,7 @@ public class Generator {
     return customer;
   }
 
-  public static Transfer generateRandomTransfer(Account origin, Account receiver){
+  public static Transfer generateRandomTransfer(Account origin, Account receiver) {
     Transfer transfer = new Transfer();
     Transfer.TransferStatus transferStatus = generateRandomEnum(Transfer.TransferStatus.class);
     Transfer.CurrencyType currencyType = generateRandomEnum(Transfer.CurrencyType.class);
@@ -258,7 +256,7 @@ public class Generator {
     return transfer;
   }
 
-  public static TransferDTO generateRandomTransferDTO(Account origin, Account receiver){
+  public static TransferDTO generateRandomTransferDTO(Account origin, Account receiver) {
     TransferDTO transfer = new TransferDTO();
 
     transfer.setTransferAmount(generateRandomDouble(minAmount, maxAmount));
