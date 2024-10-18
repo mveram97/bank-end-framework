@@ -37,7 +37,7 @@ public class AccountService {
   }
 
   // Método para convertir AccountDTO a Account
-  public Account converAccountDtoToEntity(AccountDTO dto) {
+  public Account convertAccountDtoToEntity(AccountDTO dto) {
     Account account = new Account();
     account.setAccountType(dto.getAccountType());
     account.setIsBlocked(dto.getIsBlocked());
