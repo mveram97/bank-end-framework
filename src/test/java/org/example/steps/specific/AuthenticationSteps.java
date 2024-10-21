@@ -20,10 +20,10 @@ import org.springframework.http.HttpStatus;
 public class AuthenticationSteps extends AbstractSteps {
 
     private Response response;
-    private BankService bankService = new BankService();
+    private static BankService bankService = new BankService();
     private static String registeredEmail;
     private final String baseUrl = "http://localhost:8080";
-    private BankAPI proxy = bankService.proxy;
+    private static BankAPI proxy = bankService.proxy;
 
     @Given("the system is ready for user authentication")
     public void systemIsReady() {
@@ -32,6 +32,7 @@ public class AuthenticationSteps extends AbstractSteps {
 
     @When("I register with name {string}, surname {string}, email {string} and password {string}")
     public void registerUser(String name, String surname, String email, String password) {
+        registeredEmail =    email;
         response = bankService.doRegister(name, surname, email, password);
     }
 
@@ -86,8 +87,7 @@ public class AuthenticationSteps extends AbstractSteps {
     public static void deleteRegisteredUser() {
     System.out.println(registeredEmail);
         if (registeredEmail != null) {
-            Response deleteResponse = (Response) RestAssured.given()
-                    .delete("/public/customer/" + registeredEmail);
+            Response deleteResponse = proxy.deleteCustomer(registeredEmail);
 
             int statusCode = deleteResponse.getStatus();
             System.out.println("Delete response status code: " + statusCode);
