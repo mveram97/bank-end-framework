@@ -108,11 +108,10 @@ public class BankService {
      }
 
      // Creates a new Card (if it is for a random account, set the id on the card before calling this method)
-     public Response doNewCard(Card newCard){
+     public Response doNewCard(CardRequest newCard){
          CardRequest cardRequest = new CardRequest();
          cardRequest.setAccountId(newCard.getAccountId());
          cardRequest.setType(newCard.getType());
-         cardRequest.setDate(newCard.getExpirationDate());
          response = proxy.newCard(cardRequest);
          System.out.println(response.getStatus());
          return response;

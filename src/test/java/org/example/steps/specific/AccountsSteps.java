@@ -10,7 +10,6 @@ import jakarta.ws.rs.core.Response;
 import org.example.api.data.entity.Account;
 import org.example.api.data.request.LoginRequest;
 import org.example.apicalls.apiconfig.BankAPI;
-import org.example.apicalls..Account;
 import org.example.apicalls.service.BankService;
 import org.example.context.AbstractSteps;
 import org.junit.Assert;

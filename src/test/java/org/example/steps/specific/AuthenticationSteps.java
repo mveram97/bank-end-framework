@@ -19,7 +19,6 @@ import org.junit.Assert;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.example.apicalls..Customer;
 
 import java.util.Map;
 
