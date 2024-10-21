@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.example.api.data.repository.CustomerRepository;
 import org.example.api.service.AuthService;
 import org.example.api.token.Token;
-import org.example.apicalls.dto.CustomerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
