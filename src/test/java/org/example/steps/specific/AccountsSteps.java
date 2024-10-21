@@ -20,12 +20,6 @@ public class AccountsSteps extends AbstractSteps {
   private BankService bankService = testContext().getBankService();
   private BankAPI proxy = bankService.proxy;
 
-  @Given("the system is ready and i log with email {string} and password {string}")
-  public void theSystemIsReadyAndILogWithEmailAndPassword(String email, String password) {
-    bankService = new BankService();
-    response = bankService.doLogin(email,password);
-    proxy = bankService.proxy;
-  }
 
   @When("i request this users account information")
   public void iRequestThisUsersAccountInformation() {

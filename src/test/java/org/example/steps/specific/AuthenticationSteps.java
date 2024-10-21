@@ -25,6 +25,14 @@ public class AuthenticationSteps extends AbstractSteps {
     private final String baseUrl = "http://localhost:8080";
     private static BankAPI proxy = bankService.proxy;
 
+    @Given("the system is ready and i log with email {string} and password {string}")
+    public void theSystemIsReadyAndILogWithEmailAndPassword(String email, String password) {
+        response = bankService.doLogin(email,password);
+
+        testContext().setResponse(response);
+        testContext().setBankService(bankService);
+    }
+
     @Given("the system is ready for user authentication")
     public void systemIsReady() {
         RestAssured.baseURI = baseUrl;
