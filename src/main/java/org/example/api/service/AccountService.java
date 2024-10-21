@@ -3,8 +3,6 @@ package org.example.api.service;
 import org.example.api.data.entity.Account;
 import org.example.api.data.entity.Card;
 import org.example.api.data.repository.AccountRepository;
-import org.example.apicalls..Account;
-import org.example.apicalls..Card;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,22 +38,22 @@ public class AccountService {
   }
 
 
-  public Account convertAccountToEntity(Account ) {
+  public Account convertAccountToEntity(Account acc) {
     Account account = new Account();
-    account.setAccountType(.getAccountType());
-    account.setIsBlocked(.getIsBlocked());
-    account.setIsInDebt(.getIsInDebt());
-    account.setAmount(.getAmount());
-    account.setCreationDate(.getCreationDate());
-    account.setExpirationDate(.getExpirationDate());
+    account.setAccountType(acc.getAccountType());
+    account.setIsBlocked(acc.getIsBlocked());
+    account.setIsInDebt(acc.getIsInDebt());
+    account.setAmount(acc.getAmount());
+    account.setCreationDate(acc.getCreationDate());
+    account.setExpirationDate(acc.getExpirationDate());
 
     List<Card> cards = Collections.emptyList();
 
-    if (.getCards() == null) {
-      .setCards(Collections.emptyList()); // Lo manejamos como una lista vacía
+    if (acc.getCards() == null) {
+      acc.setCards(Collections.emptyList()); // Lo manejamos como una lista vacía
     }
     else {
-      for (Card card : .getCards()) {
+      for (Card card : acc.getCards()) {
         cards.add(cardService.convertCardToEntity(card, account));
       }
     }

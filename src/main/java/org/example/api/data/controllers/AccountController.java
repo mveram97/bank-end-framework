@@ -10,8 +10,6 @@ import org.example.api.data.repository.CustomerRepository;
 import org.example.api.service.AccountService;
 import org.example.api.service.AuthService;
 import org.example.api.token.Token;
-import org.example.apicalls..Account;
-import org.example.apicalls..Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -125,7 +123,7 @@ public class AccountController {
     }
 
     @PostMapping("/api/account/new")
-    public ResponseEntity<String> createAccount(@RequestBody Account newAccount, HttpServletRequest request) {
+    public ResponseEntity<String> createAccount(@RequestBody Account newAcc, HttpServletRequest request) {
         // Obtener el token JWT de las cookies
         String jwt = authService.getJwtFromCookies(request);
 
@@ -145,7 +143,7 @@ public class AccountController {
 
         // Asignar el cliente a la nueva cuenta
         Customer customer = customerOpt.get();
-        Account newAccount = account.convertAccountToEntity(newAccount);
+        Account newAccount = account.convertAccountToEntity(newAcc);
         newAccount.setCustomer(customer);
 
         // Asignar creationDate a la hora y fecha actual

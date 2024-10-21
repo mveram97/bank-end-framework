@@ -4,8 +4,6 @@ import org.example.api.data.entity.Account;
 import org.example.api.data.entity.Customer;
 import org.example.api.data.repository.AccountRepository;
 import org.example.api.data.repository.CustomerRepository;
-import org.example.apicalls..Account;
-import org.example.apicalls..Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,12 +30,12 @@ public class CustomerService {
 
   //public Customer register(Customer customer) { return customerRepository.save(customer);}
 
-  public Customer register(Customer customer){
+  public Customer register(Customer cust){
     // verify if email exists
-    if(customerRepository.existsByEmail(customer.getEmail())){
+    if(customerRepository.existsByEmail(cust.getEmail())){
       throw new IllegalArgumentException("Email already registered.");
     }
-    Customer customer = convertCustomerToEntity(customer);
+    Customer customer = convertCustomerToEntity(cust);
     return customerRepository.save(customer);
   }
 
@@ -68,19 +66,19 @@ public class CustomerService {
   }
 
   // Map Customer  to Customer Entity
-  public Customer convertCustomerToEntity(Customer ) {
+  public Customer convertCustomerToEntity(Customer cust) {
     Customer customer = new Customer();
-    customer.setName(.getName());
-    customer.setSurname(.getSurname());
-    customer.setEmail(.getEmail());
-    customer.setPassword(.getPassword());
+    customer.setName(cust.getName());
+    customer.setSurname(cust.getSurname());
+    customer.setEmail(cust.getEmail());
+    customer.setPassword(cust.getPassword());
     List<Account> accounts = Collections.emptyList();
 
-    if (.getAccounts() == null) {
-      .setAccounts(Collections.emptyList()); // Lo manejamos como una lista vacía
+    if (cust.getAccounts() == null) {
+      cust.setAccounts(Collections.emptyList()); // Lo manejamos como una lista vacía
     }
     else {
-      for (Account account : .getAccounts()) {
+      for (Account account : cust.getAccounts()) {
         accounts.add(accountService.convertAccountToEntity(account));
       }
     }

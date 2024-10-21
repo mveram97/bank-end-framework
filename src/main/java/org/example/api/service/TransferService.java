@@ -5,7 +5,6 @@ import org.example.api.data.entity.Transfer;
 import org.example.api.data.repository.AccountRepository;
 import org.example.api.data.repository.TransferRepository;
 import org.example.api.data.request.TransferRequest;
-import org.example.apicalls..Transfer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -80,14 +79,8 @@ public class TransferService {
         Transfer newTransfer = new Transfer();
         newTransfer.setTransferId(transfer.getTransferId());
         switch (transfer.getTransferStatus()){
-            case "Pending":
-            case "pending":
-            case "PENDING":
-                newTransfer.setTransferStatus(Transfer.TransferStatus.PENDING); break;
-            case "Successful":
-            case "successful":
-            case "SUCCESSFUL":
-                newTransfer.setTransferStatus(Transfer.TransferStatus.SUCCESSFUL); break;
+            case PENDING: newTransfer.setTransferStatus(Transfer.TransferStatus.PENDING); break;
+            case SUCCESSFUL: newTransfer.setTransferStatus(Transfer.TransferStatus.SUCCESSFUL); break;
             default:
                 newTransfer.setTransferStatus(Transfer.TransferStatus.FAILED); break;
         }
@@ -103,14 +96,14 @@ public class TransferService {
             return null;
 
         // Check if origin account exists
-        Optional<Account> originAccount = accountRepository.findByAccountId(transfer.getOriginAccountId());
+        Optional<Account> originAccount = accountRepository.findByAccountId(transfer.getOriginAccount().getAccountId());
         if (originAccount.isEmpty()){
             return null;
         }
         newTransfer.setOriginAccount(originAccount.get());
 
         // Check if receiver account exists
-        Optional<Account> receiverAccount = accountRepository.findByAccountId(transfer.getReceivingAccountId());
+        Optional<Account> receiverAccount = accountRepository.findByAccountId(transfer.getReceivingAccount().getAccountId());
         if (receiverAccount.isEmpty()){
             return null;
         }
