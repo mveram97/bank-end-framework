@@ -1,0 +1,9 @@
+#Git
+git reset --hard                                      #Volver al estado original de la rama (Descartar cambios)
+
+#SQL
+SCRIPT TO 'src/main/resources/copia.sql';             #Script SQL
+
+RUNSCRIPT FROM 'src/main/resources/archivo.sql';      #Restaurar base de datos con el script
+
+BACKUP TO 'src/main/resources/copia.zip';             #Alternativa a guardarlo en SCRIPT.
