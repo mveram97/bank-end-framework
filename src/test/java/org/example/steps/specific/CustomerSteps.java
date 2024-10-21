@@ -1,4 +1,6 @@
 package org.example.steps.specific;
 
-public class CustomerSteps {
+import org.example.context.AbstractSteps;
+
+public class CustomerSteps extends AbstractSteps {
 }

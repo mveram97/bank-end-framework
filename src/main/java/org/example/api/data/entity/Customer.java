@@ -1,8 +1,12 @@
 package org.example.api.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -22,7 +26,7 @@ public class Customer {
     @Column(nullable = false)
     private String surname;
 
-    @Column (unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", message = "Email debe ser válido")
     private String email;
     @NotBlank(message = "La contraseña es obligatoria")
@@ -37,4 +41,8 @@ public class Customer {
         return customerId;
     }
 
+    @JsonProperty("accountIds")
+    public List<Integer> getAccountIds() {
+        return accounts == null ? Collections.emptyList() : accounts.stream().map(Account::getAccountId).collect(Collectors.toList());
+    }
 }
