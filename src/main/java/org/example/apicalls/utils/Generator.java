@@ -6,7 +6,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +27,7 @@ public class Generator {
 
     if (GraphicsEnvironment.isHeadless()) {
       System.err.println(
-          "Running in headless mode. You can find the report at: " + reportFile.getAbsolutePath());
+          "Running in headless mode. You can find the report at: ".concat(reportFile.getAbsolutePath()));
     } else {
       try {
         Desktop.getDesktop().open(reportFile);
@@ -68,12 +67,6 @@ public class Generator {
     return options[random.nextInt(options.length)];
   }
 
-  public static String generateRandomTransferStatus() {
-    String[] strings = {"PENDING", "FAILED", "SUCCESSFUL"};
-    Random random = new Random();
-    return strings[random.nextInt(strings.length)];
-  }
-
   // Numbers
 
   public static int generateRandomInt(int min, int max) {
@@ -101,11 +94,6 @@ public class Generator {
     return new Date(randomMillis);
   }
 
-  public static Date generateLocalDate() {
-    LocalDateTime now = LocalDateTime.now();
-    return Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
-  }
-
   // Auxiliary
 
   public static boolean generateRandomBoolean() {
@@ -127,8 +115,6 @@ public class Generator {
     account.setIsBlocked(generateRandomBoolean());
     account.setIsInDebt(generateRandomBoolean());
     account.setAmount(generateRandomDouble(minAmount, maxAmount));
-//    account.setCreationDate(generateLocalDate());
-//    account.setExpirationDate(generateRandomFutureDate());
     account.setCustomer(customer);
 
     List<Card> cards = new java.util.ArrayList<>(List.of());
@@ -251,7 +237,6 @@ public class Generator {
     transfer.setTransferAmount(generateRandomDouble(minAmount, maxAmount));
     transfer.setCurrencyType(currencyType);
     transfer.setTransferStatus(transferStatus);
-    transfer.setTransferDate(generateLocalDate());
     transfer.setOriginAccount(origin);
     transfer.setReceivingAccount(receiver);
 
@@ -260,11 +245,11 @@ public class Generator {
 
   public static TransferDTO generateRandomTransferDTO(Account origin, Account receiver) {
     TransferDTO transfer = new TransferDTO();
+    Transfer.TransferStatus transferStatus = generateRandomEnum(Transfer.TransferStatus.class);
 
     transfer.setTransferAmount(generateRandomDouble(minAmount, maxAmount));
     transfer.setCurrencyType(randomlyChooseFrom("USD", "EUR"));
-    transfer.setTransferStatus(generateRandomTransferStatus());
-    transfer.setTransferDate(generateLocalDate());
+    transfer.setTransferStatus(String.valueOf(transferStatus));
     transfer.setOriginAccountId(origin.getAccountId());
     transfer.setReceivingAccountId(receiver.getAccountId());
 
