@@ -16,10 +16,10 @@ import org.example.api.data.entity.Account;
 import org.example.api.data.entity.Card;
 import org.example.api.data.entity.Customer;
 import org.example.api.data.entity.Transfer;
-import org.example.apicalls.dto.AccountDTO;
-import org.example.apicalls.dto.CardDTO;
-import org.example.apicalls.dto.CustomerDTO;
-import org.example.apicalls.dto.TransferDTO;
+import org.example.apicalls..Account;
+import org.example.apicalls..Card;
+import org.example.apicalls..Customer;
+import org.example.apicalls..Transfer;
 
 public class Generator {
 
@@ -119,7 +119,7 @@ public class Generator {
     return enumValues[randomIndex];
   }
 
-  // Generate Random Entities and DTOs
+  // Generate Random Entities and s
 
   public static Account generateRandomAccount(Customer customer, int nCards) {
     Account account = new Account();
@@ -148,15 +148,15 @@ public class Generator {
     return account;
   }
 
-  public static AccountDTO generateRandomAccountDTO(CustomerDTO customer, int nCards) {
-    AccountDTO account = new AccountDTO();
+  public static Account generateRandomAccount(Customer customer, int nCards) {
+    Account account = new Account();
     account.setAccountType(randomlyChooseFrom(Account.AccountType.CHECKING_ACCOUNT,Account.AccountType.BUSINESS_ACCOUNT, Account.AccountType.CHILDREN_ACCOUNT, Account.AccountType.SAVINGS_ACCOUNT));
     account.setIsBlocked(generateRandomBoolean());
     account.setIsInDebt(generateRandomBoolean());
     account.setAmount(generateRandomDouble(minAmount, maxAmount));
     account.setCustomerId(customer.getCustomerId());
 
-    List<CardDTO> cards = new java.util.ArrayList<>(List.of());
+    List<Card> cards = new java.util.ArrayList<>(List.of());
     int n = 0;
 
     if (nCards < 0) {
@@ -164,7 +164,7 @@ public class Generator {
     }
 
     while (n != nCards) {
-      cards.add(generateRandomCardDTO(account));
+      cards.add(generateRandomCard(account));
       n++;
     }
 
@@ -184,8 +184,8 @@ public class Generator {
     return card;
   }
 
-  public static CardDTO generateRandomCardDTO(AccountDTO account) {
-    CardDTO card = new CardDTO();
+  public static Card generateRandomCard(Account account) {
+    Card card = new Card();
     card.setType(randomlyChooseFrom("Credit", "Debit"));
     card.setCvc(generateRandomInt(3, 3));
     card.setNumber(generateRandomCardNumber());
@@ -219,14 +219,14 @@ public class Generator {
     return customer;
   }
 
-  public static CustomerDTO generateRandomCustomerDTO(int nCards, int nAccounts) {
-    CustomerDTO customer = new CustomerDTO();
+  public static Customer generateRandomCustomer(int nCards, int nAccounts) {
+    Customer customer = new Customer();
     customer.setName(generateRandomString(nameLength));
     customer.setSurname(generateRandomString(nameLength));
     customer.setEmail(generateRandomGmail(nameLength));
     customer.setPassword(generateRandomPassword(passwordLength));
 
-    List<AccountDTO> accounts = new java.util.ArrayList<>(List.of());
+    List<Account> accounts = new java.util.ArrayList<>(List.of());
     int n = 0;
 
     if (nAccounts < 0) {
@@ -234,7 +234,7 @@ public class Generator {
     }
 
     while (n != nAccounts) {
-      accounts.add(generateRandomAccountDTO(customer, nCards));
+      accounts.add(generateRandomAccount(customer, nCards));
       n++;
     }
 
@@ -258,13 +258,13 @@ public class Generator {
     return transfer;
   }
 
-  public static TransferDTO generateRandomTransferDTO(Account origin, Account receiver) {
-    TransferDTO transfer = new TransferDTO();
+  public static Transfer generateRandomTransfer(Account origin, Account receiver) {
+    Transfer transfer = new Transfer();
 
     transfer.setTransferAmount(generateRandomDouble(minAmount, maxAmount));
     transfer.setCurrencyType(randomlyChooseFrom("USD", "EUR"));
     transfer.setTransferStatus(generateRandomTransferStatus());
-    transfer.setTransferDate(generateLocalDate());
+    //transfer.setTransferDate(generateLocalDate());
     transfer.setOriginAccountId(origin.getAccountId());
     transfer.setReceivingAccountId(receiver.getAccountId());
 

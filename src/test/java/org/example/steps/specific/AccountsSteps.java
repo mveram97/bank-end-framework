@@ -10,7 +10,8 @@ import jakarta.ws.rs.core.Response;
 import org.example.api.data.entity.Account;
 import org.example.api.data.request.LoginRequest;
 import org.example.apicalls.apiconfig.BankAPI;
-import org.example.apicalls.dto.AccountDTO;
+import org.example.apicalls..Account;
+import org.example.apicalls.service.BankService;
 import org.example.context.AbstractSteps;
 import org.junit.Assert;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,32 +24,26 @@ import java.util.Map;
 public class AccountsSteps extends AbstractSteps {
   private Response response;
   private static String jwt;
-  private BankAPI proxy = testContext().getProxy();
+  private BankService bankService = testContext().getBankService();
+  private BankAPI proxy = bankService.proxy;
 
   @Given("the system is ready and i log with email {string} and password {string}")
   public void theSystemIsReadyAndILogWithEmailAndPassword(String email, String password) {
-    RestAssured.baseURI = "http://localhost:8080";
+    /*RestAssured.baseURI = "http://localhost:8080";
 
     LoginRequest loginRequest = new LoginRequest();
     loginRequest.setEmail(email);
-    loginRequest.setPassword(password);
+    loginRequest.setPassword(password); */
 
-    response =
-            (Response) RestAssured.given()
-                .contentType("application/json")
-                .body(loginRequest)
-                .post("/public/login");
-
-    Assert.assertEquals(HttpStatus.OK.value(), response.getStatus());
-    Map<String, NewCookie> cookies = response.getCookies();
-    NewCookie newCookie = cookies.entrySet().iterator().next().getValue();
-    jwt = newCookie.getValue();
+    bankService = new BankService();
+    response = bankService.doLogin(email,password);
+    proxy = bankService.proxy;
+    /*jwt = newCookie.getValue();*/
   }
 
   @When("i request this users account information")
   public void iRequestThisUsersAccountInformation() {
-    response =
-            (Response) RestAssured.given().header(HttpHeaders.COOKIE, "cookieToken=" + jwt).get("/api/accounts");
+    response = proxy.getUserAccounts(null);
   }
 
   @Then("i should receive the code {int}")
@@ -58,10 +53,7 @@ public class AccountsSteps extends AbstractSteps {
 
   @When("i request this users account amount")
   public void iRequestThisUsersAccountAmount() {
-    response =
-            (Response) RestAssured.given()
-                .header(HttpHeaders.COOKIE, "cookieToken=" + jwt)
-                .get("/api/accounts/amount");
+    response =proxy.getUserAmount(null);
 
     Assert.assertEquals(HttpStatus.OK.value(), response.getStatus());
   }
@@ -77,10 +69,10 @@ public class AccountsSteps extends AbstractSteps {
   public void theCustomerCreatesAccountWithEurosEach(int numberOfAccount, double euros) {
 
     while(numberOfAccount>0) {
-      AccountDTO account = new AccountDTO();
+      Account account = new Account();
       account.setAmount(euros);
       account.setAccountType(Account.AccountType.BUSINESS_ACCOUNT);
-      Response accountResponse = (Response) proxy.createAccount(account, null);
+      Response accountResponse = bankService.doNewAccount(account,null);
 
       Assert.assertEquals(201,accountResponse.getStatus());
       numberOfAccount--;
@@ -97,6 +89,7 @@ public class AccountsSteps extends AbstractSteps {
 
   @And("The receiving customer has an account with id {int}")
   public void theReceivingCustomerHasAnAccountWithId(int receiverAccountId) {
+    proxy = bankService.proxy;
     Response receiverAccountresponse = proxy.accountById(receiverAccountId);
     Assert.assertEquals(200,receiverAccountresponse.getStatus());
   }

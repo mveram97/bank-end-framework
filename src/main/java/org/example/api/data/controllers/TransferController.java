@@ -11,7 +11,7 @@ import org.example.api.data.request.TransferRequest;
 import org.example.api.service.AuthService;
 import org.example.api.service.TransferService;
 import org.example.api.token.Token;
-import org.example.apicalls.dto.TransferDTO;
+import org.example.apicalls..Transfer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

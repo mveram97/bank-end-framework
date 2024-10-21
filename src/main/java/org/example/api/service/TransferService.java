@@ -5,7 +5,7 @@ import org.example.api.data.entity.Transfer;
 import org.example.api.data.repository.AccountRepository;
 import org.example.api.data.repository.TransferRepository;
 import org.example.api.data.request.TransferRequest;
-import org.example.apicalls.dto.TransferDTO;
+import org.example.apicalls..Transfer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -76,10 +76,10 @@ public class TransferService {
         return transferRepository.findByOriginAccount_AccountId(originAccountId);
     }
 
-    public Transfer convertTransferDtoToEntity(TransferDTO transferDTO){
+    public Transfer convertTransferToEntity(Transfer transfer){
         Transfer newTransfer = new Transfer();
-        newTransfer.setTransferId(transferDTO.getTransferId());
-        switch (transferDTO.getTransferStatus()){
+        newTransfer.setTransferId(transfer.getTransferId());
+        switch (transfer.getTransferStatus()){
             case "Pending":
             case "pending":
             case "PENDING":
@@ -92,25 +92,25 @@ public class TransferService {
                 newTransfer.setTransferStatus(Transfer.TransferStatus.FAILED); break;
         }
 
-        newTransfer.setTransferAmount(transferDTO.getTransferAmount());
-        newTransfer.setTransferDate(transferDTO.getTransferDate());
-        if (transferDTO.getCurrencyType().equals("USD") || transferDTO.getCurrencyType().equals("usd")){
+        newTransfer.setTransferAmount(transfer.getTransferAmount());
+        newTransfer.setTransferDate(transfer.getTransferDate());
+        if (transfer.getCurrencyType().equals("USD") || transfer.getCurrencyType().equals("usd")){
             newTransfer.setCurrencyType(Transfer.CurrencyType.USD);
         }
-        else if (transferDTO.getCurrencyType().equals("EUR") || transferDTO.getCurrencyType().equals("eur"))
+        else if (transfer.getCurrencyType().equals("EUR") || transfer.getCurrencyType().equals("eur"))
             newTransfer.setCurrencyType(Transfer.CurrencyType.EUR);
         else    // invalid currency type
             return null;
 
         // Check if origin account exists
-        Optional<Account> originAccount = accountRepository.findByAccountId(transferDTO.getOriginAccountId());
+        Optional<Account> originAccount = accountRepository.findByAccountId(transfer.getOriginAccountId());
         if (originAccount.isEmpty()){
             return null;
         }
         newTransfer.setOriginAccount(originAccount.get());
 
         // Check if receiver account exists
-        Optional<Account> receiverAccount = accountRepository.findByAccountId(transferDTO.getReceivingAccountId());
+        Optional<Account> receiverAccount = accountRepository.findByAccountId(transfer.getReceivingAccountId());
         if (receiverAccount.isEmpty()){
             return null;
         }

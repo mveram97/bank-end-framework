@@ -8,7 +8,7 @@ import org.example.api.data.request.LoginRequest;
 import org.example.api.service.AuthService;
 import org.example.api.service.CustomerService;
 import org.example.api.token.Token;
-import org.example.apicalls.dto.CustomerDTO;
+import org.example.apicalls..Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,7 +40,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/public/register")
-    public ResponseEntity<String> addCustomer(@Valid @RequestBody CustomerDTO nuevoCust) {
+    public ResponseEntity<String> addCustomer(@Valid @RequestBody Customer nuevoCust) {
         try {
             customerService.register(nuevoCust);
             return ResponseEntity.status(HttpStatus.CREATED)

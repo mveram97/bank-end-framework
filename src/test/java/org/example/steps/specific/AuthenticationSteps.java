@@ -19,7 +19,7 @@ import org.junit.Assert;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.example.apicalls.dto.CustomerDTO;
+import org.example.apicalls..Customer;
 
 import java.util.Map;
 
@@ -49,7 +49,7 @@ public class AuthenticationSteps {
 
     @Given("I have registered with name {string}, surname {string}, email {string} and password {string}")
     public void registerForLogin(String name, String surname, String email, String password) {
-        CustomerDTO customer = new CustomerDTO();
+        Customer customer = new Customer();
         customer.setName(name);
         customer.setSurname(surname);
         customer.setEmail(email);

@@ -3,8 +3,8 @@ package org.example.api.service;
 import org.example.api.data.entity.Account;
 import org.example.api.data.entity.Card;
 import org.example.api.data.repository.AccountRepository;
-import org.example.apicalls.dto.AccountDTO;
-import org.example.apicalls.dto.CardDTO;
+import org.example.apicalls..Account;
+import org.example.apicalls..Card;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,28 +40,28 @@ public class AccountService {
   }
 
 
-  public Account convertAccountDtoToEntity(AccountDTO dto) {
+  public Account convertAccountToEntity(Account ) {
     Account account = new Account();
-    account.setAccountType(dto.getAccountType());
-    account.setIsBlocked(dto.getIsBlocked());
-    account.setIsInDebt(dto.getIsInDebt());
-    account.setAmount(dto.getAmount());
-    account.setCreationDate(dto.getCreationDate());
-    account.setExpirationDate(dto.getExpirationDate());
+    account.setAccountType(.getAccountType());
+    account.setIsBlocked(.getIsBlocked());
+    account.setIsInDebt(.getIsInDebt());
+    account.setAmount(.getAmount());
+    account.setCreationDate(.getCreationDate());
+    account.setExpirationDate(.getExpirationDate());
 
     List<Card> cards = Collections.emptyList();
 
-    if (dto.getCards() == null) {
-      dto.setCards(Collections.emptyList()); // Lo manejamos como una lista vacía
+    if (.getCards() == null) {
+      .setCards(Collections.emptyList()); // Lo manejamos como una lista vacía
     }
     else {
-      for (CardDTO card : dto.getCards()) {
-        cards.add(cardService.convertCardDtoToEntity(card, account));
+      for (Card card : .getCards()) {
+        cards.add(cardService.convertCardToEntity(card, account));
       }
     }
     account.setCards(cards);
 
-    // Puedes agregar más conversiones si el DTO tiene más campos
+    // Puedes agregar más conversiones si el  tiene más campos
     return account;
   }
 }

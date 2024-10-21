@@ -13,7 +13,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.example.apicalls.dto.AccountDTO;
+import org.example.apicalls..Account;
 
 import java.util.Map;
 
@@ -43,7 +43,7 @@ public class RestEasyClientTest {
         loginRequest.setPassword("password123");
 
         loginResponse = proxy.login(loginRequest, null);
-        System.out.println("HTTP Status: "+ loginResponse.getStatus());
+        System.out.println("HTTP Status First Login: "+ loginResponse.getStatus());
         System.out.println("Codigo login");
 
         Map<String, NewCookie> cookies = loginResponse.getCookies();
@@ -55,12 +55,17 @@ public class RestEasyClientTest {
     public void testGetAccountById() {
         Response accountResponse = proxy.accountById(id);
 
-        System.out.println("HTTP Status: "+ accountResponse.getStatus() );
-        System.out.println(accountResponse.readEntity(Account.class));
+        System.out.println("HTTP Status accountById: "+ accountResponse.getStatus() );
+        System.out.println(accountResponse.readEntity(String.class));
 
+
+    }
+
+    @Test
+    public void testSecondLogin(){
         System.out.println(loginRequest);
         Response loginResponse2 = proxy.login(loginRequest, null);
-        System.out.println("HTTP Status: "+ loginResponse2.getStatus());
+        System.out.println("HTTP Status Second Login: "+ loginResponse2.getStatus());
         System.out.println("Mensaje recibido:" + loginResponse2.readEntity(String.class));
     }
 }

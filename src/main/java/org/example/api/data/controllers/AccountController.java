@@ -10,8 +10,8 @@ import org.example.api.data.repository.CustomerRepository;
 import org.example.api.service.AccountService;
 import org.example.api.service.AuthService;
 import org.example.api.token.Token;
-import org.example.apicalls.dto.AccountDTO;
-import org.example.apicalls.dto.CustomerDTO;
+import org.example.apicalls..Account;
+import org.example.apicalls..Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -112,7 +112,7 @@ public class AccountController {
         return ResponseEntity.ok(totalAmount); // 200 OK with total money
     }
 
-    private boolean checkAccountInDebt(AccountDTO account){
+    private boolean checkAccountInDebt(Account account){
         return account.getAmount() < 0;
     }
 
@@ -125,7 +125,7 @@ public class AccountController {
     }
 
     @PostMapping("/api/account/new")
-    public ResponseEntity<String> createAccount(@RequestBody AccountDTO newAccountDTO, HttpServletRequest request) {
+    public ResponseEntity<String> createAccount(@RequestBody Account newAccount, HttpServletRequest request) {
         // Obtener el token JWT de las cookies
         String jwt = authService.getJwtFromCookies(request);
 
@@ -145,7 +145,7 @@ public class AccountController {
 
         // Asignar el cliente a la nueva cuenta
         Customer customer = customerOpt.get();
-        Account newAccount = account.convertAccountDtoToEntity(newAccountDTO);
+        Account newAccount = account.convertAccountToEntity(newAccount);
         newAccount.setCustomer(customer);
 
         // Asignar creationDate a la hora y fecha actual
@@ -158,15 +158,15 @@ public class AccountController {
         newAccount.setIsBlocked(false);
 
         // isInDebt depende del amount, si es mayor a 0 se considera que no está en deuda
-        if (newAccountDTO.getAmount() != null && newAccountDTO.getAmount() > 0) {
+        if (newAccount.getAmount() != null && newAccount.getAmount() > 0) {
             newAccount.setIsInDebt(false); // No está en deuda
         } else {
             newAccount.setIsInDebt(true);  // Está en deuda si el amount es 0 o negativo
         }
 
         // Asignar el accountType si está presente, de lo contrario, asignar un tipo por defecto
-        if (newAccountDTO.getAccountType() != null) {
-            newAccount.setAccountType(newAccountDTO.getAccountType());
+        if (newAccount.getAccountType() != null) {
+            newAccount.setAccountType(newAccount.getAccountType());
         } else {
             newAccount.setAccountType(Account.AccountType.CHECKING_ACCOUNT); // Establecer un tipo predeterminado
         }

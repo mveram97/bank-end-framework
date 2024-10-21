@@ -4,8 +4,8 @@ import org.example.api.data.entity.Account;
 import org.example.api.data.entity.Customer;
 import org.example.api.data.repository.AccountRepository;
 import org.example.api.data.repository.CustomerRepository;
-import org.example.apicalls.dto.AccountDTO;
-import org.example.apicalls.dto.CustomerDTO;
+import org.example.apicalls..Account;
+import org.example.apicalls..Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,12 +32,12 @@ public class CustomerService {
 
   //public Customer register(Customer customer) { return customerRepository.save(customer);}
 
-  public Customer register(CustomerDTO customerDto){
+  public Customer register(Customer customer){
     // verify if email exists
-    if(customerRepository.existsByEmail(customerDto.getEmail())){
+    if(customerRepository.existsByEmail(customer.getEmail())){
       throw new IllegalArgumentException("Email already registered.");
     }
-    Customer customer = convertCustomerDtoToEntity(customerDto);
+    Customer customer = convertCustomerToEntity(customer);
     return customerRepository.save(customer);
   }
 
@@ -67,21 +67,21 @@ public class CustomerService {
     return customerRepository.findByPassword(password);
   }
 
-  // Map Customer DTO to Customer Entity
-  public Customer convertCustomerDtoToEntity(CustomerDTO dto) {
+  // Map Customer  to Customer Entity
+  public Customer convertCustomerToEntity(Customer ) {
     Customer customer = new Customer();
-    customer.setName(dto.getName());
-    customer.setSurname(dto.getSurname());
-    customer.setEmail(dto.getEmail());
-    customer.setPassword(dto.getPassword());
+    customer.setName(.getName());
+    customer.setSurname(.getSurname());
+    customer.setEmail(.getEmail());
+    customer.setPassword(.getPassword());
     List<Account> accounts = Collections.emptyList();
 
-    if (dto.getAccounts() == null) {
-      dto.setAccounts(Collections.emptyList()); // Lo manejamos como una lista vacía
+    if (.getAccounts() == null) {
+      .setAccounts(Collections.emptyList()); // Lo manejamos como una lista vacía
     }
     else {
-      for (AccountDTO accountDto : dto.getAccounts()) {
-        accounts.add(accountService.convertAccountDtoToEntity(accountDto));
+      for (Account account : .getAccounts()) {
+        accounts.add(accountService.convertAccountToEntity(account));
       }
     }
     customer.setAccounts(accounts);
