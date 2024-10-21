@@ -12,8 +12,6 @@ import org.example.api.data.request.CardRequest;
 import org.example.api.data.request.LoginRequest;
 import org.example.api.data.request.TransferRequest;
 import org.example.api.service.AccountService;
-import org.example.apicalls..Account;
-import org.example.apicalls..Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import jakarta.ws.rs.core.Response;
