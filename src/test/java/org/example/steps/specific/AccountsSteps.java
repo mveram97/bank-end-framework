@@ -4,20 +4,14 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.restassured.RestAssured;
-import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
 import org.example.api.data.entity.Account;
-import org.example.api.data.request.LoginRequest;
 import org.example.apicalls.apiconfig.BankAPI;
 import org.example.apicalls.service.BankService;
 import org.example.context.AbstractSteps;
 import org.junit.Assert;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-
-import java.util.Map;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class AccountsSteps extends AbstractSteps {
@@ -28,16 +22,9 @@ public class AccountsSteps extends AbstractSteps {
 
   @Given("the system is ready and i log with email {string} and password {string}")
   public void theSystemIsReadyAndILogWithEmailAndPassword(String email, String password) {
-    /*RestAssured.baseURI = "http://localhost:8080";
-
-    LoginRequest loginRequest = new LoginRequest();
-    loginRequest.setEmail(email);
-    loginRequest.setPassword(password); */
-
     bankService = new BankService();
     response = bankService.doLogin(email,password);
     proxy = bankService.proxy;
-    /*jwt = newCookie.getValue();*/
   }
 
   @When("i request this users account information")
