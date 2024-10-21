@@ -1,34 +1,29 @@
-package org.example.steps;
+package org.example.steps.specific;
 
-import io.cucumber.java.After;
 import io.cucumber.java.AfterAll;
-import io.cucumber.java.AfterStep;
-import io.cucumber.java.BeforeAll;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
-import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
-import org.example.api.data.request.LoginRequest;
 import org.example.api.data.entity.Customer;
 import org.example.apicalls.apiconfig.BankAPI;
-import org.example.apicalls.client.BankClient;
 import org.example.apicalls.service.BankService;
+import org.example.context.AbstractSteps;
 import org.junit.Assert;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
-import java.util.Map;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class AuthenticationSteps {
-    private static String registeredEmail;
-    BankService bankService = new BankService();
+public class AuthenticationSteps extends AbstractSteps {
+
     private Response response;
+    private BankService bankService = new BankService();
+    private static String registeredEmail;
     private final String baseUrl = "http://localhost:8080";
+    private BankAPI proxy = bankService.proxy;
 
     @Given("the system is ready for user authentication")
     public void systemIsReady() {
@@ -71,6 +66,21 @@ public class AuthenticationSteps {
     public void logoutUser() {
         response = bankService.doLogout();
     }
+
+    @When("The customer logins with  email {string} and  password {string}")
+    public void theCustomerLoginsWithEmailAndMyPassword(String email,String password){
+
+        response = bankService.doLogin(email,password);
+
+        testContext().setResponse(response);
+        testContext().setBankService(bankService);
+    }
+
+
+    @Given("The customer registers with random name, surname, email and password")
+    public void theCustomerRegistersWithRandomNameSurnameEmailAndPassword() {
+    }
+
 
     @AfterAll
     public static void deleteRegisteredUser() {

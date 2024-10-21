@@ -9,8 +9,9 @@ import org.example.apicalls.service.BankService;
 import org.example.context.AbstractSteps;
 
 public class TransferSteps extends AbstractSteps {
-    private BankAPI proxy = testContext().getProxy();
+
     private BankService bankService = testContext().getBankService();
+
     @When("The customer make a transfer with their main account and transferAmount {double} to an account with id {int}")
     public void theCustomerMakeTransferWithTheirMainAccountAndTransferAmountToAnAccountWithId(Double transferAmount, int receiverAccountId){
 

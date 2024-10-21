@@ -43,13 +43,6 @@ public enum TestContext {
         return set(RESPONSE, response);
     }
 
-    public BankAPI getProxy() {
-        return get(PROXY);
-    }
-
-    public BankAPI setProxy(BankAPI proxy) {
-        return set(PROXY, proxy);
-    }
 
     public Integer getOriginID() {
         return get(ORIGINID);
