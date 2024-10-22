@@ -59,4 +59,8 @@ public class Customer {
 
         return found;
     }
+
+    public void deleteAllAccounts(){
+        accounts.clear();
+    }
 }
