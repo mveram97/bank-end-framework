@@ -5,6 +5,7 @@ import org.example.api.data.entity.Card;
 import org.example.api.data.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +38,7 @@ public class AccountService {
     return account.getAmount() < 0;
   }
 
+  @Transactional
   public void deleteAccountsByCustomer(Integer customerId) { accountRepository.deleteByCustomer_CustomerId(customerId);}
 
   public Account convertAccountToEntity(Account acc) {

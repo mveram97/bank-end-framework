@@ -229,7 +229,7 @@ public class AccountController {
     }
 
     //Delete all the acounts with its customer id
-    @DeleteMapping("/api/accounts/delete/{customerId}")
+    @DeleteMapping("/api/accounts/delete/customer/{customerId}")
     public ResponseEntity<String> deleteAccountsOfCustomer(@PathVariable int customerId){
         // Check if the customer exists
         Optional<Customer> customer = customerRepository.findById(customerId);
@@ -250,11 +250,8 @@ public class AccountController {
             List<Transfer> transfersTo = transferRepository.findByReceivingAccount_AccountId(account.getAccountId());
             transferRepository.deleteAll(transfersTo);
         }
-        // Delete the accounts
-        for (Account account : accounts) {
-            accountRepository.delete(account);
-        }
         // The user now does not have any account
+        accountRepository.deleteByCustomer_CustomerId(customerId);
         customer.get().deleteAllAccounts();
         return ResponseEntity.ok("Customer accounts deleted successfully");
     }
@@ -294,10 +291,8 @@ public class AccountController {
                 // Delete receiving transfers
                 List<Transfer> receivingTransfer = transferRepository.findByReceivingAccount_AccountId(acc.getAccountId());
                 transferRepository.deleteAll(receivingTransfer);
-
-                // Delete the account
-                accountRepository.delete(acc);
             }
+            accountRepository.deleteByCustomer_CustomerId(customer.getCustomerId());
 
             return ResponseEntity.ok("All accounts and associated transfers have been deleted successfully."); // 200 OK
             } catch (Exception e) {

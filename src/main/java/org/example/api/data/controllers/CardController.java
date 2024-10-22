@@ -83,20 +83,6 @@ public class CardController {
             return ResponseEntity.badRequest().body("Error creating card: card type not valid");
         }
 
-        // Generate randomly CVC and CardNumber
-        Random rnd = new Random();
-        Long number = rnd.nextLong() % 10000000000000000L;
-        int cvc = rnd.nextInt() % 1000;
-        // We dont want negative CVC numbers
-        if (cvc < 0) cvc *= -1;
-
-        // Create new card
-        Card newCard = new Card();
-        newCard.setType(cardRequest.getType());
-        newCard.setExpirationDate(Generator.generateRandomFutureDate());
-        newCard.setNumber(number);
-        newCard.setCvc(cvc);
-
         // Find account that will contain card
         Optional<Account> account = accountService.findById(cardRequest.getAccountId());
 
@@ -105,7 +91,7 @@ public class CardController {
             return ResponseEntity.badRequest().body("Error creating card: account not found");
         }
 
-        newCard.setAccount(account.get());
+        Card newCard = Generator.generateRandomCard(account.get());
         card.save(newCard);
 
         return ResponseEntity.ok("Card created successfully");
@@ -138,7 +124,7 @@ public class CardController {
         return ResponseEntity.ok("Card deleted successfully");
     }
 
-    @DeleteMapping("/api/card/delete/{accountId}")
+    @DeleteMapping("/api/card/delete/account/{accountId}")
     public ResponseEntity<String> deleteCardsOfAccounts(@PathVariable int accountId){
         // Check if account exists
         Optional<Account> account = accountService.findById(accountId);
@@ -152,7 +138,7 @@ public class CardController {
         return ResponseEntity.ok("Account cards deleted successfully");
     }
 
-    @DeleteMapping("/api/card/delete/{customerId}")
+    @DeleteMapping("/api/card/delete/customer/{customerId}")
     public ResponseEntity<String> deleteCardsOfCustomer(@PathVariable int customerId){
         // Check if customer exists
         Optional<Customer> customer = customerService.findById(customerId);
@@ -164,18 +150,6 @@ public class CardController {
         for (Account account : accounts){
             this.card.deleteCardsByAccount(account.getAccountId());
         }
-
-        // We iterate across the accounts and delete
-//        int i = 0;
-//        boolean error = false;
-//        ResponseEntity<String> response = null;
-//        while (i < accounts.size() && !error){
-//            response = deleteCardsOfAccounts(accounts.get(i).getAccountId());
-//            error = response.getStatusCode() == HttpStatusCode.valueOf(400);
-//            i++;
-//        }
-//        if (error) return response;
-
         return ResponseEntity.ok("Customer cards deleted successfully");
     }
 
@@ -203,5 +177,4 @@ public class CardController {
             return response;
         else return ResponseEntity.ok("Logged user cards deleted successfully");
     }
-
 }

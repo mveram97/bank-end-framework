@@ -5,6 +5,7 @@ import org.example.api.data.entity.Card;
 import org.example.api.data.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +39,7 @@ public class CardService {
     public List<Card> getCardsByCustomerId(Integer customerId) {
         return cardRepository.findByAccount_Customer_CustomerId(customerId);
     }
-
+    @Transactional
     public void deleteCardsByAccount(Integer accountId){
         cardRepository.deleteByAccount_AccountId(accountId);
     }
