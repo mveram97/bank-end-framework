@@ -88,7 +88,7 @@ public class CardController {
         Long number = rnd.nextLong() % 10000000000000000L;
         int cvc = rnd.nextInt() % 1000;
         // We dont want negative CVC numbers
-        if (cvc < 0) cvc += -1;
+        if (cvc < 0) cvc *= -1;
 
         // Create new card
         Card newCard = new Card();
@@ -203,4 +203,5 @@ public class CardController {
             return response;
         else return ResponseEntity.ok("Logged user cards deleted successfully");
     }
+
 }

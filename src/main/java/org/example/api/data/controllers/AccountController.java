@@ -7,6 +7,7 @@ import org.example.api.data.entity.Customer;
 import org.example.api.data.entity.Transfer;
 import org.example.api.data.repository.AccountRepository;
 import org.example.api.data.repository.CustomerRepository;
+import org.example.api.data.repository.TransferRepository;
 import org.example.api.service.AccountService;
 import org.example.api.service.AuthService;
 import org.example.api.token.Token;
@@ -39,6 +40,8 @@ public class AccountController {
     private AccountRepository accountRepository;
     @Autowired
     private Token tokenService;
+    @Autowired
+    private TransferRepository transferRepository;
 
     @GetMapping("/api/account/{id}")    // get 1 account by accountId
     public Optional<Account> accountById(@PathVariable Integer id) {
@@ -177,7 +180,7 @@ public class AccountController {
             return ResponseEntity.status(500).body("Error: Could not create account. " + e.getMessage()); // 500 Internal Server Error
         }
     }
-
+    //Delete an account with its Id
     @DeleteMapping ("/api/account/delete/{accountId}")
     public ResponseEntity<String> deleteAccount(@PathVariable int accountId){
          // Check if the account exists
@@ -192,6 +195,30 @@ public class AccountController {
             return ResponseEntity.badRequest().body("Error: client of the account not found");
         }
 
+        // Get all the transfers
+        List<Transfer> originTransfers = transferRepository.findByOriginAccount_AccountId(accountId);
+        List<Transfer> receivingTransfers = transferRepository.findByReceivingAccount_AccountId(accountId);
+
+        //Delete origin transfers
+        for (Transfer transfer : originTransfers) {
+            // Delete transfer of origin account
+            Account originAccount = transfer.getOriginAccount();
+            if (originAccount != null) {
+                originAccount.getOriginatingTransfers().remove(transfer);
+            }
+                transferRepository.delete(transfer);
+        }
+
+        //Delete receiving transfers
+        for (Transfer transfer : receivingTransfers) {
+            // Eliminar la transferencia de la cuenta de origen
+            Account receivinAccount = transfer.getReceivingAccount();
+            if (receivinAccount != null) {
+                receivinAccount.getReceivingTransfers().remove(transfer);
+            }
+                transferRepository.delete(transfer);
+        }
+
         // We try to delete the account from the customer list and from the database
         if (!customer.deleteAccount(accountId)){
             return ResponseEntity.badRequest().body("Error: could not delete account from customer");
@@ -201,7 +228,8 @@ public class AccountController {
         return ResponseEntity.ok("Account deleted successfully");
     }
 
-    @DeleteMapping("/api/account/delete/{customerId}")
+    //Delete all the acounts with its customer id
+    @DeleteMapping("/api/accounts/delete/{customerId}")
     public ResponseEntity<String> deleteAccountsOfCustomer(@PathVariable int customerId){
         // Check if the customer exists
         Optional<Customer> customer = customerRepository.findById(customerId);
@@ -209,9 +237,21 @@ public class AccountController {
             return ResponseEntity.badRequest().body("Error: customer not found");
         }
 
-        // We get all customers accounts and delete them
+        // We get all customers accounts
         List<Account> accounts = customer.get().getAccounts();
-        for(Account account : accounts){
+
+        //Delete the transfers of the accounts
+        for (Account account : accounts) {
+            // Eliminar las transferencias donde la cuenta es la cuenta de origen
+          List<Transfer> transfersFrom = transferRepository.findByOriginAccount_AccountId(account.getAccountId());
+          transferRepository.deleteAll(transfersFrom);
+
+            // Eliminar las transferencias donde la cuenta es la cuenta de destino
+            List<Transfer> transfersTo = transferRepository.findByReceivingAccount_AccountId(account.getAccountId());
+            transferRepository.deleteAll(transfersTo);
+        }
+        // Delete the accounts
+        for (Account account : accounts) {
             accountRepository.delete(account);
         }
         // The user now does not have any account
@@ -244,16 +284,24 @@ public class AccountController {
         Customer customer = customerOpt.get();
         List<Account> accounts = account.findByCustomer(customer.getCustomerId());
 
-        //Delete all te accounts
+        //Try to delete the associated transfers and the accounts
         try {
             for (Account acc : accounts) {
-//
-                accountRepository.delete(acc); //Delete each account
+                // Delete origin transfers
+                List<Transfer> originTransfer = transferRepository.findByOriginAccount_AccountId(acc.getAccountId());
+                transferRepository.deleteAll(originTransfer);
+
+                // Delete receiving transfers
+                List<Transfer> receivingTransfer = transferRepository.findByReceivingAccount_AccountId(acc.getAccountId());
+                transferRepository.deleteAll(receivingTransfer);
+
+                // Delete the account
+                accountRepository.delete(acc);
             }
-            return ResponseEntity.ok("All accounts have been deleted successfully."); // 200 OK
-        } catch (Exception e) {
+
+            return ResponseEntity.ok("All accounts and associated transfers have been deleted successfully."); // 200 OK
+            } catch (Exception e) {
             return ResponseEntity.status(500).body("Error: Could not delete accounts. " + e.getMessage()); // 500 Internal Server Error
         }
-
     }
 }
