@@ -178,4 +178,26 @@ public class AccountController {
         }
     }
 
+    @DeleteMapping ("/api/account/delete/{accountId}")
+    public ResponseEntity<String> deleteAccount(@PathVariable int accountId, HttpServletRequest request){
+         // Check if the account exists
+        Optional<Account> account = accountRepository.findByAccountId(accountId);
+        if (account.isEmpty()){
+            return ResponseEntity.badRequest().body("Error: account not found");
+        }
+
+        // Check if the accounts customer exists
+        Customer customer = account.get().getCustomer();
+        if (customer == null){
+            return ResponseEntity.badRequest().body("Error: client of the account not found");
+        }
+
+        // We try to delete the account from the customer list and from the database
+        if (!customer.deleteAccount(accountId)){
+            return ResponseEntity.badRequest().body("Error: could not delete account from customer");
+        }
+        accountRepository.delete(account.get());
+
+        return ResponseEntity.ok("todo correcto");
+    }
 }
