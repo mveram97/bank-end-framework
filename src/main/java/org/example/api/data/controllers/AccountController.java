@@ -24,10 +24,10 @@ import java.util.Optional;
 
 public class AccountController {
 
-    private AccountService account;
+    private AccountService accountService;
 
     public AccountController(AccountService account) {
-        this.account = account;
+        this.accountService = account;
     }
 
     @Autowired
@@ -45,12 +45,12 @@ public class AccountController {
 
     @GetMapping("/api/account/{id}")    // get 1 account by accountId
     public Optional<Account> accountById(@PathVariable Integer id) {
-        return account.findById(id);
+        return accountService.findById(id);
     }
 
     @GetMapping("/api/accounts/{customerId}")   // get all accounts by customerId
     public List<Account> accountsByCustomer(@PathVariable Integer customerId) {
-        return account.findByCustomer(customerId);
+        return accountService.findByCustomer(customerId);
     }
 
     @GetMapping("/api/accounts")    // get all accounts from the logged-in user
@@ -75,7 +75,7 @@ public class AccountController {
 
         // Get logged user´s accounts
         Customer customer = customerOpt.get();
-        List<Account> accounts = account.findByCustomer(customer.getCustomerId());
+        List<Account> accounts = accountService.findByCustomer(customer.getCustomerId());
 
         return ResponseEntity.ok(accounts); // 200 OK with users accounts
     }
@@ -102,7 +102,7 @@ public class AccountController {
 
         // Get logged user´s accounts
         Customer customer = customerOpt.get();
-        List<Account> accounts = account.findByCustomer(customer.getCustomerId());
+        List<Account> accounts = accountService.findByCustomer(customer.getCustomerId());
 
         // Calculate total money from all accounts
         double totalAmount = 0.0;
@@ -120,9 +120,7 @@ public class AccountController {
 
     @GetMapping("/api/amount/{accountId}")  // get amount by accountId
     public Double amountOfAccount(@PathVariable Integer accountId) {
-        return account.findById(accountId).get().getAmount();
-
-
+        return accountService.findById(accountId).get().getAmount();
     }
 
     @PostMapping("/api/account/new")
@@ -146,7 +144,7 @@ public class AccountController {
 
         // Asignar el cliente a la nueva cuenta
         Customer customer = customerOpt.get();
-        Account newAccount = account.convertAccountToEntity(newAcc);
+        Account newAccount = accountService.convertAccountToEntity(newAcc);
         newAccount.setCustomer(customer);
 
         // Asignar creationDate a la hora y fecha actual
@@ -174,7 +172,7 @@ public class AccountController {
 
         try {
             // Guardar la nueva cuenta en el repositorio
-            Account createdAccount = account.save(newAccount);
+            Account createdAccount = accountService.save(newAccount);
             return ResponseEntity.status(201).body("Account created successfully: " + createdAccount.getAccountId()); // 201 Created
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error: Could not create account. " + e.getMessage()); // 500 Internal Server Error
@@ -228,7 +226,7 @@ public class AccountController {
         return ResponseEntity.ok("Account deleted successfully");
     }
 
-    //Delete all the acounts with its customer id
+    //Delete all the accounts with its customer id
     @DeleteMapping("/api/accounts/delete/customer/{customerId}")
     public ResponseEntity<String> deleteAccountsOfCustomer(@PathVariable int customerId){
         // Check if the customer exists
@@ -239,16 +237,14 @@ public class AccountController {
 
         // We get all customers accounts
         List<Account> accounts = customer.get().getAccounts();
-
+        System.out.println("Debugging");
         //Delete the transfers of the accounts
         for (Account account : accounts) {
+            System.out.println(account);
             // Eliminar las transferencias donde la cuenta es la cuenta de origen
-          List<Transfer> transfersFrom = transferRepository.findByOriginAccount_AccountId(account.getAccountId());
-          transferRepository.deleteAll(transfersFrom);
-
+            transferRepository.deleteByOriginAccount_AccountId(account.getAccountId());
             // Eliminar las transferencias donde la cuenta es la cuenta de destino
-            List<Transfer> transfersTo = transferRepository.findByReceivingAccount_AccountId(account.getAccountId());
-            transferRepository.deleteAll(transfersTo);
+            transferRepository.deleteByReceivingAccount_AccountId(account.getAccountId());
         }
         // The user now does not have any account
         accountRepository.deleteByCustomer_CustomerId(customerId);
@@ -279,18 +275,15 @@ public class AccountController {
 
         // Get logged user´s accounts
         Customer customer = customerOpt.get();
-        List<Account> accounts = account.findByCustomer(customer.getCustomerId());
+        List<Account> accounts = accountService.findByCustomer(customer.getCustomerId());
 
         //Try to delete the associated transfers and the accounts
         try {
             for (Account acc : accounts) {
-                // Delete origin transfers
-                List<Transfer> originTransfer = transferRepository.findByOriginAccount_AccountId(acc.getAccountId());
-                transferRepository.deleteAll(originTransfer);
-
-                // Delete receiving transfers
-                List<Transfer> receivingTransfer = transferRepository.findByReceivingAccount_AccountId(acc.getAccountId());
-                transferRepository.deleteAll(receivingTransfer);
+                // Eliminar las transferencias donde la cuenta es la cuenta de origen
+                transferRepository.deleteByOriginAccount_AccountId(acc.getAccountId());
+                // Eliminar las transferencias donde la cuenta es la cuenta de destino
+                transferRepository.deleteByReceivingAccount_AccountId(acc.getAccountId());
             }
             accountRepository.deleteByCustomer_CustomerId(customer.getCustomerId());
 
