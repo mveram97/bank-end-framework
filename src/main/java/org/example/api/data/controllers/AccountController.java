@@ -4,17 +4,17 @@ package org.example.api.data.controllers;
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.api.data.entity.Account;
 import org.example.api.data.entity.Customer;
-import org.example.api.data.entity.Transfer;
 import org.example.api.data.repository.AccountRepository;
 import org.example.api.data.repository.CustomerRepository;
+import org.example.api.data.request.UpdateRequest;
 import org.example.api.service.AccountService;
 import org.example.api.service.AuthService;
+import org.example.api.service.CustomerService;
 import org.example.api.token.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -23,31 +23,21 @@ import java.util.Optional;
 
 public class AccountController {
 
-    private AccountService account;
-
-    public AccountController(AccountService account) {
-        this.account = account;
-    }
-
-    @Autowired
-    private AuthService authService;
-
-    @Autowired
-    private CustomerRepository customerRepository;
-
-    @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
-    private Token tokenService;
+    @Autowired  private AccountService accountService;
+    @Autowired private AuthService authService;
+    @Autowired private CustomerRepository customerRepository;
+    @Autowired private AccountRepository accountRepository;
+    @Autowired private Token tokenService;
+    @Autowired private CustomerService customerService;
 
     @GetMapping("/api/account/{id}")    // get 1 account by accountId
     public Optional<Account> accountById(@PathVariable Integer id) {
-        return account.findById(id);
+        return accountService.findById(id);
     }
 
     @GetMapping("/api/accounts/{customerId}")   // get all accounts by customerId
     public List<Account> accountsByCustomer(@PathVariable Integer customerId) {
-        return account.findByCustomer(customerId);
+        return accountService.findByCustomer(customerId);
     }
 
     @GetMapping("/api/accounts")    // get all accounts from the logged-in user
@@ -72,7 +62,7 @@ public class AccountController {
 
         // Get logged user´s accounts
         Customer customer = customerOpt.get();
-        List<Account> accounts = account.findByCustomer(customer.getCustomerId());
+        List<Account> accounts = accountService.findByCustomer(customer.getCustomerId());
 
         return ResponseEntity.ok(accounts); // 200 OK with users accounts
     }
@@ -99,7 +89,7 @@ public class AccountController {
 
         // Get logged user´s accounts
         Customer customer = customerOpt.get();
-        List<Account> accounts = account.findByCustomer(customer.getCustomerId());
+        List<Account> accounts = accountService.findByCustomer(customer.getCustomerId());
 
         // Calculate total money from all accounts
         double totalAmount = 0.0;
@@ -117,13 +107,13 @@ public class AccountController {
 
     @GetMapping("/api/amount/{accountId}")  // get amount by accountId
     public Double amountOfAccount(@PathVariable Integer accountId) {
-        return account.findById(accountId).get().getAmount();
+        return accountService.findById(accountId).get().getAmount();
 
 
     }
 
     @PostMapping("/api/account/new")
-    public ResponseEntity<String> createAccount(@RequestBody Account newAcc, HttpServletRequest request) {
+    public ResponseEntity<String> createAccount(@RequestBody Account newAccount, HttpServletRequest request) {
         // Obtener el token JWT de las cookies
         String jwt = authService.getJwtFromCookies(request);
 
@@ -143,7 +133,6 @@ public class AccountController {
 
         // Asignar el cliente a la nueva cuenta
         Customer customer = customerOpt.get();
-        Account newAccount = account.convertAccountToEntity(newAcc);
         newAccount.setCustomer(customer);
 
         // Asignar creationDate a la hora y fecha actual
@@ -171,11 +160,57 @@ public class AccountController {
 
         try {
             // Guardar la nueva cuenta en el repositorio
-            Account createdAccount = account.save(newAccount);
+            Account createdAccount = accountService.save(newAccount);
             return ResponseEntity.status(201).body("Account created successfully: " + createdAccount.getAccountId()); // 201 Created
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error: Could not create account. " + e.getMessage()); // 500 Internal Server Error
         }
     }
 
+    @PatchMapping("/api/account/deposit/{accountId}")
+    public ResponseEntity<String> depositAccountId(@PathVariable Integer accountId, @RequestBody UpdateRequest updateRequest){
+
+        Optional<Account> accountOpt = accountRepository.findByAccountId(accountId);
+        if (!accountOpt.isPresent()){
+            return ResponseEntity.badRequest().body("There is no account with ID: "+ accountId);
+        }
+
+        Account account= accountOpt.get();
+        Double deposit = updateRequest.getAmount();
+        if (deposit <= 0){
+            return ResponseEntity.badRequest().body("The deposit must be greater than 0");
+        }
+
+        try{
+            accountService.makeDeposit(account,deposit);
+            return ResponseEntity.ok().body("The deposit was made successfully");
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest().body("The deposit could not be done");
+        }
+    }
+
+    @PatchMapping("/api/account/withdraw/{accountId}")
+    public ResponseEntity<String> withdrawAccountId(@PathVariable Integer accountId, @RequestBody UpdateRequest updateRequest, HttpServletRequest request){
+        Optional<Account> accountOpt = accountRepository.findByAccountId(accountId);
+        if (!accountOpt.isPresent()){
+            return ResponseEntity.badRequest().body("There is no account with ID: "+ accountId);
+        }
+        Account account= accountOpt.get();
+        Customer customerAccount = customerService.getCustomerFromRequest(request);
+        if(customerAccount != account.getCustomer()){
+            return ResponseEntity.badRequest().body("You cannot withdraw money from an account that is not associated to you");
+        }
+        Double deposit = updateRequest.getAmount();
+        if (deposit <= 0){
+            return ResponseEntity.badRequest().body("The withdraw must be greater than 0");
+        }
+        try{
+            accountService.makeWithdraw(account,deposit);
+            return ResponseEntity.ok().body("The withdraw was made successfully");
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest().body("The withdraw could not be done");
+        }
+    }
 }

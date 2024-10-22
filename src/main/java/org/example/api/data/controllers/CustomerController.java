@@ -2,15 +2,15 @@ package org.example.api.data.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.api.data.entity.Customer;
+import org.example.api.data.request.UpdateRequest;
 import org.example.api.service.AuthService;
 import org.example.api.service.CustomerService;
 import org.example.api.token.Token;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +50,52 @@ public class CustomerController {
       }
     } catch (Exception e) {
       return ResponseEntity.status(500).body("Error occurred during deletion");
+    }
+  }
+
+  @PatchMapping("api/customer/update/email")
+  public ResponseEntity<String> updateEmail(@RequestBody UpdateRequest updateRequest, HttpServletRequest request){
+    Customer customer = customerService.getCustomerFromRequest(request);
+    if (customer.equals(null)){
+      return ResponseEntity.status(401).body("Not valid token. Please, log in again");
+    }
+    try{
+      ResponseCookie jwtCookie = customerService.updateEmailAndReturnNewCookie(updateRequest,customer);
+      return ResponseEntity.ok()
+              .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+              .body("Email has been updated successfully");}
+    catch (Exception e){
+      return ResponseEntity.badRequest().body("You are using an already existing email or your email is not valid");
+    }
+  }
+
+  @PatchMapping("api/customer/update/password")
+  public ResponseEntity<String> updatePassword(@RequestBody UpdateRequest updateRequest, HttpServletRequest request){
+    Customer customer = customerService.getCustomerFromRequest(request);
+    if (customer.equals(null)){
+      return ResponseEntity.status(401).body("Not valid token. Please, log in again");
+    }
+    try{
+      customerService.updatePassword(updateRequest, customer);
+      return ResponseEntity.ok()
+              .body("Password has been updated successfully");}
+    catch (Exception e){
+      return ResponseEntity.badRequest().body("Your password must be valid");
+    }
+  }
+
+  @PatchMapping("api/customer/update/nameandsurname")
+  public ResponseEntity<String> updateNameAndPassword(@RequestBody UpdateRequest updateRequest, HttpServletRequest request){
+    Customer customer = customerService.getCustomerFromRequest(request);
+    if (customer.equals(null)){
+      return ResponseEntity.status(401).body("Not valid token. Please, log in again");
+    }
+    try{
+      customerService.updateNameAndSurname(updateRequest, customer);
+      return ResponseEntity.ok()
+              .body("Name and Surname have been updated successfully");}
+    catch (Exception e){
+      return ResponseEntity.badRequest().body("Your name or surname must be valid");
     }
   }
 }

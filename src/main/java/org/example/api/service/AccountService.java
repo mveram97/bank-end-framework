@@ -4,6 +4,7 @@ import org.example.api.data.entity.Account;
 import org.example.api.data.entity.Card;
 import org.example.api.data.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -37,29 +38,17 @@ public class AccountService {
     return account.getAmount() < 0;
   }
 
-
-  public Account convertAccountToEntity(Account acc) {
-    Account account = new Account();
-    account.setAccountType(acc.getAccountType());
-    account.setIsBlocked(acc.getIsBlocked());
-    account.setIsInDebt(acc.getIsInDebt());
-    account.setAmount(acc.getAmount());
-    account.setCreationDate(acc.getCreationDate());
-    account.setExpirationDate(acc.getExpirationDate());
-
-    List<Card> cards = Collections.emptyList();
-
-    if (acc.getCards() == null) {
-      acc.setCards(Collections.emptyList()); // Lo manejamos como una lista vacía
-    }
-    else {
-      for (Card card : acc.getCards()) {
-        cards.add(cardService.convertCardToEntity(card, account));
-      }
-    }
-    account.setCards(cards);
-
-    // Puedes agregar más conversiones si el  tiene más campos
-    return account;
+  public void makeDeposit(Account account, Double deposit){
+    Double accountAmount = account.getAmount();
+    account.setAmount(accountAmount + deposit);
+    accountRepository.save(account);
   }
+
+  public void makeWithdraw(Account account, Double withdraw){
+    Double accountAmount = account.getAmount();
+    account.setAmount(accountAmount - withdraw);
+    accountRepository.save(account);
+  }
+
+
 }
