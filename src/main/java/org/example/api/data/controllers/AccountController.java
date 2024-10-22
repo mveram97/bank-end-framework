@@ -198,6 +198,24 @@ public class AccountController {
         }
         accountRepository.delete(account.get());
 
-        return ResponseEntity.ok("todo correcto");
+        return ResponseEntity.ok("Account deleted successfully");
+    }
+
+    @DeleteMapping("/api/account/delete/{customerId}")
+    public ResponseEntity<String> deleteAccountsOfCustomer(@PathVariable int customerId){
+        // Check if the customer exists
+        Optional<Customer> customer = customerRepository.findById(customerId);
+        if (customer.isEmpty()){
+            return ResponseEntity.badRequest().body("Error: customer not found");
+        }
+
+        // We get all customers accounts and delete them
+        List<Account> accounts = customer.get().getAccounts();
+        for(Account account : accounts){
+            accountRepository.delete(account);
+        }
+        // The user now does not have any account
+        customer.get().deleteAllAccounts();
+        return ResponseEntity.ok("Customer accounts deleted successfully");
     }
 }
