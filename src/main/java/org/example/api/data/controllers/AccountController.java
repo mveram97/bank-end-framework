@@ -9,6 +9,7 @@ import org.example.api.data.repository.CustomerRepository;
 import org.example.api.data.request.UpdateRequest;
 import org.example.api.service.AccountService;
 import org.example.api.service.AuthService;
+import org.example.api.service.CustomerService;
 import org.example.api.token.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +24,11 @@ import java.util.Optional;
 public class AccountController {
 
     @Autowired  private AccountService accountService;
-
     @Autowired private AuthService authService;
-
     @Autowired private CustomerRepository customerRepository;
-
     @Autowired private AccountRepository accountRepository;
     @Autowired private Token tokenService;
+    @Autowired private CustomerService customerService;
 
     @GetMapping("/api/account/{id}")    // get 1 account by accountId
     public Optional<Account> accountById(@PathVariable Integer id) {
@@ -177,7 +176,7 @@ public class AccountController {
         }
 
         Account account= accountOpt.get();
-        Double deposit = updateRequest.getDeposit();
+        Double deposit = updateRequest.getAmount();
         if (deposit <= 0){
             return ResponseEntity.badRequest().body("The deposit must be greater than 0");
         }
@@ -191,4 +190,27 @@ public class AccountController {
         }
     }
 
+    @PatchMapping("/api/account/withdraw/{accountId}")
+    public ResponseEntity<String> withdrawAccountId(@PathVariable Integer accountId, @RequestBody UpdateRequest updateRequest, HttpServletRequest request){
+        Optional<Account> accountOpt = accountRepository.findByAccountId(accountId);
+        if (!accountOpt.isPresent()){
+            return ResponseEntity.badRequest().body("There is no account with ID: "+ accountId);
+        }
+        Account account= accountOpt.get();
+        Customer customerAccount = customerService.getCustomerFromRequest(request);
+        if(customerAccount != account.getCustomer()){
+            return ResponseEntity.badRequest().body("You cannot withdraw money from an account that is not associated to you");
+        }
+        Double deposit = updateRequest.getAmount();
+        if (deposit <= 0){
+            return ResponseEntity.badRequest().body("The withdraw must be greater than 0");
+        }
+        try{
+            accountService.makeWithdraw(account,deposit);
+            return ResponseEntity.ok().body("The withdraw was made successfully");
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest().body("The withdraw could not be done");
+        }
+    }
 }

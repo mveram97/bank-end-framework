@@ -7,5 +7,5 @@ public class UpdateRequest {
     private String surname;
     private String email;
     private String password;
-    private Double deposit;
+    private Double Amount;
 }

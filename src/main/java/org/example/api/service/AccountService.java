@@ -44,4 +44,11 @@ public class AccountService {
     accountRepository.save(account);
   }
 
+  public void makeWithdraw(Account account, Double withdraw){
+    Double accountAmount = account.getAmount();
+    account.setAmount(accountAmount - withdraw);
+    accountRepository.save(account);
+  }
+
+
 }
