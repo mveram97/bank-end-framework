@@ -37,6 +37,7 @@ public class AccountService {
     return account.getAmount() < 0;
   }
 
+  public void deleteAccountsByCustomer(Integer customerId) { accountRepository.deleteByCustomer_CustomerId(customerId);}
 
   public Account convertAccountToEntity(Account acc) {
     Account account = new Account();

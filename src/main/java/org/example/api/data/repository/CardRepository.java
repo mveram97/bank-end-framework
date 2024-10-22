@@ -13,4 +13,5 @@ public interface CardRepository extends JpaRepository<Card, Integer> {
 
     List<Card> findByAccount_AccountId(Integer accountId);
     List<Card> findByAccount_Customer_CustomerId(Integer customerId);
+    void deleteByAccount_AccountId(Integer accountId);
 }

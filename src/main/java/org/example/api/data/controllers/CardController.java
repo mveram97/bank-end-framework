@@ -146,10 +146,7 @@ public class CardController {
             return ResponseEntity.badRequest().body("Error: account does not exist");
 
         // Delete all cards of this account
-        List<Card> cards = account.get().getCards();
-        for (Card card : cards){
-            this.card.deleteById(card.getCardId());
-        }
+        this.card.deleteCardsByAccount(accountId);
         account.get().deleteAllCards();
 
         return ResponseEntity.ok("Account cards deleted successfully");
@@ -162,15 +159,22 @@ public class CardController {
         if (customer.isEmpty())
             return ResponseEntity.badRequest().body("Error: customer does not exist");
 
-        // We delete every card of the customer
-        //  -> calling the method that deletes every card of an account
+        // We delete every card of the customer (from each account)
         List<Account> accounts = customer.get().getAccounts();
-        ResponseEntity<String> response;
         for (Account account : accounts){
-            response = deleteCardsOfAccounts(account.getAccountId());
-            if (response.getStatusCode() == HttpStatusCode.valueOf(400))
-                return response;
+            this.card.deleteCardsByAccount(account.getAccountId());
         }
+
+        // We iterate across the accounts and delete
+//        int i = 0;
+//        boolean error = false;
+//        ResponseEntity<String> response = null;
+//        while (i < accounts.size() && !error){
+//            response = deleteCardsOfAccounts(accounts.get(i).getAccountId());
+//            error = response.getStatusCode() == HttpStatusCode.valueOf(400);
+//            i++;
+//        }
+//        if (error) return response;
 
         return ResponseEntity.ok("Customer cards deleted successfully");
     }

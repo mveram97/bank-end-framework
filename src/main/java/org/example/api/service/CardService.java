@@ -39,6 +39,10 @@ public class CardService {
         return cardRepository.findByAccount_Customer_CustomerId(customerId);
     }
 
+    public void deleteCardsByAccount(Integer accountId){
+        cardRepository.deleteByAccount_AccountId(accountId);
+    }
+
     public Card convertCardToEntity(Card card, Account account){
         Card newCard = new Card();
         newCard.setCardId(card.getCardId());
