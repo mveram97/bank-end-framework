@@ -179,7 +179,7 @@ public class AccountController {
     }
 
     @DeleteMapping ("/api/account/delete/{accountId}")
-    public ResponseEntity<String> deleteAccount(@PathVariable int accountId, HttpServletRequest request){
+    public ResponseEntity<String> deleteAccount(@PathVariable int accountId){
          // Check if the account exists
         Optional<Account> account = accountRepository.findByAccountId(accountId);
         if (account.isEmpty()){
@@ -220,7 +220,7 @@ public class AccountController {
     }
 
 
-    @DeleteMapping("/api/account/delete/all")
+    @DeleteMapping("/api/account/delete")
     public ResponseEntity<String> deleteLoggedUser (HttpServletRequest request){
         // Get JWT token from cookies
         String jwt = authService.getJwtFromCookies(request);

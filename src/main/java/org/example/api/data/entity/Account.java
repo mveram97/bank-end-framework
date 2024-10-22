@@ -48,4 +48,21 @@ public class Account {
     @JsonIgnore
     @OneToMany(mappedBy = "receivingAccount")
     private List<Transfer> receivingTransfers;      // 1 account - N receiving transfers
+
+    public boolean deleteCard(int cardId){
+        int i = 0;
+        boolean found = false;
+
+        while (i < cards.size() && !found){
+            found = cards.get(i).getCardId() == cardId;
+            if (!found) i++;
+        }
+        if (found) cards.remove(i);
+
+        return found;
+    }
+
+    public void deleteAllCards(){
+        cards.clear();
+    }
 }
