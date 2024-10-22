@@ -10,7 +10,7 @@ Feature: User authentication
 
   Scenario: Login with valid credentials
     Given I have registered with name "John", surname "Doe", email "probando4@example.com" and password "password123"
-    When I login with email "testuser@example.com" and password "password123"
+    When I login with email "probando4@example.com" and password "password123"
     Then I should receive a message "Correct authentication"
 
   Scenario: Login with invalid credentials
