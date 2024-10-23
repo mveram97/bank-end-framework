@@ -132,4 +132,9 @@ public class BankService {
          return response;
      }
 
+    public Response doDeleteTransfer(Integer transferId) {
+        response = proxy.deleteTransfer(transferId);
+        System.out.println("Delete Transfer Status: " + response.getStatus());
+        return response;
+    }
 }

@@ -217,4 +217,16 @@ public class TransferController {
 
         return ResponseEntity.ok(responseBody.toString());
     }
+
+  @DeleteMapping("api/transfer/{id}")
+  public ResponseEntity<?> deleteTransfer(@PathVariable Integer id) {
+    return transferRepository
+        .findById(id)
+        .map(
+            transfer -> {
+              transferRepository.delete(transfer);
+              return ResponseEntity.ok().build();
+            })
+        .orElse(ResponseEntity.notFound().build());
+    }
 }
