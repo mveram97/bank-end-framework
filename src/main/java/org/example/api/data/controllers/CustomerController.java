@@ -53,7 +53,7 @@ public class CustomerController {
     }
   }
 
-  @PatchMapping("api/customer/update/email")
+  @PatchMapping("/api/customer/update/email")
   public ResponseEntity<String> updateEmail(@RequestBody UpdateRequest updateRequest, HttpServletRequest request){
     Customer customer = customerService.getCustomerFromRequest(request);
     if (customer.equals(null)){
@@ -69,7 +69,7 @@ public class CustomerController {
     }
   }
 
-  @PatchMapping("api/customer/update/password")
+  @PatchMapping("/api/customer/update/password")
   public ResponseEntity<String> updatePassword(@RequestBody UpdateRequest updateRequest, HttpServletRequest request){
     Customer customer = customerService.getCustomerFromRequest(request);
     if (customer.equals(null)){
@@ -84,7 +84,7 @@ public class CustomerController {
     }
   }
 
-  @PatchMapping("api/customer/update/nameandsurname")
+  @PatchMapping("/api/customer/update/nameandsurname")
   public ResponseEntity<String> updateNameAndPassword(@RequestBody UpdateRequest updateRequest, HttpServletRequest request){
     Customer customer = customerService.getCustomerFromRequest(request);
     if (customer.equals(null)){
