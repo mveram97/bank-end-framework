@@ -6,6 +6,7 @@ import org.example.api.data.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +39,10 @@ public class AccountService {
     return account.getAmount() < 0;
   }
 
+
+  @Transactional
+  public void deleteAccountsByCustomer(Integer customerId) { accountRepository.deleteByCustomer_CustomerId(customerId);}
+  
   public void makeDeposit(Account account, Double deposit){
     Double accountAmount = account.getAmount();
     account.setAmount(accountAmount + deposit);
