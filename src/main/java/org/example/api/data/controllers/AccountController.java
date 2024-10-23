@@ -4,6 +4,7 @@ package org.example.api.data.controllers;
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.api.data.entity.Account;
 import org.example.api.data.entity.Customer;
+import org.example.api.data.entity.Transfer;
 import org.example.api.data.repository.AccountRepository;
 import org.example.api.data.repository.CustomerRepository;
 import org.example.api.data.repository.TransferRepository;
@@ -32,6 +33,7 @@ public class AccountController {
     @Autowired private AccountRepository accountRepository;
     @Autowired private Token tokenService;
     @Autowired private CustomerService customerService;
+    @Autowired private TransferRepository transferRepository;
 
 
     @GetMapping("/api/account/{id}")    // get 1 account by accountId

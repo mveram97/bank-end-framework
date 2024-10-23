@@ -11,10 +11,14 @@ import org.example.api.data.entity.Customer;
 import org.example.api.data.request.CardRequest;
 import org.example.api.data.request.LoginRequest;
 import org.example.api.data.request.TransferRequest;
+import org.example.api.data.request.UpdateRequest;
 import org.example.api.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import jakarta.ws.rs.core.Response;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -127,6 +131,41 @@ public interface BankAPI {
     @Path("/public/customer/{email}")
     @Produces(MediaType.TEXT_PLAIN)
     Response deleteCustomer(@PathParam("email") String email);
+
+    @DELETE
+    @Path("/api/account/delete/{accountId}")
+    @Produces(MediaType.TEXT_PLAIN)
+    Response deleteAccount(@PathParam("accountId") int accountId);
+
+    @DELETE
+    @Path("/api/account/delete/customer/{customerId}")
+    @Produces(MediaType.TEXT_PLAIN)
+    Response deleteAccountsOfCustomer(@PathParam("customerId") int customerId);
+
+    @DELETE
+    @Path("/api/account/delete")
+    @Produces(MediaType.TEXT_PLAIN)
+    Response deleteLoggedUser();
+
+    @PATCH
+    @Path("/api/account/withdraw/{accountId}")
+    @Produces(MediaType.TEXT_PLAIN)
+    Response withdrawAccountId(@PathVariable("accountId") int accountId, @RequestBody UpdateRequest updateRequest, @Context HttpServletRequest request);
+
+    @DELETE
+    @Path("/api/card/delete")
+    @Produces(MediaType.TEXT_PLAIN)
+    Response deleteCardsOfLoggedUser(@Context HttpServletRequest request);
+
+    @DELETE
+    @Path("/api/card/delete/customer/{customerId}")
+    @Produces(MediaType.TEXT_PLAIN)
+    Response deleteCardsOfCustomer(@PathVariable("customerId") int customerId);
+
+    @DELETE
+    @Path("/api/card/delete/account/{accountId}")
+    @Produces(MediaType.TEXT_PLAIN)
+    Response deleteCardsOfAccounts(@PathVariable("accountId") int accountId);
 
     @POST
     @Path("/api/transfer/new")
