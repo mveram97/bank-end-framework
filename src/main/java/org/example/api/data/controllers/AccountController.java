@@ -13,6 +13,7 @@ import org.example.api.service.AuthService;
 import org.example.api.token.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -227,7 +228,8 @@ public class AccountController {
     }
 
     //Delete all the accounts with its customer id
-    @DeleteMapping("/api/accounts/delete/customer/{customerId}")
+    @Transactional
+    @DeleteMapping("/api/account/delete/customer/{customerId}")
     public ResponseEntity<String> deleteAccountsOfCustomer(@PathVariable int customerId){
         // Check if the customer exists
         Optional<Customer> customer = customerRepository.findById(customerId);
@@ -237,21 +239,43 @@ public class AccountController {
 
         // We get all customers accounts
         List<Account> accounts = customer.get().getAccounts();
-        System.out.println("Debugging");
-        //Delete the transfers of the accounts
-        for (Account account : accounts) {
-            System.out.println(account);
-            // Eliminar las transferencias donde la cuenta es la cuenta de origen
-            transferRepository.deleteByOriginAccount_AccountId(account.getAccountId());
-            // Eliminar las transferencias donde la cuenta es la cuenta de destino
-            transferRepository.deleteByReceivingAccount_AccountId(account.getAccountId());
+        if (accounts.isEmpty()) {
+            return ResponseEntity.status(404).body("Error: No accounts found for this customer");
         }
-        // The user now does not have any account
-        accountRepository.deleteByCustomer_CustomerId(customerId);
-        customer.get().deleteAllAccounts();
-        return ResponseEntity.ok("Customer accounts deleted successfully");
-    }
 
+        // Try to delete the associated transfers and accounts
+        try {
+            for (Account account : accounts) {
+                // Delete transfers where the account is the origin account
+                List<Transfer> originTransfers = transferRepository.findByOriginAccount_AccountId(account.getAccountId());
+                for (Transfer transfer : originTransfers) {
+                    Account originAccount = transfer.getOriginAccount();
+                    if (originAccount != null) {
+                        originAccount.getOriginatingTransfers().remove(transfer);
+                    }
+                    transferRepository.delete(transfer);
+                }
+
+                // Delete transfers where the account is the receiving account
+                List<Transfer> receivingTransfers = transferRepository.findByReceivingAccount_AccountId(account.getAccountId());
+                for (Transfer transfer : receivingTransfers) {
+                    Account receivingAccount = transfer.getReceivingAccount();
+                    if (receivingAccount != null) {
+                        receivingAccount.getReceivingTransfers().remove(transfer);
+                    }
+                    transferRepository.delete(transfer);
+                }
+            }
+
+            // Delete all the accounts associated with the customer
+            accountRepository.deleteByCustomer_CustomerId(customerId);
+            customer.get().deleteAllAccounts();
+
+            return ResponseEntity.ok("All accounts and associated transfers have been deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error: Could not delete accounts. " + e.getMessage());
+        }
+    }
 
     @DeleteMapping("/api/account/delete")
     public ResponseEntity<String> deleteLoggedUser (HttpServletRequest request){
