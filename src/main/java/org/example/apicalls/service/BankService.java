@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
 import org.example.api.data.entity.Account;
-import org.example.api.data.entity.Card;
 import org.example.api.data.entity.Customer;
 import org.example.api.data.entity.Transfer;
 import org.example.api.data.request.CardRequest;
@@ -53,6 +52,14 @@ public class BankService {
     // Register a new customer randomly generated (with n accounts, m cards)
     public Customer registerRandomCustomer(int numAccounts, int numCards){
         Customer customer = Generator.generateRandomCustomer(numCards,numAccounts);
+        BankAPI proxy = client.getAPI();
+        response = proxy.addCustomer(customer);
+        return customer;
+    }
+
+    // Register a new customer randomly generated (with n accounts, m cards)
+    public Customer registerRandomCustomer(int numAccounts, int numCards, double amount){
+        Customer customer = Generator.generateRandomCustomer(numCards,numAccounts,amount);
         BankAPI proxy = client.getAPI();
         response = proxy.addCustomer(customer);
         return customer;
