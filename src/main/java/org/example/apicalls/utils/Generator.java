@@ -115,13 +115,37 @@ public class Generator {
 
     // Generate Random Entities and s
 
-
     public static Account generateRandomAccount(Customer customer, int nCards) {
         Account account = new Account();
         account.setAccountType(randomlyChooseFrom(Account.AccountType.CHECKING_ACCOUNT, Account.AccountType.BUSINESS_ACCOUNT, Account.AccountType.CHILDREN_ACCOUNT, Account.AccountType.SAVINGS_ACCOUNT));
         account.setIsBlocked(generateRandomBoolean());
         account.setIsInDebt(generateRandomBoolean());
         account.setAmount(generateRandomDouble(minAmount, maxAmount));
+        account.setCustomer(customer);
+
+        List<Card> cards = new java.util.ArrayList<>(List.of());
+        int n = 0;
+
+        if (nCards < 0) {
+            throw new IllegalArgumentException("The number of Cards must be higher than 0!");
+        }
+
+        while (n != nCards) {
+            cards.add(generateRandomCard(account));
+            n++;
+        }
+
+        account.setCards(cards);
+
+        return account;
+    }
+
+    public static Account generateRandomAccount(Customer customer, int nCards, double amount) {
+        Account account = new Account();
+        account.setAccountType(randomlyChooseFrom(Account.AccountType.CHECKING_ACCOUNT, Account.AccountType.BUSINESS_ACCOUNT, Account.AccountType.CHILDREN_ACCOUNT, Account.AccountType.SAVINGS_ACCOUNT));
+        account.setIsBlocked(generateRandomBoolean());
+        account.setIsInDebt(generateRandomBoolean());
+        account.setAmount(amount);
         account.setCustomer(customer);
 
         List<Card> cards = new java.util.ArrayList<>(List.of());
@@ -153,7 +177,6 @@ public class Generator {
         return card;
     }
 
-
     public static Customer generateRandomCustomer(int nCards, int nAccounts) {
         Customer customer = new Customer();
         customer.setName(generateRandomString(nameLength));
@@ -170,6 +193,30 @@ public class Generator {
 
         while (n != nAccounts) {
             accounts.add(generateRandomAccount(customer, nCards));
+            n++;
+        }
+
+        customer.setAccounts(accounts);
+
+        return customer;
+    }
+
+    public static Customer generateRandomCustomer(int nCards, int nAccounts, double amount) {
+        Customer customer = new Customer();
+        customer.setName(generateRandomString(nameLength));
+        customer.setSurname(generateRandomString(nameLength));
+        customer.setEmail(generateRandomGmail(nameLength));
+        customer.setPassword(generateRandomPassword(passwordLength));
+
+        List<Account> accounts = new java.util.ArrayList<>(List.of());
+        int n = 0;
+
+        if (nAccounts < 0) {
+            throw new IllegalArgumentException("The number of Accounts must be higher than 0!");
+        }
+
+        while (n != nAccounts) {
+            accounts.add(generateRandomAccount(customer, nCards, amount));
             n++;
         }
 
