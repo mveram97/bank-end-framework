@@ -45,4 +45,22 @@ public class Customer {
     public List<Integer> getAccountIds() {
         return accounts == null ? Collections.emptyList() : accounts.stream().map(Account::getAccountId).collect(Collectors.toList());
     }
+
+    public boolean deleteAccount(int accountId){
+        int i = 0;
+        boolean found = false;
+
+        while(i < accounts.size() && !found){
+            found = accounts.get(i).getAccountId() == accountId;
+            if (!found) i++;
+        }
+
+        if (found) accounts.remove(i);
+
+        return found;
+    }
+
+    public void deleteAllAccounts(){
+        accounts.clear();
+    }
 }

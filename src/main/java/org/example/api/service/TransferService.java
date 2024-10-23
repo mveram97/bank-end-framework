@@ -8,6 +8,7 @@ import org.example.api.data.request.TransferRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -74,6 +75,12 @@ public class TransferService {
     public List<Transfer> getTransferByAccountId(Integer originAccountId){
         return transferRepository.findByOriginAccount_AccountId(originAccountId);
     }
+
+    @Transactional
+    public void deleteByOriginTransfer(Integer originAccountId) {transferRepository.deleteByOriginAccount_AccountId(originAccountId);}
+
+    @Transactional
+    public void deleteByReceivingTransfer(Integer receivingAccountId) {transferRepository.deleteByReceivingAccount_AccountId(receivingAccountId);}
 
     public Transfer convertTransferToEntity(Transfer transfer){
         Transfer newTransfer = new Transfer();
