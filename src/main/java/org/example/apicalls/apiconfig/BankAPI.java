@@ -139,6 +139,12 @@ public interface BankAPI {
     Response deleteCustomer(@PathParam("email") String email);
 
     @DELETE
+    @Path("/api/transfer/{id}")
+    //@Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    Response deleteTransfer(@PathParam("id") int id);
+
+    @DELETE
     @Path("/api/account/delete/{accountId}")
     @Produces(MediaType.TEXT_PLAIN)
     Response deleteAccount(@PathParam("accountId") int accountId);
