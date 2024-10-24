@@ -165,6 +165,13 @@ public interface BankAPI {
     @Produces(MediaType.TEXT_PLAIN)
     Response withdrawAccountId(@PathVariable("accountId") int accountId, @RequestBody UpdateRequest updateRequest, @Context HttpServletRequest request);
 
+    @PATCH
+    @Path("/api/customer/update/nameandsurname")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    Response updateNameAndSurname(@RequestBody UpdateRequest updateRequest, @Context HttpServletRequest httpServletRequest);
+
+
     @DELETE
     @Path("/api/card/delete")
     @Produces(MediaType.TEXT_PLAIN)

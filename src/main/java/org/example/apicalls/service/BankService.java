@@ -80,6 +80,8 @@ public class BankService {
     }
 
 
+
+
     public Response doLogin (String email, String password){
 
         proxy = client.getAPI();

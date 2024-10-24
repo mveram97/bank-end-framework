@@ -15,8 +15,6 @@ import org.junit.Assert;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
-
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class AuthenticationSteps extends AbstractSteps {
 
@@ -83,7 +81,7 @@ public class AuthenticationSteps extends AbstractSteps {
         testContext().setBankService(bankService);
     }
 
-    @When("The customer logins")
+    @When("The customer logs in with their register credentials")
     public void theCustomerLogins() {
         String email = testContext().getCustomer().getEmail();
         String password = testContext().getCustomer().getPassword();
