@@ -10,3 +10,5 @@ Feature: Testing the cards creation registering a new user with random parameter
     |naccounts    |ncards |amount   |status   |
     |1            |1      |140      |200      |
     |1            |0      |20       |200      |
+    |1            |4      |130      |200      |
+    |2            |2      |231      |200      |

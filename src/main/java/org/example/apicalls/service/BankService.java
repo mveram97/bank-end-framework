@@ -1,5 +1,6 @@
 package org.example.apicalls.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
@@ -59,10 +60,23 @@ public class BankService {
 
     // Register a new customer randomly generated (with n accounts, m cards)
     public Customer registerRandomCustomer(int numAccounts, int numCards, double amount){
-        Customer customer = Generator.generateRandomCustomer(numCards,numAccounts,amount);
+        Customer randCustomer = Generator.generateRandomCustomer(numCards,numAccounts,amount);
         BankAPI proxy = client.getAPI();
-        response = proxy.addCustomer(customer);
+        response = proxy.addCustomer(randCustomer);
+        String customerString = response.getHeaderString("NewCustomer");
+        System.out.println(customerString);
+        Customer customer = stringToCustomer(customerString);
         return customer;
+    }
+
+    public Customer stringToCustomer(String customerString) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(customerString, Customer.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 

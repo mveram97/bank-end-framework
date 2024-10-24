@@ -6,10 +6,16 @@ import jakarta.ws.rs.core.Response;
 import org.example.api.data.entity.Account;
 import org.example.api.data.entity.Card;
 import org.example.api.data.entity.Customer;
+import org.example.api.data.repository.AccountRepository;
+import org.example.api.data.repository.CardRepository;
+import org.example.api.data.repository.CustomerRepository;
+import org.example.api.data.request.CardRequest;
 import org.example.apicalls.service.BankService;
 import org.example.apicalls.utils.Generator;
+import org.example.apicalls.utils.JsonConverter;
 import org.example.context.AbstractSteps;
 import org.junit.Assert;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +23,7 @@ import java.util.List;
 public class GenericSteps extends AbstractSteps {
     private Response response;
     private BankService bankService = new BankService();
-
+    @Autowired private CustomerRepository customerRepository;
     @Then("The customer gets a {int} status response and message: {string}")
     public void theCustomerGetsStatusResponseAndBody(Integer expectedStatus, String expectedMessage){
         //Se recibe la respuesta y se extrae el mensaje y el status de la response
@@ -48,12 +54,9 @@ public class GenericSteps extends AbstractSteps {
 
     @Given("The customer registers with {int} accounts, {int} cards and an initial amount of {double}")
     public void theCustomerRegistersWithAccountsCardsAndInitialAmount(int nAccounts, int ncards, double amount){
-        Customer customer = Generator.generateRandomCustomer(ncards, nAccounts, amount);
+        Customer randcustomer = Generator.generateRandomCustomer(ncards, nAccounts, amount);
         // register customer
-        response = bankService.doRegister(customer.getName(), customer.getSurname(),
-                customer.getEmail(), customer.getPassword());
-        Assert.assertEquals(201, response.getStatus()); // verify successful register
-
+        Customer customer = customerRepository.save(randcustomer);
         testContext().setCustomer(customer);
         testContext().setRegisteredEmail(customer.getEmail());
         // Get accountId from registered receiver customer: receiverAccountId
@@ -64,6 +67,7 @@ public class GenericSteps extends AbstractSteps {
         for(Account account : accounts){
             cards.addAll(account.getCards());
         }
+
         testContext().setCards(cards);
     }
 }

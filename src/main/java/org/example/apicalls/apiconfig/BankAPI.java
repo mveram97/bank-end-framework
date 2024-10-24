@@ -19,6 +19,7 @@ import jakarta.ws.rs.core.Response;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.print.attribute.standard.Media;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,12 +116,17 @@ public interface BankAPI {
     @GET
     @Path("/api/cards")
     @Produces(MediaType.APPLICATION_JSON)
-    Response getCards(@Context SecurityContext securityContext);
+    Response getCards();
 
     @GET
     @Path("/api/customer/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     Response getCustomerById(@PathParam("id") Integer id);
+
+    @GET
+    @Path("/api/customer/email/{email}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response getCustomerByEmail(@PathParam("email") String email);
 
     @GET
     @Path("/api/customers")
