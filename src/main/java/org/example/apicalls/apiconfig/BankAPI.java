@@ -199,6 +199,24 @@ public interface BankAPI {
     @Path("/api/transfer/{transferId}")
     @Produces(MediaType.APPLICATION_JSON)
     Response getTransferById(@PathParam("transferId") Integer transferId, @Context HttpServletRequest request);
+
+    @PATCH
+    @Path("/api/customer/update/nameandsurname")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    Response updateNameAndSurname(@RequestBody UpdateRequest updateRequest, @Context HttpServletRequest httpServletRequest);
+
+    @PATCH
+    @Path("/api/customer/update/email")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    Response updateEmail(@RequestBody UpdateRequest updateRequest, @Context HttpServletRequest httpServletRequest);
+
+    @PATCH
+    @Path("/api/customer/update/password")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    Response updatePassword(@RequestBody UpdateRequest updateRequest, @Context HttpServletRequest httpServletRequest);
 }
 
 
