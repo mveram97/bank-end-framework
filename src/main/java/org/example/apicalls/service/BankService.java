@@ -13,9 +13,13 @@ import org.example.api.data.request.TransferRequest;
 import org.example.apicalls.apiconfig.BankAPI;
 import org.example.apicalls.client.BankClient;
 import org.example.apicalls.utils.Generator;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+@Service
+@ComponentScan(basePackages = "org.example.apicalls.service")
 public class BankService {
     private BankClient client;
     public BankAPI proxy;
