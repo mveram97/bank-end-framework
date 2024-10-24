@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
-@Consumes(MediaType.APPLICATION_JSON)
 
 public interface BankAPI {
 
@@ -135,6 +134,7 @@ public interface BankAPI {
 
     @DELETE
     @Path("/api/transfer/{id}")
+    //@Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     Response deleteTransfer(@PathParam("id") int id);
 
@@ -155,6 +155,7 @@ public interface BankAPI {
 
     @PATCH
     @Path("/api/account/withdraw/{accountId}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     Response withdrawAccountId(@PathVariable("accountId") int accountId, @RequestBody UpdateRequest updateRequest, @Context HttpServletRequest request);
 
@@ -165,11 +166,13 @@ public interface BankAPI {
 
     @DELETE
     @Path("/api/card/delete/customer/{customerId}")
+    @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
     Response deleteCardsOfCustomer(@PathVariable("customerId") int customerId);
 
     @DELETE
     @Path("/api/card/delete/account/{accountId}")
+    @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
     Response deleteCardsOfAccounts(@PathVariable("accountId") int accountId);
 
