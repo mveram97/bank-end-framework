@@ -5,7 +5,7 @@ Feature: User authentication
     Given the system is ready for user authentication
 
   Scenario: Register a new customer
-    When I register with name "John", surname "Doe", email "probando4@example.com" and password "password123"
+    When I register with name "John", surname "Doe", email "probando4@example.com" and password "password123" and I log in
     Then I should receive a message "You have registered successfully."
 
   Scenario: Login with valid credentials

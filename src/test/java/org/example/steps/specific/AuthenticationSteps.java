@@ -29,6 +29,11 @@ public class AuthenticationSteps extends AbstractSteps {
     private static BankAPI proxy = bankService.proxy;
 
 
+    @Given("the system is ready for user authentication")
+    public void systemIsReady() {
+        RestAssured.baseURI = baseUrl;
+    }
+
     @Given("The customer registers with random email, name, surname and password")
     public void registerRandomCustomer() {
         Customer randomCustomer = bankService.registerRandomCustomer();  // Almacena el cliente generado
@@ -38,36 +43,28 @@ public class AuthenticationSteps extends AbstractSteps {
         testContext().setRegisteredEmail(randomCustomer.getEmail());
     }
 
-    @Given("the system is ready and i log with email {string} and password {string}")
-    public void theSystemIsReadyAndILogWithEmailAndPassword(String email, String password) {
-        response = bankService.doLogin(email,password);
-
-        testContext().setResponse(response);
-        testContext().setBankService(bankService);
-    }
-
-    @Given("the system is ready for user authentication")
-    public void systemIsReady() {
-        RestAssured.baseURI = baseUrl;
-    }
-
-    @When("I register with name {string}, surname {string}, email {string} and password {string}")
+    @When("I register with name {string}, surname {string}, email {string} and password {string} and I log in")
     public void registerUser(String name, String surname, String email, String password) {
         testContext().setRegisteredEmail(email);
         response = bankService.doRegister(name, surname, email, password);
+        testContext().setResponse(response);
+        bankService.doLogin(email,password);
+        testContext().setBankService(bankService);
     }
 
-    @Then("I should receive a message {string}")
-    public void verifyMessage(String expectedMessage) {
-        String actualMessage = response.readEntity(String.class);
-        Assert.assertEquals(expectedMessage, actualMessage);
-    }
 
     @Given("I have registered with name {string}, surname {string}, email {string} and password {string}")
     public void registerForLogin(String name, String surname, String email, String password) {
         registeredEmail = email;
         response = bankService.doRegister(name,surname,email,password);
         testContext().setRegisteredEmail(email);
+    }
+
+    @Given("the system is ready and i log with email {string} and password {string}")
+    public void theSystemIsReadyAndILogWithEmailAndPassword(String email, String password) {
+        response = bankService.doLogin(email,password);
+        testContext().setResponse(response);
+        testContext().setBankService(bankService);
     }
 
     @When("I login with email {string} and password {string}")
@@ -84,10 +81,6 @@ public class AuthenticationSteps extends AbstractSteps {
         testContext().setBankService(bankService);
     }
 
-    @When("I log out")
-    public void logoutUser() {
-        response = bankService.doLogout();
-    }
 
     @When("The customer logins with  email {string} and  password {string}")
     public void theCustomerLoginsWithEmailAndMyPassword(String email,String password){
@@ -116,24 +109,30 @@ public class AuthenticationSteps extends AbstractSteps {
         Assert.assertEquals(200,response.getStatus());
     }
 
+    @When("I log out")
+    public void logoutUser() {
+        response = bankService.doLogout();
+        testContext().setResponse(response);
+    }
+
     @After
     public void deleteRegisteredUser() {
     registeredEmail = testContext().getRegisteredEmail();
+    proxy = bankService.proxy;
+    testContext().reset();
     System.out.println(registeredEmail);
         if (registeredEmail != null) {
-            Response deleteResponse = proxy.deleteCustomer(registeredEmail);
+            response = proxy.deleteCardsOfLoggedUser(null);
+            System.out.println("Status de borrar cards: "+response.getStatus());
+            response = proxy.deleteLoggedUser(null);
+            System.out.println("Status de borrar cuentas: "+response.getStatus());
 
+            Response deleteResponse = proxy.deleteCustomer(registeredEmail);
             int statusCode = deleteResponse.getStatus();
             System.out.println("Delete response status code: " + statusCode);
             Assert.assertEquals(HttpStatus.OK.value(), statusCode);  // Validar si realmente devolvió un 200 OK
-
-            registeredEmail = null;
-            testContext().reset();
         } else {
             System.out.println("No user to delete, registeredEmail is null");
-            testContext().reset();
         }
     }
-
-
 }

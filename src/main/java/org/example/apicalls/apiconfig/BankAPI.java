@@ -157,7 +157,7 @@ public interface BankAPI {
     @DELETE
     @Path("/api/account/delete")
     @Produces(MediaType.TEXT_PLAIN)
-    Response deleteLoggedUser();
+    Response deleteLoggedUser(@Context HttpServletRequest request);
 
     @PATCH
     @Path("/api/account/withdraw/{accountId}")

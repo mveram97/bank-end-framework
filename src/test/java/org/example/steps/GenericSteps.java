@@ -24,6 +24,20 @@ public class GenericSteps extends AbstractSteps {
     private Response response;
     private BankService bankService = new BankService();
     @Autowired private CustomerRepository customerRepository;
+
+    @Then("I should receive a message {string}")
+    public void verifyMessage(String expectedMessage) {
+        response = testContext().getResponse();
+        String actualMessage = response.readEntity(String.class);
+        Assert.assertEquals(expectedMessage, actualMessage);
+    }
+
+    @Then("i should receive the code {int}")
+    public void iShouldReceiveTheCode(int expectedCode) {
+        response = testContext().getResponse();
+        Assert.assertEquals(expectedCode, response.getStatus());
+    }
+
     @Then("The customer gets a {int} status response and message: {string}")
     public void theCustomerGetsStatusResponseAndBody(Integer expectedStatus, String expectedMessage){
         //Se recibe la respuesta y se extrae el mensaje y el status de la response
@@ -35,8 +49,6 @@ public class GenericSteps extends AbstractSteps {
         Assert.assertEquals(expectedStatus,receivedStatus);
         Assert.assertEquals(expectedMessage,receivedMessage);
 
-        // Reseteamos el contexto (Esto deberia añadirse en un @AfterEach para asegurarse que los test vayan bien)
-        testContext().reset();
     }
 
     @Then("The customer gets a {int} status response")
@@ -48,8 +60,6 @@ public class GenericSteps extends AbstractSteps {
         // Comprobamos que el status y el mensaje de la response sean los esperados
         Assert.assertEquals(expectedStatus,receivedStatus);
 
-        // Reseteamos el contexto (Esto deberia añadirse en un @AfterEach para asegurarse que los test vayan bien)
-        testContext().reset();
     }
 
     @Given("The customer registers with {int} accounts, {int} cards and an initial amount of {double}")
@@ -59,8 +69,10 @@ public class GenericSteps extends AbstractSteps {
         Customer customer = customerRepository.save(randcustomer);
         testContext().setCustomer(customer);
         testContext().setRegisteredEmail(customer.getEmail());
+        System.out.println(customer.getEmail());
         // Get accountId from registered receiver customer: receiverAccountId
-        Integer receiverAccountId = customer.getAccounts().get(0).getAccountId();
+        Integer accountId = customer.getAccounts().get(0).getAccountId();
+        testContext().setOriginID(accountId);
 
         List<Account> accounts = customer.getAccounts();
         List<Card> cards = new ArrayList<>();

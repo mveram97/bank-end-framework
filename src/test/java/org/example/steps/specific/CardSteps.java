@@ -20,16 +20,16 @@ public class CardSteps extends AbstractSteps {
     private Response response;
     private BankService bankService = testContext().getBankService();
     private BankAPI proxy = bankService.proxy;
+
     @And("The customer checks their cards")
     public void theCustomerChecksTheirCards(){
         response = proxy.getCards();
-
         List<Card> cards = testContext().getCards();
+
         JsonConverter jsonConverter = new JsonConverter();
         String jsonOutput = jsonConverter.convertListToJson(cards);
         String readResponse = response.readEntity(String.class);
-        System.out.println("Respuesta del response:" + readResponse);
-        System.out.println("Manualmente: " + jsonOutput);
+
         Assert.assertEquals(jsonOutput,readResponse);
 
         testContext().setResponse(response);

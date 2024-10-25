@@ -50,6 +50,7 @@ public class CustomerSteps extends AbstractSteps {
 
         Response response = proxy.updateNameAndSurname(nameUpdateRequest, null);
         System.out.println("Customer name updated to: " + name + " " + surname);
+        testContext().setResponse(response);
     }
 
     @And("The customer updates their email to {string} and password to {string}")
