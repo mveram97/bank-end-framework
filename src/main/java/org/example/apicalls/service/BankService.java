@@ -10,12 +10,15 @@ import org.example.api.data.entity.Transfer;
 import org.example.api.data.request.CardRequest;
 import org.example.api.data.request.LoginRequest;
 import org.example.api.data.request.TransferRequest;
+import org.example.api.data.request.UpdateRequest;
 import org.example.apicalls.apiconfig.BankAPI;
 import org.example.apicalls.client.BankClient;
 import org.example.apicalls.utils.Generator;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -163,5 +166,35 @@ public class BankService {
         response = proxy.deleteTransfer(transferId);
         System.out.println("Delete Transfer Status: " + response.getStatus());
         return response;
+    }
+
+    public ArrayList<Response> updateEmailAndPassword(UpdateRequest updateRequest) {
+        ArrayList<Response> responses = new ArrayList<>();
+        Response responseEmail = null;
+        Response responsePassword = null;
+        try {
+            responseEmail = proxy.updateEmail(updateRequest, null);
+            System.out.println(responseEmail.readEntity(String.class));
+            Map<String, NewCookie> cookies = responseEmail.getCookies();
+            NewCookie newCookie = cookies.entrySet().iterator().next().getValue();
+            proxy = client.getAPI(newCookie);
+            if (responseEmail.getStatus() == 200) {
+                responsePassword = proxy.updatePassword(updateRequest, null);
+                System.out.println(responsePassword.readEntity(String.class));
+                if (responsePassword.getStatus() == 200) {
+                    System.out.println("User credentials updated successfully.");
+
+                } else {
+                    System.out.println("Failed to update password: " + responsePassword.getStatusInfo());
+                }
+            } else {
+                System.out.println("Failed to update email: " + responseEmail.getStatusInfo());
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e.getMessage());
+        }
+        responses.add(responseEmail);
+        responses.add(responsePassword);
+        return responses;
     }
 }
