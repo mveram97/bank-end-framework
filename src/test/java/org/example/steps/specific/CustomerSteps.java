@@ -101,7 +101,10 @@ public class CustomerSteps extends AbstractSteps {
             System.out.println("An error occurred: " + e.getMessage()); }
     }
 
-    @Then("The customer’s name, surname, email and password have been updated {string}")
+    @Then("The customer’s name, surname, email and password have been updated {string}") //
+
+    //TODO Debería ser genérico y aceptar una lista de parámetros (no estáticos)
+
     public void verifyCustomerUpdated(String updateStatus) {
         assertNotNull(randomCustomer);
 
