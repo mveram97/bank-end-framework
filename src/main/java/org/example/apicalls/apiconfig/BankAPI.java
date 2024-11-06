@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.SecurityContext;
+import org.springframework.security.core.context.SecurityContext;
 import org.example.api.data.entity.Account;
 import org.example.api.data.entity.Card;
 import org.example.api.data.entity.Customer;
@@ -19,6 +19,7 @@ import jakarta.ws.rs.core.Response;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.print.attribute.standard.Media;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,12 +116,17 @@ public interface BankAPI {
     @GET
     @Path("/api/cards")
     @Produces(MediaType.APPLICATION_JSON)
-    Response getCards(@Context SecurityContext securityContext);
+    Response getCards();
 
     @GET
     @Path("/api/customer/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     Response getCustomerById(@PathParam("id") Integer id);
+
+    @GET
+    @Path("/api/customer/email/{email}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response getCustomerByEmail(@PathParam("email") String email);
 
     @GET
     @Path("/api/customers")
@@ -151,7 +157,7 @@ public interface BankAPI {
     @DELETE
     @Path("/api/account/delete")
     @Produces(MediaType.TEXT_PLAIN)
-    Response deleteLoggedUser();
+    Response deleteLoggedUser(@Context HttpServletRequest request);
 
     @PATCH
     @Path("/api/account/withdraw/{accountId}")

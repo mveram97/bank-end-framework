@@ -143,8 +143,14 @@ public class Generator {
     public static Account generateRandomAccount(Customer customer, int nCards, double amount) {
         Account account = new Account();
         account.setAccountType(randomlyChooseFrom(Account.AccountType.CHECKING_ACCOUNT, Account.AccountType.BUSINESS_ACCOUNT, Account.AccountType.CHILDREN_ACCOUNT, Account.AccountType.SAVINGS_ACCOUNT));
-        account.setIsBlocked(generateRandomBoolean());
-        account.setIsInDebt(generateRandomBoolean());
+        account.setIsBlocked(Boolean.FALSE);
+        if (amount < 0){
+            account.setIsInDebt(Boolean.TRUE);
+        } else {
+            account.setIsInDebt(Boolean.FALSE);
+        }
+        account.setCreationDate(LocalDateTime.now());
+        account.setExpirationDate(LocalDateTime.now().plusYears(1));
         account.setAmount(amount);
         account.setCustomer(customer);
 
@@ -169,7 +175,7 @@ public class Generator {
     public static Card generateRandomCard(Account account) {
         Card card = new Card();
         card.setType(randomlyChooseFrom("Credit", "Debit"));
-        card.setCvc(generateRandomInt(3, 3));
+        card.setCvc(generateRandomInt(100, 999));
         card.setNumber(generateRandomCardNumber());
         card.setExpirationDate(generateRandomFutureDate());
         card.setAccount(account);

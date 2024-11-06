@@ -24,17 +24,12 @@ public class AccountsSteps extends AbstractSteps {
   @When("i request this users account information")
   public void iRequestThisUsersAccountInformation() {
     response = proxy.getUserAccounts(null);
-  }
-
-  @Then("i should receive the code {int}")
-  public void iShouldReceiveTheCode(int expectedCode) {
-    Assert.assertEquals(expectedCode, response.getStatus());
+    testContext().setResponse(response);
   }
 
   @When("i request this users account amount")
   public void iRequestThisUsersAccountAmount() {
     response =proxy.getUserAmount(null);
-
     Assert.assertEquals(HttpStatus.OK.value(), response.getStatus());
   }
 
@@ -43,7 +38,6 @@ public class AccountsSteps extends AbstractSteps {
     String amount = response.readEntity(String.class);
     System.out.println("The amount of the logged user is ".concat(amount).concat(" euros"));
   }
-
 
   @And("The customer creates {int} account with {double} euros each")
   public void theCustomerCreatesAccountWithEurosEach(int numberOfAccount, double euros) {

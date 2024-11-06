@@ -34,6 +34,11 @@ public class CustomerController {
     return customerService.findById(id);
   }
 
+  @GetMapping("/api/customer/email/{email}")   // get 1 customer by customerId
+  public Customer getCustomerByEmail(@PathVariable String email) {
+    return customerService.findByEmail(email).get();
+  }
+
   @GetMapping("/api/customers")      // get all customers from DB
   public List<Customer> customer(HttpServletRequest request) {
     return customerService.findAll();

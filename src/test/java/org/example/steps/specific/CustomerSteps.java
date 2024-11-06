@@ -32,31 +32,17 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class CustomerSteps extends AbstractSteps {
     private BankService bankService = testContext().getBankService();
-    public BankClient client = new BankClient();
     @Autowired private CustomerService customerService;
     private BankAPI proxy = bankService.proxy;
-    private Customer randomCustomer;  // Mantén el cliente como estado de la clase
-
-    @Given("The customer registers with random email, name, surname and password")
-    public void registerRandomCustomer() {
-        randomCustomer = bankService.registerRandomCustomer();  // Almacena el cliente generado
-        System.out.println("Customer registered: " + randomCustomer.getEmail());
-        assertNotNull(randomCustomer.getEmail());
-    }
-
-    @And("The customer logging with the register credentials")
-    public void theCustomerLogins(){
-        String email = randomCustomer.getEmail();
-        String password = randomCustomer.getPassword();
-        Response response = bankService.doLogin(email,password);
-        testContext().setBankService(bankService);
-        assertEquals(200,response.getStatus());
-    }
+    private Customer randomCustomer = testContext().getCustomer();  // Mantén el cliente como estado de la clase
 
     @When("The customer updates their name to {string} and surname {string}")
     public void updateCustomerNameAndSurname(String name, String surname) {
-        proxy = bankService.proxy;
+
         assertNotNull(randomCustomer);
+        randomCustomer.setName(name);
+        randomCustomer.setSurname(surname);
+        testContext().setCustomer(randomCustomer);
 
         UpdateRequest nameUpdateRequest = new UpdateRequest();
         nameUpdateRequest.setName(name);
@@ -64,41 +50,25 @@ public class CustomerSteps extends AbstractSteps {
 
         Response response = proxy.updateNameAndSurname(nameUpdateRequest, null);
         System.out.println("Customer name updated to: " + name + " " + surname);
-        System.out.println(response.readEntity(String.class));
+        testContext().setResponse(response);
     }
 
     @And("The customer updates their email to {string} and password to {string}")
     public void updateCustomerEmailAndPassword(String email, String password) {
-        proxy = bankService.proxy;
         assertNotNull(randomCustomer);
         randomCustomer.setEmail(email);
+        randomCustomer.setPassword(password);
+        testContext().setCustomer(randomCustomer);
+        testContext().setRegisteredEmail(email);
+
         // Crear el request para actualizar email y contraseña
         UpdateRequest emailPasswordUpdateRequest = new UpdateRequest();
         emailPasswordUpdateRequest.setEmail(email);
         emailPasswordUpdateRequest.setPassword(password);
 
-        try {
-            Response responseEmail = proxy.updateEmail(emailPasswordUpdateRequest, null);
-            System.out.println(responseEmail.readEntity(String.class));
-            Map<String, NewCookie> cookies = responseEmail.getCookies();
-            NewCookie newCookie = cookies.entrySet().iterator().next().getValue();
-            proxy = client.getAPI(newCookie);
-
-            if (responseEmail.getStatus() == 200) {
-                Response responsePassword = proxy.updatePassword(emailPasswordUpdateRequest, null);
-                System.out.println(responsePassword.readEntity(String.class));
-                if (responsePassword.getStatus() == 200) {
-                    System.out.println("User credentials updated successfully.");         }
-                else {
-                    System.out.println("Failed to update password: " + responsePassword.getStatusInfo());
-                }
-            }
-            else {
-                System.out.println("Failed to update email: " + responseEmail.getStatusInfo());
-            }
-        }
-        catch (Exception e) {
-            System.out.println("An error occurred: " + e.getMessage()); }
+        bankService.updateEmailAndPassword(emailPasswordUpdateRequest);
+        testContext().setBankService(bankService);
+        proxy = bankService.proxy;
     }
 
     @Then("The customer’s name, surname, email and password have been updated {string}") //
@@ -107,14 +77,22 @@ public class CustomerSteps extends AbstractSteps {
 
     public void verifyCustomerUpdated(String updateStatus) {
         assertNotNull(randomCustomer);
-
-        Optional<Customer> updatedCustomer = customerService.findByEmail(randomCustomer.getEmail());
-
+        String email = testContext().getRegisteredEmail();
+        System.out.println(email);
+        Response response = proxy.getCustomerByEmail(email);
+        System.out.println(response.getStatus());
+        Customer updatedCustomer = null;
+        try{
+            updatedCustomer = response.readEntity(Customer.class);
+        }catch (Exception e){
+            updatedCustomer = null;
+        }
+        //Optional<Customer> updatedCustomer = customerService.findByEmail(randomCustomer.getEmail());
         if (updateStatus.equals("successfully")) {
-            assertTrue(updatedCustomer.isPresent());
-            System.out.println("Customer updated successfully with email: " + updatedCustomer.get().getEmail());
+            assertTrue(updatedCustomer!=null);
+            System.out.println("Customer updated successfully with email: " + updatedCustomer.getEmail());
         } else {
-            assertFalse(updatedCustomer.isPresent());
+            assertFalse(updatedCustomer!=null);
             System.out.println("Customer update failed.");
         }
     }

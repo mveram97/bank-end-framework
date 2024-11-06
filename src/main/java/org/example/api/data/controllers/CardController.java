@@ -9,6 +9,7 @@ import org.example.api.service.AuthService;
 import org.example.api.service.CustomerService;
 import org.example.api.token.Token;
 import org.example.apicalls.utils.Generator;
+import org.example.apicalls.utils.JsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -97,14 +98,14 @@ public class CardController {
         return ResponseEntity.ok("Card created successfully");
     }
     @GetMapping("/api/cards")   // get all cards from a customer
-    public List<Card> getCards(@AuthenticationPrincipal Customer userDetails) {
+    public ResponseEntity<String> getCards() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         // Assuming username contains customerId
         Integer customerId = Integer.valueOf(authentication.getName());
-
-        return card.getCardsByCustomerId(customerId);
-
+        List<Card> cards = card.getCardsByCustomerId(customerId);
+        JsonConverter jsonConverter = new JsonConverter();
+        String jsonOutput = jsonConverter.convertListToJson(cards);
+        return ResponseEntity.ok().body(jsonOutput);
     }
 
     @DeleteMapping("/api/card/delete/{cardId}")
