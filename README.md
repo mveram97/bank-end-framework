@@ -1,14 +1,14 @@
 # Automation API Framework
 
-This repository contains an API that simulates the one from a bank with the purpose of helping newcomers to develop QA skills in API testing. This repository not only contains the API development but also a variety of tests in order to check different functionalities implemented, using Gherkin syntax, which makes possible to anyone to understand the purpose and steps of those tests. The API has been developed using Java as programming language and the Spring Boot library.
+This repository contains an API that simulates one from a bank, designed to help newcomers develop QA skills in API testing. This repository not only contains the API development but also a variety of tests to check different functionalities implemented, using Gherkin syntax. This makes it possible for anyone to understand the purpose and steps of the tests. The API has been developed using Java as the programming language and the Spring Boot library.
 
 ## How does the API work?
 
-This API is configurated to execute in your own PC and to respond to requests made to **localhost**. The first time is executed, it will create a database using **H2** where the entities _Customer_, _Accounts_, _Cards_ and _Transfer_ will be stored and ready to receive different requests, as the ones that refer to the acronym **CRUD**. Once it is running, you can make those request by calling to the endpoints that will be listed in this document. In addition, the API presents a security filter which forbids clients to make any request without being authenticated, only those requests whose endpoint contains the route **“/public”** can be called without passing the security filter. These security filter is based on JWT, when a user logs in, the API return a header called **‘Cookie Token’** where there is a new token created with the user’s email address, and expiration date the day after. This cookie will be sent in every request, the system will check if the token is valid, in case it is not then the system will return a 401 Status Code and an error message. If the user logs out, the cookies will be cleared; therefore, the user won’t be able to make any requests unless they log in again.
+This API is configured to execute on your PC and respond to requests made to **localhost**. The first time it is executed, it will create a database using **H2**, where the entities _Customer_, _Accounts_, _Cards_, and _Transfer_ will be stored and ready to receive different requests, including those related to the **CRUD** operations. Once it is running, you can make those requests by calling the endpoints listed in this document. Additionally, the API presents a security filter that forbids clients from making any request without being authenticated. Only requests with endpoints containing the route **“/public”** can be called without passing the security filter. This security filter is based on JWT. When a user logs in, the API returns a header called **‘Cookie Token’**, which contains a new token created with the user’s email address and an expiration date for the following day. This cookie will be sent with every request, and the system will check if the token is valid. If it is not, the system will return a 401 Status Code and an error message. If the user logs out, the cookies will be cleared, so the user won’t be able to make any requests unless they log in again.
 
 ## How to get started?
 
-First, having your IDE installed and git, use the following command:
+First, ensure you have your IDE installed and Git set up. Then, use the following command to clone the repository:
 
 ```shell
 git clone <https://github.com/marcotenorioNTT/automation-api-framework.git>
@@ -19,7 +19,7 @@ Once you have cloned it, you can use the Maven command:
 ```shell
  mvn -U clean install
 ```
-in order to Reload All maven Projects incrementally or, if you are using IntelIJ, go to the right part of IntelIJ and you will see an ‘m’ symbol, once you click there, you’ll be able to choose different maven options, click the button which represents two arrows doing a circle. Now your project is prepared to run.
+in order to Reload All maven Projects incrementally.  If you're using IntelliJ, you can find the Maven symbol on the right side, where you can click to access various Maven options. Select the button with two arrows forming a circle to reload the project. Now your project is prepared to run.
 
 However, we should understand how this framework is structured. Here is a figure illustrating how it is structured and the main purpose of each package or file.
 
@@ -62,24 +62,24 @@ automation-api-framework/
 ├── pom.xml
 
 ```
-Therefore, in order to make requests, the class Application.java must be running. By default, our port that will hear our requests is set as 8080, if you want to change the port you can change it in the application properties file. For this reason, all our requests will be sent to the path <http://localhost:8080/> +{route of our endpoint}.
+Therefore, in order to make requests, the class Application.java must be running. By default, the port that handles requests is set to 8080. If you want to change the port, you can modify it in the application properties file. For this reason, all requests will be sent to the path http://localhost:8080/ + {route of our endpoint}.
 
 ## Endpoints List
 
-To see all endpoints available and the information related to them, you can download the next worksheet:
+To view all endpoints available and the information related to them, you can download the following worksheet:
 
 [Download Endpoints worksheet clicking this message.](.readmeFiles/Endpoints.xlsx)
 
 
 ## How do I access to the database with H2?
 
-Since the database is administered by H2, first you should be running Spring Boot, so Application.java must be running while you are using the database or it will return a server error. When Application.java starts, search on your navigator for <http://localhost:8080/h2-ui> to access to the database. You’ll see the following menu:
-
+Since the database is managed by H2, make sure Spring Boot is running. Application.java must be running while you are using the database or it will return a server error. When Application.java starts, open your browser and navigate to http://localhost:8080/h2-ui to access the database. You’ll see the following menu:
 ![H2 Console](.readmeFiles/h2Console.png)
 
-Complete the entries with the data we found in application.properties. There you can change User Name and Password to use whatever you want to.
+Complete the entries with the data we found in application.properties. There you can change User Name and Password to use whatever you want.
 
 ## Testing
+[Añadir detalles de testing aquí (Como estan hechos los tests/clase testcontext...).]
 
 ## Contributors
 
@@ -101,4 +101,4 @@ Vlad Alexandru Simion
 
 ## Acknowledgments
 
-Special thanks to Álvaro Laguna García and Raúl Galera Sancho for their supervision and help along the development of this project
+Special thanks to Álvaro Laguna García and Raúl Galera Sancho for their supervision and help along the development of this project.
