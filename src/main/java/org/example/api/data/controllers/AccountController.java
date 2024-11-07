@@ -341,7 +341,7 @@ public class AccountController {
         Account account= accountOpt.get();
         Customer customerAccount = customerService.getCustomerFromRequest(request);
         if(customerAccount != account.getCustomer()){
-            return ResponseEntity.badRequest().body("You cannot withdraw money from an account that is not associated to you");
+            return ResponseEntity.badRequest().body("You cannot withdraw money from an account that is not associated with you");
         }
         Double deposit = updateRequest.getAmount();
         if (deposit <= 0){

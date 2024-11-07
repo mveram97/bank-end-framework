@@ -42,7 +42,7 @@ public class TransferService {
             transfer.setTransferStatus(Transfer.TransferStatus.FAILED);
             transferRepository.save(transfer);
             return ResponseEntity.badRequest()
-                    .body("Transfer can not be done. Not enough money or blocked receiver.");
+                    .body("Transfer cannot be completed. Not enough money or blocked receiver.");
         } else if(transferAmount <= 0){
             transfer.setTransferStatus(Transfer.TransferStatus.FAILED);
             transferRepository.save(transfer);
@@ -58,7 +58,6 @@ public class TransferService {
         senderAccount.setIsInDebt(accountService.checkAccountInDebt(senderAccount));
         receiverAccount.setIsInDebt(accountService.checkAccountInDebt(receiverAccount));
 
-        System.out.println("Hasta aquí");
         accountRepository.save(senderAccount);
         accountRepository.save(receiverAccount);
 
