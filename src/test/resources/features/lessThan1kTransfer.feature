@@ -9,4 +9,4 @@ Feature: Check Transfer Not Enough Money in Sender User
 
     Examples:
     |numberOfAccounts|ncards|money   |receiverAccountId    |transferAmount     |status   |message                                                                  |
-    |1               |0     |800     |2                    |1500               |400      |"Transfer can not be done. Not enough money or blocked receiver."        |
+    |1               |0     |800     |2                    |1500               |400      |"Transfer cannot be completed. Not enough money or blocked receiver."        |
