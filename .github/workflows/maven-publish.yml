@@ -56,6 +56,21 @@ jobs:
             const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
             const page = await browser.newPage();
             await page.goto('file://' + process.cwd() + '/reports/cucumber-reports.html', { waitUntil: 'networkidle0' });
+
+            // probando desplegables 8-11-2024 13:11
+            // Aquí interactuamos con los elementos desplegables
+            await page.evaluate(() => {
+              const dropdowns = document.querySelectorAll('.fa-chevron-right'); 
+              dropdowns.forEach(dropdown => {
+                if (dropdown) {
+                    dropdown.click();  // Realiza un clic en el desplegable para expandirlo
+                  }
+                });
+              });
+      
+            await page.waitForTimeout(1000);  // Espera 1 segundo, ajusta según sea necesario
+            // probando desplegables 8-11-2024 13:11
+  
             await page.pdf({ path: 'reports/cucumber-reports.pdf', format: 'A4' });
             await browser.close();
           })();
