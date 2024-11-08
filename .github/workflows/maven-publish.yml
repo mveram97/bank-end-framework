@@ -36,13 +36,34 @@ jobs:
           echo "Cucumber report not found"
         fi
 
-    # Convertir el informe HTML de Cucumber a PDF usando el action del Marketplace
-    - name: Convert Cucumber Report to PDF
-      uses: fifsky/html-to-pdf-action@v0.1.0
+    # Instalar Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
       with:
-        htmlFile: 'reports/cucumber-reports.html'
-        outputFile: 'reports/cucumber-reports.pdf'
-        pdfOptions: '{"format": "A4"}'
+        node-version: '16'
+
+    # Instalar Puppeteer
+    - name: Install Puppeteer
+      run: npm install puppeteer
+
+    # Convertir el informe HTML a PDF usando Puppeteer
+    - name: Convert Cucumber Report to PDF using Puppeteer
+      run: |
+        if [ -f reports/cucumber-reports.html ]; then
+          node -e "
+          const puppeteer = require('puppeteer');
+          (async () => {
+            const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+            const page = await browser.newPage();
+            await page.goto('file://' + process.cwd() + '/reports/cucumber-reports.html', { waitUntil: 'networkidle0' });
+            await page.pdf({ path: 'reports/cucumber-reports.pdf', format: 'A4' });
+            await browser.close();
+          })();
+          "
+          echo "PDF report created"
+        else
+          echo "HTML report not found"
+        fi
 
     - name: Commit and Push Reports
       env:
