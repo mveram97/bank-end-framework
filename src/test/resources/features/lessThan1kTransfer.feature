@@ -8,5 +8,5 @@ Feature: Check Transfer Not Enough Money in Sender User
     Then The customer gets a <status> status response and message: <message>
 
     Examples:
-    |numberOfAccounts|ncards|money   |receiverAccountId    |transferAmount     |status   |message                                                                  |
+    |numberOfAccounts|ncards|money   |receiverAccountId    |transferAmount     |status   |message                                                                      |
     |1               |0     |800     |2                    |1500               |400      |"Transfer cannot be completed. Not enough money or blocked receiver."        |
