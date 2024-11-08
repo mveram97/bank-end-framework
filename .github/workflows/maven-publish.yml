@@ -39,8 +39,8 @@ jobs:
       - name: Convert HTML to PDF
         uses: markwilson/html2pdf@v1.1
         with:
-          input_html_file: 'reports/cucumber-reports.html'
-          output_pdf_file: 'reports/cucumber-reports.pdf'
+          htmlPath: 'reports/cucumber-reports.html'
+          pdfName: 'reports/cucumber-reports.pdf'
 
       - name: Commit and Push Reports
         env:
