@@ -62,24 +62,36 @@ automation-api-framework/
 ├── pom.xml
 
 ```
-Therefore, in order to make requests, the class Application.java must be running. By default, the port that handles requests is set to 8080. If you want to change the port, you can modify it in the application properties file. For this reason, all requests will be sent to the path http://localhost:8080/ + {route of our endpoint}.
-
+Therefore, in order to make requests, the class Application.java must be running. By default, the port that handles requests is set to 8080. If you want to change the port, you can modify it in the application properties file. For this reason, all requests will be sent to the path:
+```
+http://localhost:8080/ + {route of our endpoint}.
+```
 ## Endpoints List
 
 To view all endpoints available and the information related to them, you can download the following worksheet:
 
-[Download Endpoints worksheet clicking this message.](.readmeFiles/Endpoints.xlsx)
+[Download Endpoints worksheet by clicking here.](.readmeFiles/Endpoints.xlsx)
 
 
 ## How do I access to the database with H2?
 
 Since the database is managed by H2, make sure Spring Boot is running. Application.java must be running while you are using the database or it will return a server error. When Application.java starts, open your browser and navigate to http://localhost:8080/h2-ui to access the database. You’ll see the following menu:
+
 ![H2 Console](.readmeFiles/h2Console.png)
 
 Complete the entries with the data we found in application.properties. There you can change User Name and Password to use whatever you want.
 
 ## Testing
-[Añadir detalles de testing aquí (Como estan hechos los tests/clase testcontext...).]
+To ensure the quality of the code, we must tests the functionalities implemented in this framework, hence developing automated tests plays a key role in any framework. For this reason, we have created different automated tests, but in order to make our tests understandable for anyone outside of this project, we have written our tests with the Gherkin syntax. Therefore, to run those tests we used Cucumber with Junit 5, so as to automatizing them. To configure our tests with Spring Boot, we created a java class called CucumberSpringConfiguration.java, contained in the homonymous package.
+
+Once the test’s feature is created, we create the different steps and organize them according to their relation with the different controllers of our API. For example, a step that creates Cards will be placed in the ‘CardSteps’ file, while those unrelated to any controller will be filed in ‘GenericSteps’.  Separating the steps according to this criterion has a problem: what happens if in a step you create or update a variable that will be used in the following steps? If the steps were in the same file, it would not pose any problem, but since our steps might be in different files, the variable will be created, or updated, locally in that file, and therefore when the following steps call on the variable, it will lead to an error, because they will not recognize any variable with that name or might retrieve outdated variable.
+That’s why we have created a package called ‘context’, which contains ‘TestContext’ and ‘AbstractSteps’.
+
+![Structure Repository showing where the context package is](.readmeFiles/testContextStructure.PNG)
+
+The idea is that every change in a variable will be saved in a ‘TestContext’ object, so if a step updates the value of a variable, it will also update its value in the testContext object, and the following steps will obtain the value of that variable by calling the testContext object. Once the test is finished, the object will be reset, and all the values will be set to null, avoiding any kind of problem in the following tests. Consequently, every step must use the same testContext object, or we will have the same problem, so we have created ‘AbstractSteps’, which only contains the testContext object, and every other ‘*Steps’ file will extend from this class. Thus, there will not be any need to initialize a new ‘TestContext’ object.
+
+On a different topic, after each test, a method is executed to erase every entry created in the database from the test, in case you want those entries to persist over time, you can modify the method with the Cucumber annotation “@After” or create a tag to decide which tests are going to erase their entries and which are not.
 
 ## Contributors
 
