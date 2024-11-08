@@ -77,7 +77,7 @@ To view all endpoints available and the information related to them, you can dow
 
 Since the database is managed by H2, make sure Spring Boot is running. Application.java must be running while you are using the database or it will return a server error. When Application.java starts, open your browser and navigate to http://localhost:8080/h2-ui to access the database. You’ll see the following menu:
 
-![H2 Console.](.readmeFiles/H2Console.png)
+![H2 Console.](.readmeFiles/H2Console.PNG)
 
 Complete the entries with the data we found in application.properties. There you can change User Name and Password to use whatever you want.
 
