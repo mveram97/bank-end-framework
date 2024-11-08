@@ -41,8 +41,21 @@ jobs:
           echo "Cucumber report not found"
         fi
 
+    # 6. Instalar wkhtmltopdf para convertir HTML a PDF
+    - name: Install wkhtmltopdf
+      run: sudo apt-get update && sudo apt-get install -y wkhtmltopdf
 
-    # 9. Commit y push de los reportes (HTML y PDF) al repositorio
+    # 7. Convertir el informe HTML de Cucumber a PDF
+    - name: Convert Cucumber Report to PDF
+      run: |
+        if [ -f reports/cucumber-reports.html ]; then
+          wkhtmltopdf reports/cucumber-reports.html reports/cucumber-reports.pdf
+          echo "PDF report created"
+        else
+          echo "HTML report not found"
+        fi
+
+    # 8. Commit y push de los reportes (HTML y PDF) al repositorio
     - name: Commit and Push Reports
       run: |
         git config --global user.name "github-actions[bot]"
