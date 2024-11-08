@@ -68,7 +68,7 @@ jobs:
                 });
               });
       
-            await page.waitForTimeout(1000);  // Espera 1 segundo, ajusta según sea necesario
+            await page.waitFor(1000);  // Espera 1 segundo, ajusta según sea necesario
             // probando desplegables 8-11-2024 13:11
   
             await page.pdf({ path: 'reports/cucumber-reports.pdf', format: 'A4' });
