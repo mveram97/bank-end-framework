@@ -11,10 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Clona el repositorio
     - uses: actions/checkout@v4
 
-    # 2. Configura JDK 17
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
@@ -22,15 +20,12 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    # 3. Ejecuta Maven para compilar y ejecutar las pruebas
     - name: Build with Maven
       run: mvn clean test
 
-    # 4. Crear carpeta para guardar reportes
     - name: Create reports directory
       run: mkdir -p reports
 
-    # 5. Mover el informe de Cucumber a la carpeta 'reports'
     - name: Move Cucumber Reports
       run: |
         if [ -f target/cucumber-reports.html ]; then
@@ -41,25 +36,14 @@ jobs:
           echo "Cucumber report not found"
         fi
 
-    # 6. Instalar WeasyPrint y sus dependencias
-    - name: Install WeasyPrint and dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y python3-pip
-        pip3 install WeasyPrint
-        sudo apt-get install -y libpango1.0-0 libcairo2 libpq-dev
+    # Convertir el informe HTML de Cucumber a PDF usando el action del Marketplace
+    - name: Convert Cucumber Report to PDF
+      uses: fifsky/html-to-pdf-action@v0.1.0
+      with:
+        htmlFile: 'reports/cucumber-reports.html'
+        outputFile: 'reports/cucumber-reports.pdf'
+        pdfOptions: '{"format": "A4"}'
 
-    # 7. Convertir el informe HTML de Cucumber a PDF con WeasyPrint
-    - name: Convert Cucumber Report to PDF using WeasyPrint
-      run: |
-        if [ -f reports/cucumber-reports.html ]; then
-          weasyprint reports/cucumber-reports.html reports/cucumber-reports.pdf
-          echo "PDF report created"
-        else
-          echo "HTML report not found"
-        fi
-
-    # 8. Commit y push de los reportes (HTML y PDF) al repositorio
     - name: Commit and Push Reports
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
