@@ -60,7 +60,7 @@ jobs:
             // probando desplegables 8-11-2024 13:11
             // Aquí interactuamos con los elementos desplegables
             await page.evaluate(() => {
-              const dropdowns = document.querySelectorAll('.fa-chevron-right'); 
+              const dropdowns = document.querySelectorAll('div[role="button"][aria-expanded="false"]'); 
               dropdowns.forEach(dropdown => {
                 if (dropdown) {
                     dropdown.click();  // Realiza un clic en el desplegable para expandirlo
