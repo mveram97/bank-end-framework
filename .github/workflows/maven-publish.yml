@@ -35,7 +35,7 @@ jobs:
       run: |
         if [ -f target/cucumber-reports.html ]; then
           mv target/cucumber-reports.html reports/
-          mv target/org.example.CucumberRunner.txt /reports/maven-log.txt
+          mv target/org.example.CucumberRunner.txt reports/maven-log.txt
           echo "Cucumber report found"
         else
           echo "Cucumber report not found"
