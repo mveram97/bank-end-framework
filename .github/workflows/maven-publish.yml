@@ -35,18 +35,32 @@ jobs:
       run: |
         if [ -f target/cucumber-reports.html ]; then
           mv target/cucumber-reports.html reports/
-          echo "Directory exists"
+          echo "Cucumber report found"
         else
           echo "Cucumber report not found"
         fi
-        
-    # 6. Commit y push del reporte al repositorio
+
+    # 6. Instalar wkhtmltopdf para convertir HTML a PDF
+    - name: Install wkhtmltopdf
+      run: sudo apt-get update && sudo apt-get install -y wkhtmltopdf
+
+    # 7. Convertir el reporte HTML a PDF
+    - name: Convert HTML to PDF
+      run: |
+        if [ -f reports/cucumber-reports.html ]; then
+          wkhtmltopdf reports/cucumber-reports.html reports/cucumber-reports.pdf
+          echo "PDF report generated"
+        else
+          echo "HTML report not found"
+        fi
+
+    # 8. Commit y push de los reportes (HTML y PDF) al repositorio
     - name: Commit and Push Reports
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add reports/cucumber-reports.html
-        git commit -m "Add Cucumber report"
+        git add reports/cucumber-reports.html reports/cucumber-reports.pdf
+        git commit -m "Add Cucumber HTML and PDF reports"
         git push
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
