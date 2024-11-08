@@ -10,7 +10,7 @@ This cookie will be sent with every request, and the system will check if the to
 
 ## How to get started?
 
-First, ensure you have your IDE installed and Git set up Then, use the following command to clone the repository:
+First, ensure you have your IDE installed and Git set up. Then, use the following command to clone the repository:
 
 ```shell
 git clone <https://github.com/marcotenorioNTT/automation-api-framework.git>
