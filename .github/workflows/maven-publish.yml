@@ -35,38 +35,19 @@ jobs:
       run: |
         if [ -f target/cucumber-reports.html ]; then
           mv target/cucumber-reports.html reports/
+          mv target/org.example.CucumberRunner.txt /reports/maven-log.txt
           echo "Cucumber report found"
         else
           echo "Cucumber report not found"
         fi
 
-    # 6. Instalar wkhtmltopdf y dependencias necesarias
-    - name: Install wkhtmltopdf and dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y wkhtmltopdf xvfb libfontconfig libxrender1
-
-    # 7. Verificar si el archivo HTML tiene contenido antes de convertir
-    - name: Check HTML content
-      run: |
-        if [ -s reports/cucumber-reports.html ]; then
-          echo "HTML report has content"
-        else
-          echo "HTML report is empty"
-          exit 1
-        fi
-
-    # 8. Convertir el reporte HTML a PDF usando xvfb-run
-    - name: Convert HTML to PDF
-      run: |
-        xvfb-run wkhtmltopdf reports/cucumber-reports.html reports/cucumber-reports.pdf
 
     # 9. Commit y push de los reportes (HTML y PDF) al repositorio
     - name: Commit and Push Reports
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add reports/cucumber-reports.html reports/cucumber-reports.pdf
+        git add reports/cucumber-reports.html
         git commit -m "Add Cucumber HTML and PDF reports"
         git push
       env:
