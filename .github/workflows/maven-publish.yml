@@ -36,11 +36,11 @@ jobs:
           echo "Cucumber report not found"
         fi
 
-    # Instalar Node.js
+    # Instalar Node.js versión 18
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '18'
 
     # Instalar Puppeteer
     - name: Install Puppeteer
