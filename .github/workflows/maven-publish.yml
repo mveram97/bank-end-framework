@@ -35,7 +35,8 @@ jobs:
       run: |
         if [ -f target/cucumber-reports.html ]; then
           mv target/cucumber-reports.html reports/
-         else
+          echo "Directory exists"
+        else
           echo "Cucumber report not found"
         fi
 
