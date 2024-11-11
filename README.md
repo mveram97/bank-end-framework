@@ -77,14 +77,14 @@ To view all endpoints available and the information related to them, you can dow
 
 ## How do I access to the database with H2?
 
-Since the database is managed by H2, make sure Spring Boot is running. Application.java must be running while you are using the database or it will return a server error. When Application.java starts, open your browser and navigate to http://localhost:8080/h2-ui to access the database. You’ll see the following menu:
+Since the database is managed by H2, make sure Spring Boot is running. Application.java must be running while you are using the database or it will return a server error. When Application.java starts, open your browser and navigate to http://localhost:8080/h2-ui to access the database. You will see the following menu:
 
 ![H2 Console.](.readmeFiles/H2Console.PNG)
 
-Complete the entries with the data we found in application.properties. There you can change User Name and Password to use whatever you want.
+Fill in the entries with the information from the application.properties file. There you can change User Name and Password to use whatever you want.
 
 ## Testing
-To ensure the quality of the code, we must tests the functionalities implemented in this framework, hence developing automated tests plays a key role in any framework. For this reason, we have created different automated tests, but in order to make our tests understandable for anyone outside of this project, we have written our tests with the Gherkin syntax. Therefore, to run those tests we used Cucumber with Junit 5, so as to automatizing them. To configure our tests with Spring Boot, we created a java class called CucumberSpringConfiguration.java, contained in the homonymous package.
+To ensure the quality of the code, we must test the functionalities implemented in this framework, hence developing automated tests plays a key role in any framework. For this reason, we have created different automated tests, but in order to make our tests understandable for anyone outside of this project, we have written our tests with the Gherkin syntax. Therefore, to run those tests we used Cucumber with Junit 5, so as to automatizing them. To configure our tests with Spring Boot, we created a java class called CucumberSpringConfiguration.java, contained in the homonymous package.
 
 Once the test’s feature is created, we create the different steps and organize them according to their relation with the different controllers of our API. For example, a step that creates Cards will be placed in the ‘CardSteps’ file, while those unrelated to any controller will be filed in ‘GenericSteps’.  Separating the steps according to this criterion has a problem: what happens if in a step you create or update a variable that will be used in the following steps? If the steps were in the same file, it would not pose any problem, but since our steps might be in different files, the variable will be created, or updated, locally in that file, and therefore when the following steps call on the variable, it will lead to an error, because they will not recognize any variable with that name or might retrieve outdated variable.
 That’s why we have created a package called ‘context’, which contains ‘TestContext’ and ‘AbstractSteps’.
