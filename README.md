@@ -13,7 +13,7 @@ This cookie will be sent with every request, and the system will check if the to
 First, ensure you have your IDE installed and Git set up. Then, use the following command to clone the repository:
 
 ```shell
-git clone <https://github.com/marcotenorioNTT/automation-api-framework.git>
+git clone <https://github.com/marcotenorioNTT/automation-api-framework.git](https://github.com/NTTData-QA/back-end-framework.git>
 ```
 to clone the repository. Instead of this command, you can use other tools such as ‘Create a New Project > From Version Control…” from IntelIJ.
 
